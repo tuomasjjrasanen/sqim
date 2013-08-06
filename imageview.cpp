@@ -10,24 +10,24 @@ static QImage loadImage(QString imagePath)
 
 static QStringList findImages(QString dir)
 {
-    QStringList result;
+    QStringList retval;
 
     QStringList findArgs;
     findArgs << dir << "-type" << "f";
     QProcess find;
     find.start("find", findArgs);
     if (!find.waitForStarted())
-        return result;
+        return retval;
     if (!find.waitForFinished())
-        return result;
+        return retval;
 
     QByteArray findOutput = find.readAllStandardOutput();
     QList<QByteArray> lines = findOutput.split('\n');
     foreach (QByteArray line, lines) {
-        result.append(QString(line));
+        retval.append(QString(line));
     }
 
-    return result;
+    return retval;
 }
 
 ImageView::ImageView(QWidget *parent) :
@@ -53,7 +53,7 @@ ImageView::ImageView(QWidget *parent) :
     m_imageView->setModel(m_imageModel);
 
     m_imageLoader = new QFutureWatcher<QImage>(this);
-    connect(m_imageLoader, SIGNAL(resultReadyAt(int)), SLOT(showImage(int)));
+    connect(m_imageLoader, SIGNAL(resultReadyAt(int)), SLOT(addImage(int)));
     connect(m_imageLoader, SIGNAL(finished()), SLOT(loadFinished()));
 
     m_imageFinder = new QFutureWatcher<QStringList>(this);
@@ -74,7 +74,7 @@ void ImageView::loadImages(QString dir)
     m_imageFinder->setFuture(QtConcurrent::run(findImages, dir));
 }
 
-void ImageView::showImage(int i)
+void ImageView::addImage(int i)
 {
     QStandardItem *imageItem = new QStandardItem();
     imageItem->setIcon(QIcon(QPixmap::fromImage(m_imageLoader->resultAt(i))));

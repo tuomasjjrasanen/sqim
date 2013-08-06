@@ -18,7 +18,7 @@ public:
     void loadImages(QString dir);
 
 private slots:
-    void showImage(int i);
+    void addImage(int i);
     void findFinished();
     void loadFinished();
 
