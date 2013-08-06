@@ -46,6 +46,7 @@ ImageView::ImageView(QWidget *parent) :
     m_imageView->setSelectionMode(QListView::SingleSelection);
     m_imageView->setEditTriggers(QAbstractItemView::NoEditTriggers);
     m_imageView->setResizeMode(QListView::Adjust);
+    m_imageView->setIconSize(QSize(50, 50));
 
     m_imageModel = new QStandardItemModel(this);
     m_imageView->setModel(m_imageModel);
