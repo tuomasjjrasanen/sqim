@@ -21,5 +21,4 @@ HEADERS  += \
     imageview.hh \
     mainwindow.hh
 
-FORMS    += \
-    mainwindow.ui
+FORMS    +=

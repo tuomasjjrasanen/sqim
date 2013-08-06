@@ -1,17 +1,17 @@
 #include "mainwindow.hh"
-#include "ui_mainwindow.h"
 #include "imageview.hh"
 #include <QGridLayout>
+#include <QStatusBar>
+#include <QMenuBar>
 
 MainWindow::MainWindow(QWidget *parent) :
-    QMainWindow(parent),
-    ui(new Ui::MainWindow)
+    QMainWindow(parent)
 {
-    ui->setupUi(this);
-    ui->centralwidget->loadImages("/home/tuomasjjrasanen/.sxiv/cache");
+    setStatusBar(new QStatusBar(this));
+    setMenuBar(new QMenuBar(this));
+    setCentralWidget(new ImageView(this));
 }
 
 MainWindow::~MainWindow()
 {
-    delete ui;
 }
