@@ -12,12 +12,14 @@ TARGET = qpicman
 TEMPLATE = app
 
 
-SOURCES += main.cpp\
-    imageview.cpp \
-    mainwindow.cpp
+SOURCES +=\
+    imageview.cc \
+    main.cc \
+    mainwindow.cc
 
-HEADERS  += imageview.h \
-    mainwindow.h
+HEADERS  += \
+    imageview.hh \
+    mainwindow.hh
 
 FORMS    += \
     mainwindow.ui

@@ -1,4 +1,4 @@
-#include "imageview.h"
+#include "imageview.hh"
 #include <QGridLayout>
 #include <QProcess>
 #include <QtCore>

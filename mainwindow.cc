@@ -1,6 +1,6 @@
-#include "mainwindow.h"
+#include "mainwindow.hh"
 #include "ui_mainwindow.h"
-#include "imageview.h"
+#include "imageview.hh"
 #include <QGridLayout>
 
 MainWindow::MainWindow(QWidget *parent) :
