@@ -15,7 +15,7 @@ class ImageView : public QWidget
 public:
     explicit ImageView(QWidget *parent = 0);
     ~ImageView();
-    void loadImages(QStringList imagePaths);
+    void loadImages(QStringList const &imagePaths);
 
 private slots:
     void addIcon(int i);

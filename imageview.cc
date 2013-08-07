@@ -41,7 +41,7 @@ ImageView::~ImageView()
     m_imageLoader->waitForFinished();
 }
 
-void ImageView::loadImages(QStringList imagePaths)
+void ImageView::loadImages(QStringList const &imagePaths)
 {
     m_imageView->hide();
     m_progressBar->show();
