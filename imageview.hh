@@ -6,7 +6,6 @@
 #include <QImage>
 #include <QListView>
 #include <QStandardItemModel>
-#include <QProgressBar>
 
 class ImageView : public QWidget
 {
@@ -19,14 +18,11 @@ public:
 
 private slots:
     void loadIcon(int i);
-    void showIcons();
 
 private:
     QFutureWatcher<QString> *m_iconCreator;
     QListView *m_iconView;
     QStandardItemModel *m_iconModel;
-    QProgressBar *m_progressBar;
-
 };
 
 #endif // IMAGEVIEW_H

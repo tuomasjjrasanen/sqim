@@ -43,11 +43,8 @@ ImageView::ImageView(QWidget *parent) :
 {
     QGridLayout *layout = new QGridLayout(this);
     m_iconView = new QListView(this);
-    m_progressBar = new QProgressBar(this);
-    m_progressBar->hide();
 
     layout->addWidget(m_iconView);
-    layout->addWidget(m_progressBar);
 
     m_iconView->setViewMode(QListView::IconMode);
     m_iconView->setMovement(QListView::Static);
@@ -62,7 +59,6 @@ ImageView::ImageView(QWidget *parent) :
 
     m_iconCreator = new QFutureWatcher<QString>(this);
     connect(m_iconCreator, SIGNAL(resultReadyAt(int)), SLOT(loadIcon(int)));
-    connect(m_iconCreator, SIGNAL(finished()), SLOT(showIcons()));
 }
 
 ImageView::~ImageView()
@@ -73,9 +69,6 @@ ImageView::~ImageView()
 
 void ImageView::loadImages(QStringList const &imagePaths)
 {
-    m_iconView->hide();
-    m_progressBar->show();
-    m_progressBar->setMaximum(imagePaths.count());
     m_iconCreator->setFuture(QtConcurrent::mapped(imagePaths, createIcon));
 }
 
@@ -87,11 +80,4 @@ void ImageView::loadIcon(int i)
     QStandardItem *item = new QStandardItem();
     item->setIcon(QIcon(iconPath));
     m_iconModel->appendRow(item);
-    m_progressBar->setValue(m_iconModel->rowCount());
-}
-
-void ImageView::showIcons()
-{
-    m_progressBar->hide();
-    m_iconView->show();
 }
