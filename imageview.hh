@@ -15,15 +15,13 @@ class ImageView : public QWidget
 public:
     explicit ImageView(QWidget *parent = 0);
     ~ImageView();
-    void loadImages(QString dir);
+    void loadImages(QStringList imagePaths);
 
 private slots:
-    void addImage(int i);
-    void findFinished();
-    void loadFinished();
+    void addIcon(int i);
+    void showIcons();
 
 private:
-    QFutureWatcher<QStringList> *m_imageFinder;
     QFutureWatcher<QImage> *m_imageLoader;
     QListView *m_imageView;
     QStandardItemModel *m_imageModel;

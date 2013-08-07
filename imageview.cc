@@ -8,35 +8,13 @@ static QImage loadImage(QString imagePath)
     return QImage(imagePath);
 }
 
-static QStringList findImages(QString dir)
-{
-    QStringList retval;
-
-    QStringList findArgs;
-    findArgs << dir << "-type" << "f";
-    QProcess find;
-    find.start("find", findArgs);
-    if (!find.waitForStarted())
-        return retval;
-    if (!find.waitForFinished())
-        return retval;
-
-    QByteArray findOutput = find.readAllStandardOutput();
-    QList<QByteArray> lines = findOutput.split('\n');
-    foreach (QByteArray line, lines) {
-        retval.append(QString(line));
-    }
-
-    return retval;
-}
-
 ImageView::ImageView(QWidget *parent) :
     QWidget(parent)
 {
     QGridLayout *layout = new QGridLayout(this);
     m_imageView = new QListView(this);
-    m_imageView->hide();
     m_progressBar = new QProgressBar(this);
+    m_progressBar->hide();
 
     layout->addWidget(m_imageView);
     layout->addWidget(m_progressBar);
@@ -53,28 +31,25 @@ ImageView::ImageView(QWidget *parent) :
     m_imageView->setModel(m_imageModel);
 
     m_imageLoader = new QFutureWatcher<QImage>(this);
-    connect(m_imageLoader, SIGNAL(resultReadyAt(int)), SLOT(addImage(int)));
-    connect(m_imageLoader, SIGNAL(finished()), SLOT(loadFinished()));
-
-    m_imageFinder = new QFutureWatcher<QStringList>(this);
-    connect(m_imageFinder, SIGNAL(finished()), SLOT(findFinished()));
+    connect(m_imageLoader, SIGNAL(resultReadyAt(int)), SLOT(addIcon(int)));
+    connect(m_imageLoader, SIGNAL(finished()), SLOT(showIcons()));
 }
 
 ImageView::~ImageView()
 {
     m_imageLoader->cancel();
-    m_imageFinder->cancel();
-
     m_imageLoader->waitForFinished();
-    m_imageFinder->waitForFinished();
 }
 
-void ImageView::loadImages(QString dir)
+void ImageView::loadImages(QStringList imagePaths)
 {
-    m_imageFinder->setFuture(QtConcurrent::run(findImages, dir));
+    m_imageView->hide();
+    m_progressBar->show();
+    m_progressBar->setMaximum(imagePaths.count());
+    m_imageLoader->setFuture(QtConcurrent::mapped(imagePaths, loadImage));
 }
 
-void ImageView::addImage(int i)
+void ImageView::addIcon(int i)
 {
     QStandardItem *imageItem = new QStandardItem();
     imageItem->setIcon(QIcon(QPixmap::fromImage(m_imageLoader->resultAt(i))));
@@ -82,14 +57,7 @@ void ImageView::addImage(int i)
     m_progressBar->setValue(m_imageModel->rowCount());
 }
 
-void ImageView::findFinished()
-{
-    QStringList imagePaths = m_imageFinder->result();
-    m_progressBar->setMaximum(imagePaths.count());
-    m_imageLoader->setFuture(QtConcurrent::mapped(imagePaths, loadImage));
-}
-
-void ImageView::loadFinished()
+void ImageView::showIcons()
 {
     m_progressBar->hide();
     m_imageView->show();
