@@ -24,6 +24,8 @@ static QStringList findImages(QString dir)
     QByteArray findOutput = find.readAllStandardOutput();
     QList<QByteArray> lines = findOutput.split('\n');
     foreach (QByteArray line, lines) {
+        if (line.isEmpty())
+            continue;
         retval.append(QString(line));
     }
 

@@ -18,13 +18,13 @@ public:
     void loadImages(QStringList const &imagePaths);
 
 private slots:
-    void addIcon(int i);
+    void loadIcon(int i);
     void showIcons();
 
 private:
-    QFutureWatcher<QImage> *m_imageLoader;
-    QListView *m_imageView;
-    QStandardItemModel *m_imageModel;
+    QFutureWatcher<QString> *m_iconCreator;
+    QListView *m_iconView;
+    QStandardItemModel *m_iconModel;
     QProgressBar *m_progressBar;
 
 };
