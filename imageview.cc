@@ -41,17 +41,21 @@ static QString createIcon(QString const &imageFilePath)
 ImageView::ImageView(QWidget *parent) :
     QWidget(parent)
 {
-    m_listWidget = new QListWidget(this);
-    m_listWidget->setViewMode(QListView::IconMode);
-    m_listWidget->setMovement(QListView::Static);
-    m_listWidget->setSelectionMode(QListView::SingleSelection);
-    m_listWidget->setEditTriggers(QAbstractItemView::NoEditTriggers);
-    m_listWidget->setResizeMode(QListView::Adjust);
-    m_listWidget->setIconSize(QSize(50, 50));
-    m_listWidget->setStyleSheet("background: grey;");
-
     QGridLayout *layout = new QGridLayout(this);
-    layout->addWidget(m_listWidget);
+    m_iconView = new QListView(this);
+
+    layout->addWidget(m_iconView);
+
+    m_iconView->setViewMode(QListView::IconMode);
+    m_iconView->setMovement(QListView::Static);
+    m_iconView->setSelectionMode(QListView::SingleSelection);
+    m_iconView->setEditTriggers(QAbstractItemView::NoEditTriggers);
+    m_iconView->setResizeMode(QListView::Adjust);
+    m_iconView->setIconSize(QSize(50, 50));
+    m_iconView->setStyleSheet("background: grey;");
+
+    m_iconModel = new QStandardItemModel(this);
+    m_iconView->setModel(m_iconModel);
 
     m_iconCreator = new QFutureWatcher<QString>(this);
     connect(m_iconCreator, SIGNAL(resultReadyAt(int)), SLOT(loadIcon(int)));
@@ -73,7 +77,7 @@ void ImageView::loadIcon(int i)
     QString iconPath = m_iconCreator->resultAt(i);
     if (iconPath.isEmpty())
         return;
-    QListWidgetItem *item = new QListWidgetItem();
+    QStandardItem *item = new QStandardItem();
     item->setIcon(QIcon(iconPath));
-    m_listWidget->addItem(item);
+    m_iconModel->appendRow(item);
 }

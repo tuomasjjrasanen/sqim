@@ -4,7 +4,8 @@
 #include <QWidget>
 #include <QFutureWatcher>
 #include <QImage>
-#include <QListWidget>
+#include <QListView>
+#include <QStandardItemModel>
 
 class ImageView : public QWidget
 {
@@ -20,7 +21,8 @@ private slots:
 
 private:
     QFutureWatcher<QString> *m_iconCreator;
-    QListWidget *m_listWidget;
+    QListView *m_iconView;
+    QStandardItemModel *m_iconModel;
 };
 
 #endif // IMAGEVIEW_H
