@@ -1,0 +1,3 @@
+namespace SQIM {
+    void init();
+};
