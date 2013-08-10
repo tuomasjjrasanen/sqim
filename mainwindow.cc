@@ -8,7 +8,7 @@
 #include "imageview.hh"
 #include "mainwindow.hh"
 
-static QStringList findImages(QString dir)
+static QStringList findFiles(QString dir)
 {
     QStringList retval;
 
@@ -69,7 +69,7 @@ void MainWindow::importDir()
         return;
     }
     statusBar()->showMessage("Importing " + dir);
-    m_imageFinder->setFuture(QtConcurrent::run(findImages, dir));
+    m_imageFinder->setFuture(QtConcurrent::run(findFiles, dir));
 }
 
 void MainWindow::setupImageView()
