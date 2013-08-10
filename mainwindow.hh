@@ -17,7 +17,7 @@ private slots:
     void setupImageView();
 
 private:
-    QFutureWatcher<QStringList> *m_imageFinder;
+    QFutureWatcher<QStringList> *m_fileFinder;
 };
 
 #endif // MAINWINDOW_H
