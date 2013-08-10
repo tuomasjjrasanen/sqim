@@ -38,7 +38,6 @@ MainWindow::MainWindow(QWidget *const parent) :
     setMenuBar(new QMenuBar(this));
     setCentralWidget(new ImageView(this));
     setStatusBar(new QStatusBar(this));
-    m_fileFinder = new QFutureWatcher<QStringList>(this);
 
     QMenu *fileMenu = new QMenu("&File", menuBar());
     QAction *importDirAction = fileMenu->addAction("&Import directory...");
@@ -50,14 +49,11 @@ MainWindow::MainWindow(QWidget *const parent) :
 
     connect(importDirAction, SIGNAL(triggered(bool)), SLOT(importDir()));
     connect(quitAction, SIGNAL(triggered(bool)), SLOT(close()));
-    connect(m_fileFinder, SIGNAL(finished()), SLOT(setupImageView()));
     statusBar()->showMessage("Initialized");
 }
 
 MainWindow::~MainWindow()
 {
-    m_fileFinder->cancel();
-    m_fileFinder->waitForFinished();
 }
 
 void MainWindow::importDir()
@@ -69,11 +65,7 @@ void MainWindow::importDir()
         return;
     }
     statusBar()->showMessage("Importing " + dir);
-    m_fileFinder->setFuture(QtConcurrent::run(findFiles, dir));
-}
-
-void MainWindow::setupImageView()
-{
-    QStringList imagePaths = m_fileFinder->result();
-    ((ImageView*) centralWidget())->loadImages(imagePaths);
+    QStringList filePaths = findFiles(dir);
+    statusBar()->showMessage("Found " + QString::number(filePaths.count()) + " files");
+    ((ImageView*) centralWidget())->loadImages(filePaths);
 }

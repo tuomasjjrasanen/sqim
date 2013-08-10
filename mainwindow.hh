@@ -14,10 +14,7 @@ public:
 
 private slots:
     void importDir();
-    void setupImageView();
 
-private:
-    QFutureWatcher<QStringList> *m_fileFinder;
 };
 
 #endif // MAINWINDOW_H
