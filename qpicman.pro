@@ -4,7 +4,7 @@
 #
 #-------------------------------------------------
 
-QT       += core gui sql
+QT       += core gui
 
 greaterThan(QT_MAJOR_VERSION, 4): QT += widgets
 
@@ -15,12 +15,10 @@ TEMPLATE = app
 SOURCES +=\
     imageview.cc \
     main.cc \
-    mainwindow.cc \
-    database.cc
+    mainwindow.cc
 
 HEADERS  += \
     imageview.hh \
-    mainwindow.hh \
-    database.hh
+    mainwindow.hh
 
 FORMS    +=
