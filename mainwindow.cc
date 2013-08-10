@@ -4,6 +4,7 @@
 #include <QMenuBar>
 #include <QProcess>
 #include <QStatusBar>
+#include <QMutex>
 
 #include "imageview.hh"
 #include "mainwindow.hh"
@@ -63,6 +64,7 @@ MainWindow::~MainWindow()
 
 static bool importImage(QString const &imageFilePath)
 {
+    static QMutex mkpathMutex;
     QFileInfo imageFileInfo(imageFilePath);
 
     if (!imageFileInfo.isAbsolute())
@@ -71,9 +73,16 @@ static bool importImage(QString const &imageFilePath)
     QString imageFileName = imageFileInfo.fileName();
     QString imageDirPath = imageFileInfo.canonicalPath();
 
+    // It seems that QDir::mkpath() fails sometimes when trying to
+    // simultaneously create several paths with partly overlapping
+    // components. Protecting mkpath() with a mutex fixes that.
+    mkpathMutex.lock();
     QDir dbDir = QDir(QDir::homePath() + "/.qpicman/db" + imageFileInfo.canonicalFilePath());
-    if (!dbDir.mkpath("."))
+    if (!dbDir.mkpath(".")) {
+        mkpathMutex.unlock();
         return false;
+    }
+    mkpathMutex.unlock();
 
     QString iconFilePath = dbDir.filePath("icon");
     if (dbDir.exists("icon"))
