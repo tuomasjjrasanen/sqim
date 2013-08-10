@@ -47,6 +47,9 @@ MainWindow::MainWindow(QWidget *const parent) :
     quitAction->setShortcut(QKeySequence(Qt::Key_Q));
     menuBar()->addMenu(fileMenu);
 
+    m_importWatcher = new QFutureWatcher<QString>(this);
+
+    connect(m_importWatcher, SIGNAL(resultReadyAt(int)), SLOT(importReadyAt(int)));
     connect(importDirAction, SIGNAL(triggered(bool)), SLOT(importDir()));
     connect(quitAction, SIGNAL(triggered(bool)), SLOT(close()));
     statusBar()->showMessage("Initialized");
@@ -54,6 +57,43 @@ MainWindow::MainWindow(QWidget *const parent) :
 
 MainWindow::~MainWindow()
 {
+    m_importWatcher->cancel();
+    m_importWatcher->waitForFinished();
+}
+
+static bool importImage(QString const &imageFilePath)
+{
+    QFileInfo imageFileInfo(imageFilePath);
+
+    if (!imageFileInfo.isAbsolute())
+        return false;
+
+    QString imageFileName = imageFileInfo.fileName();
+    QString imageDirPath = imageFileInfo.canonicalPath();
+
+    QDir dbDir = QDir(QDir::homePath() + "/.qpicman/db" + imageFileInfo.canonicalFilePath());
+    if (!dbDir.mkpath("."))
+        return false;
+
+    QString iconFilePath = dbDir.filePath("icon");
+    if (dbDir.exists("icon"))
+        return true;
+
+    QStringList args;
+    args << "-background" << "Gray"
+         << "-thumbnail" << "50x50>"
+         << "-extent" << "50x50"
+         << "-gravity" << "center"
+         << imageFilePath << iconFilePath;
+    QProcess process;
+    process.start("convert", args);
+    if (!process.waitForStarted())
+        return false;
+
+    if (!process.waitForFinished())
+        return false;
+
+    return true;
 }
 
 void MainWindow::importDir()
@@ -67,5 +107,12 @@ void MainWindow::importDir()
     statusBar()->showMessage("Importing " + dir);
     QStringList filePaths = findFiles(dir);
     statusBar()->showMessage("Found " + QString::number(filePaths.count()) + " files");
-    ((ImageView*) centralWidget())->loadImages(filePaths);
+    m_importWatcher->setFuture(QtConcurrent::filtered(filePaths, importImage));
+}
+
+void MainWindow::importReadyAt(const int i)
+{
+    QString imageFilePath = m_importWatcher->resultAt(i);
+    QString iconPath = QDir::homePath() + "/.qpicman/db" + imageFilePath + "/icon";
+    ((ImageView*) centralWidget())->loadImage(iconPath);
 }

@@ -14,6 +14,10 @@ public:
 
 private slots:
     void importDir();
+    void importReadyAt(int i);
+
+private:
+    QFutureWatcher<QString> *m_importWatcher;
 
 };
 

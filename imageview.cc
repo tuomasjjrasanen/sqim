@@ -1,42 +1,5 @@
 #include "imageview.hh"
-#include <QFileInfo>
 #include <QGridLayout>
-#include <QProcess>
-#include <QtCore>
-
-static QString createIcon(QString const &imageFilePath)
-{
-    QFileInfo imageFileInfo(imageFilePath);
-
-    if (!imageFileInfo.isAbsolute())
-        return "";
-
-    QString imageFileName = imageFileInfo.fileName();
-    QString imagePath = imageFileInfo.canonicalPath();
-
-    QDir iconDir = QDir(QDir::homePath() + "/.qpicman/icons" + imagePath);
-    if (!iconDir.mkpath("."))
-        return "";
-
-    QString iconFilePath = iconDir.filePath(imageFileName);
-    if (iconDir.exists(imageFileName))
-        return iconFilePath;
-
-    QStringList args;
-    args << "-background" << "Gray"
-         << "-thumbnail" << "50x50>"
-         << "-extent" << "50x50"
-         << "-gravity" << "center"
-         << imageFilePath << iconFilePath;
-    QProcess process;
-    process.start("convert", args);
-    if (!process.waitForStarted())
-        return "";
-    if (!process.waitForFinished())
-        return "";
-
-    return iconFilePath;
-}
 
 ImageView::ImageView(QWidget *parent) :
     QWidget(parent)
@@ -56,28 +19,15 @@ ImageView::ImageView(QWidget *parent) :
 
     m_iconModel = new QStandardItemModel(this);
     m_iconView->setModel(m_iconModel);
-
-    m_iconCreator = new QFutureWatcher<QString>(this);
-    connect(m_iconCreator, SIGNAL(resultReadyAt(int)), SLOT(loadIcon(int)));
 }
 
 ImageView::~ImageView()
 {
-    m_iconCreator->cancel();
-    m_iconCreator->waitForFinished();
 }
 
-void ImageView::loadImages(QStringList const &imagePaths)
+void ImageView::loadImage(const QString &imagePath)
 {
-    m_iconCreator->setFuture(QtConcurrent::mapped(imagePaths, createIcon));
-}
-
-void ImageView::loadIcon(int i)
-{
-    QString iconPath = m_iconCreator->resultAt(i);
-    if (iconPath.isEmpty())
-        return;
     QStandardItem *item = new QStandardItem();
-    item->setIcon(QIcon(iconPath));
+    item->setIcon(QIcon(imagePath));
     m_iconModel->appendRow(item);
 }

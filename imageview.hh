@@ -14,13 +14,10 @@ class ImageView : public QWidget
 public:
     explicit ImageView(QWidget *parent = 0);
     ~ImageView();
-    void loadImages(QStringList const &imagePaths);
 
-private slots:
-    void loadIcon(int i);
+    void loadImage(const QString &imagePath);
 
 private:
-    QFutureWatcher<QString> *m_iconCreator;
     QListView *m_iconView;
     QStandardItemModel *m_iconModel;
 };

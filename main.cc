@@ -7,7 +7,7 @@ int main(int argc, char *argv[])
 {
     QApplication app(argc, argv);
 
-    SQIM::init();
+    // SQIM::init();
 
     MainWindow w;
     w.show();
