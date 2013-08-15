@@ -15,7 +15,7 @@ public:
     explicit ThumbnailWidget(QWidget *parent = 0);
     ~ThumbnailWidget();
 
-    void loadImage(const QString &imagePath);
+    void addThumbnail(QString thumbnailFilePath);
 
 private:
     QListView *m_iconView;

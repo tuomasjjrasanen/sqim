@@ -97,5 +97,5 @@ void MainWindow::importReadyAt(const int i)
                                     + "/.cache/sqim"
                                     + imageFilePath
                                     + "/thumbnail.png");
-    ((ThumbnailWidget*) centralWidget())->loadImage(thumbnailFilePath);
+    ((ThumbnailWidget*) centralWidget())->addThumbnail(thumbnailFilePath);
 }

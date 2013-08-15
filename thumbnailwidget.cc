@@ -25,9 +25,9 @@ ThumbnailWidget::~ThumbnailWidget()
 {
 }
 
-void ThumbnailWidget::loadImage(const QString &imagePath)
+void ThumbnailWidget::addThumbnail(QString thumbnailFilePath)
 {
     QStandardItem *item = new QStandardItem();
-    item->setIcon(QIcon(imagePath));
+    item->setIcon(QIcon(thumbnailFilePath));
     m_iconModel->appendRow(item);
 }
