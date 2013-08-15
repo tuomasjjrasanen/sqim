@@ -1,0 +1,23 @@
+#!/bin/sh
+
+set -eu
+
+image=$(readlink -e "$1")
+outputdir="$HOME/.cache/qpicman$image"
+
+mkdir -p "$outputdir"
+cd "$outputdir"
+
+if [ ! "$image" -ot  "thumbnail.png" ]; then
+    convert \
+        -background Gray \
+        -thumbnail '50x50>' \
+        -extent 50x50 \
+        -gravity center \
+        "$image" thumbnail.png
+fi
+
+if [ ! "$image" -ot  "datetime" ]; then
+    exiv2 -PEnv "$image" \
+        | sed -rn 's/^DateTimeOriginal\s+([0-9]{4}):([0-9]{2}):([0-9]{2}) (.*)/\1-\2-\3T\4/p' >datetime
+fi

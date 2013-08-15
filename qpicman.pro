@@ -11,7 +11,6 @@ greaterThan(QT_MAJOR_VERSION, 4): QT += widgets
 TARGET = qpicman
 TEMPLATE = app
 
-
 SOURCES +=\
     imageview.cc \
     main.cc \
@@ -22,3 +21,8 @@ HEADERS  += \
     mainwindow.hh
 
 FORMS    +=
+
+qpicman.path = /usr/local/bin
+qpicman.files = qpicman qpicman-cache-image-info
+
+INSTALLS += qpicman

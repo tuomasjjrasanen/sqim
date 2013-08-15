@@ -62,66 +62,33 @@ MainWindow::~MainWindow()
     m_importWatcher->waitForFinished();
 }
 
-static bool importImage(QString const &imageFilePath)
+static bool cacheImageInfo(const QString &imageFilePath)
 {
-    static QMutex mkpathMutex;
-    QFileInfo imageFileInfo(imageFilePath);
-
-    if (!imageFileInfo.isAbsolute())
-        return false;
-
-    QString imageFileName = imageFileInfo.fileName();
-    QString imageDirPath = imageFileInfo.canonicalPath();
-
-    // It seems that QDir::mkpath() fails sometimes when trying to
-    // simultaneously create several paths with partly overlapping
-    // components. Protecting mkpath() with a mutex fixes that.
-    mkpathMutex.lock();
-    QDir dbDir = QDir(QDir::homePath() + "/.qpicman/db" + imageFileInfo.canonicalFilePath());
-    if (!dbDir.mkpath(".")) {
-        mkpathMutex.unlock();
-        return false;
-    }
-    mkpathMutex.unlock();
-
-    QString iconFilePath = dbDir.filePath("icon");
-    if (dbDir.exists("icon"))
-        return true;
-
     QStringList args;
-    args << "-background" << "Gray"
-         << "-thumbnail" << "50x50>"
-         << "-extent" << "50x50"
-         << "-gravity" << "center"
-         << imageFilePath << iconFilePath;
-    QProcess process;
-    process.start("convert", args);
-    if (!process.waitForStarted())
-        return false;
+    args << imageFilePath;
 
-    if (!process.waitForFinished())
-        return false;
-
-    return true;
+    return QProcess::execute("qpicman-cache-image-info", args) == 0;
 }
 
 void MainWindow::importDir()
 {
-    QString dir = QFileDialog::getExistingDirectory(this,
-                                                    "Import images from a directory and its subdirectories");
-    if (dir.isEmpty()) {
-        statusBar()->showMessage("Import canceled");
+    const QString dir(QFileDialog::getExistingDirectory(this,
+                                                        "Import images from a directory and its subdirectories"));
+    if (dir.isEmpty())
         return;
-    }
-    statusBar()->showMessage("Importing " + dir);
-    QStringList filePaths = findFiles(dir);
+
+    statusBar()->showMessage("Searching " + dir + " and its subdirectories for images");
+    const QStringList filePaths(findFiles(dir));
     statusBar()->showMessage("Found " + QString::number(filePaths.count()) + " files");
-    m_importWatcher->setFuture(QtConcurrent::filtered(filePaths, importImage));
+    m_importWatcher->setFuture(QtConcurrent::filtered(filePaths, cacheImageInfo));
 }
 
 void MainWindow::importReadyAt(const int i)
 {
-    QString imageFilePath = m_importWatcher->resultAt(i);
-    QString iconPath = QDir::homePath() + "/.qpicman/db" + imageFilePath + "/icon";
-    ((ImageView*) centralWidget())->loadImage(iconPath);
+    const QString imageFilePath(m_importWatcher->resultAt(i));
+    const QString thumbnailPath(QDir::homePath()
+                                + "/.cache/qpicman"
+                                + imageFilePath
+                                + "/thumbnail.png");
+    ((ImageView*) centralWidget())->loadImage(thumbnailPath);
 }
