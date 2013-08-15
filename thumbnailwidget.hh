@@ -1,5 +1,5 @@
-#ifndef IMAGEVIEW_H
-#define IMAGEVIEW_H
+#ifndef THUMBNAILWIDGET_H
+#define THUMBNAILWIDGET_H
 
 #include <QWidget>
 #include <QFutureWatcher>
@@ -7,13 +7,13 @@
 #include <QListView>
 #include <QStandardItemModel>
 
-class ImageView : public QWidget
+class ThumbnailWidget : public QWidget
 {
     Q_OBJECT
     
 public:
-    explicit ImageView(QWidget *parent = 0);
-    ~ImageView();
+    explicit ThumbnailWidget(QWidget *parent = 0);
+    ~ThumbnailWidget();
 
     void loadImage(const QString &imagePath);
 
@@ -22,4 +22,4 @@ private:
     QStandardItemModel *m_iconModel;
 };
 
-#endif // IMAGEVIEW_H
+#endif // THUMBNAILWIDGET_H

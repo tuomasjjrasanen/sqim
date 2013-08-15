@@ -1,7 +1,7 @@
-#include "imageview.hh"
+#include "thumbnailwidget.hh"
 #include <QGridLayout>
 
-ImageView::ImageView(QWidget *parent) :
+ThumbnailWidget::ThumbnailWidget(QWidget *parent) :
     QWidget(parent)
 {
     QGridLayout *layout = new QGridLayout(this);
@@ -21,11 +21,11 @@ ImageView::ImageView(QWidget *parent) :
     m_iconView->setModel(m_iconModel);
 }
 
-ImageView::~ImageView()
+ThumbnailWidget::~ThumbnailWidget()
 {
 }
 
-void ImageView::loadImage(const QString &imagePath)
+void ThumbnailWidget::loadImage(const QString &imagePath)
 {
     QStandardItem *item = new QStandardItem();
     item->setIcon(QIcon(imagePath));

@@ -8,12 +8,12 @@ TEMPLATE = app
 QMAKE_STRIP =
 
 SOURCES +=\
-    imageview.cc \
+    thumbnailwidget.cc \
     main.cc \
     mainwindow.cc
 
 HEADERS  += \
-    imageview.hh \
+    thumbnailwidget.hh \
     mainwindow.hh
 
 FORMS    +=

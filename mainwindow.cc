@@ -6,7 +6,7 @@
 #include <QStatusBar>
 #include <QMutex>
 
-#include "imageview.hh"
+#include "thumbnailwidget.hh"
 #include "mainwindow.hh"
 
 static QStringList findFiles(QString dir)
@@ -37,7 +37,7 @@ MainWindow::MainWindow(QWidget *const parent) :
     QMainWindow(parent)
 {
     setMenuBar(new QMenuBar(this));
-    setCentralWidget(new ImageView(this));
+    setCentralWidget(new ThumbnailWidget(this));
     setStatusBar(new QStatusBar(this));
 
     QMenu *fileMenu = new QMenu("&File", menuBar());
@@ -90,5 +90,5 @@ void MainWindow::importReadyAt(const int i)
                                 + "/.cache/qpicman"
                                 + imageFilePath
                                 + "/thumbnail.png");
-    ((ImageView*) centralWidget())->loadImage(thumbnailPath);
+    ((ThumbnailWidget*) centralWidget())->loadImage(thumbnailPath);
 }
