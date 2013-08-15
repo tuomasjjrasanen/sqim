@@ -93,9 +93,9 @@ void MainWindow::importReadyAt(const int i)
     const QString imageFilePath(m_importWatcher->resultAt(i));
     if (imageFilePath.isEmpty())
         return;
-    const QString thumbnailPath(QDir::homePath()
-                                + "/.cache/sqim"
-                                + imageFilePath
-                                + "/thumbnail.png");
-    ((ThumbnailWidget*) centralWidget())->loadImage(thumbnailPath);
+    const QString thumbnailFilePath(QDir::homePath()
+                                    + "/.cache/sqim"
+                                    + imageFilePath
+                                    + "/thumbnail.png");
+    ((ThumbnailWidget*) centralWidget())->loadImage(thumbnailFilePath);
 }
