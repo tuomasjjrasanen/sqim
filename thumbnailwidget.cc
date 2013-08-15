@@ -28,7 +28,12 @@ ThumbnailWidget::~ThumbnailWidget()
 
 void ThumbnailWidget::addThumbnail(QString thumbnailFilePath)
 {
+    if (m_itemMap.contains(thumbnailFilePath))
+        return;
+
     QStandardItem *item = new QStandardItem();
     item->setIcon(QIcon(thumbnailFilePath));
     m_iconModel->appendRow(item);
+
+    m_itemMap[thumbnailFilePath] = item;
 }
