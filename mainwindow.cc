@@ -40,25 +40,25 @@ MainWindow::MainWindow(QWidget *const parent) :
     setStatusBar(new QStatusBar(this));
 
     QMenu *fileMenu = new QMenu("&File", menuBar());
-    QAction *importDirAction = fileMenu->addAction("&Import directory...");
-    importDirAction->setShortcut(QKeySequence(Qt::Key_I));
+    QAction *openDirAction = fileMenu->addAction("&Open directory...");
+    openDirAction->setShortcut(QKeySequence(Qt::Key_I));
     fileMenu->addSeparator();
     QAction *quitAction = fileMenu->addAction("&Quit");
     quitAction->setShortcut(QKeySequence(Qt::Key_Q));
     menuBar()->addMenu(fileMenu);
 
-    m_importWatcher = new QFutureWatcher<QString>(this);
+    m_cacheWatcher = new QFutureWatcher<QString>(this);
 
-    connect(m_importWatcher, SIGNAL(resultReadyAt(int)), SLOT(importReadyAt(int)));
-    connect(importDirAction, SIGNAL(triggered(bool)), SLOT(importDir()));
+    connect(m_cacheWatcher, SIGNAL(resultReadyAt(int)), SLOT(cacheReadyAt(int)));
+    connect(openDirAction, SIGNAL(triggered(bool)), SLOT(openDir()));
     connect(quitAction, SIGNAL(triggered(bool)), SLOT(close()));
     statusBar()->showMessage("Initialized");
 }
 
 MainWindow::~MainWindow()
 {
-    m_importWatcher->cancel();
-    m_importWatcher->waitForFinished();
+    m_cacheWatcher->cancel();
+    m_cacheWatcher->waitForFinished();
 }
 
 static QString cacheImageInfo(const QString &imageFilePath)
@@ -74,22 +74,22 @@ static QString cacheImageInfo(const QString &imageFilePath)
     return imageFileInfo.canonicalFilePath();
 }
 
-void MainWindow::importDir()
+void MainWindow::openDir()
 {
     const QString dir(QFileDialog::getExistingDirectory(this,
-                                                        "Import images from a directory and its subdirectories"));
+                                                        "Open images from a directory and its subdirectories"));
     if (dir.isEmpty())
         return;
 
     statusBar()->showMessage("Searching " + dir + " and its subdirectories for images");
     const QStringList filePaths(findFiles(dir));
     statusBar()->showMessage("Found " + QString::number(filePaths.count()) + " files");
-    m_importWatcher->setFuture(QtConcurrent::mapped(filePaths, cacheImageInfo));
+    m_cacheWatcher->setFuture(QtConcurrent::mapped(filePaths, cacheImageInfo));
 }
 
-void MainWindow::importReadyAt(const int i)
+void MainWindow::cacheReadyAt(const int i)
 {
-    const QString imageFilePath(m_importWatcher->resultAt(i));
+    const QString imageFilePath(m_cacheWatcher->resultAt(i));
     if (imageFilePath.isEmpty())
         return;
     const QString thumbnailFilePath(QDir::homePath()

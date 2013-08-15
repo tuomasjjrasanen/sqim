@@ -13,11 +13,11 @@ public:
     ~MainWindow();
 
 private slots:
-    void importDir();
-    void importReadyAt(int i);
+    void openDir();
+    void cacheReadyAt(int i);
 
 private:
-    QFutureWatcher<QString> *m_importWatcher;
+    QFutureWatcher<QString> *m_cacheWatcher;
 
 };
 
