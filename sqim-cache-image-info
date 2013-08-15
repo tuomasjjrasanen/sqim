@@ -3,7 +3,7 @@
 set -eu
 
 image=$(readlink -e "$1")
-outputdir="$HOME/.cache/qpicman$image"
+outputdir="$HOME/.cache/sqim$image"
 
 mkdir -p "$outputdir"
 cd "$outputdir"

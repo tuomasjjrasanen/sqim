@@ -2,7 +2,7 @@ QT       += core gui
 
 greaterThan(QT_MAJOR_VERSION, 4): QT += widgets
 
-TARGET = qpicman
+TARGET = sqim
 TEMPLATE = app
 
 QMAKE_STRIP =
@@ -23,14 +23,14 @@ isEmpty(PREFIX) {
 }
 
 BINDIR=$$PREFIX/bin
-LIBDIR=$$PREFIX/lib/qpicman
+LIBDIR=$$PREFIX/lib/sqim
 
-DEFINES += QPICMAN_CACHE_SCRIPT=\\\"$$LIBDIR/qpicman-cache-image-info\\\"
+DEFINES += SQIM_CACHE_SCRIPT=\\\"$$LIBDIR/sqim-cache-image-info\\\"
 
-qpicman.path = $$BINDIR
-qpicman.files = qpicman
+sqim.path = $$BINDIR
+sqim.files = sqim
 
-qpicmanscripts.path = $$LIBDIR
-qpicmanscripts.files = qpicman-cache-image-info
+sqimscripts.path = $$LIBDIR
+sqimscripts.files = sqim-cache-image-info
 
-INSTALLS += qpicman qpicmanscripts
+INSTALLS += sqim sqimscripts

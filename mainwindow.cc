@@ -67,7 +67,7 @@ static bool cacheImageInfo(const QString &imageFilePath)
     QStringList args;
     args << imageFilePath;
 
-    return QProcess::execute(QPICMAN_CACHE_SCRIPT, args) == 0;
+    return QProcess::execute(SQIM_CACHE_SCRIPT, args) == 0;
 }
 
 void MainWindow::importDir()
@@ -87,7 +87,7 @@ void MainWindow::importReadyAt(const int i)
 {
     const QString imageFilePath(m_importWatcher->resultAt(i));
     const QString thumbnailPath(QDir::homePath()
-                                + "/.cache/qpicman"
+                                + "/.cache/sqim"
                                 + imageFilePath
                                 + "/thumbnail.png");
     ((ThumbnailWidget*) centralWidget())->loadImage(thumbnailPath);
