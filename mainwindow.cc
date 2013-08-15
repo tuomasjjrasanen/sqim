@@ -62,12 +62,17 @@ MainWindow::~MainWindow()
     m_importWatcher->waitForFinished();
 }
 
-static bool cacheImageInfo(const QString &imageFilePath)
+static QString cacheImageInfo(const QString &imageFilePath)
 {
-    QStringList args;
-    args << imageFilePath;
+    QFileInfo imageFileInfo(imageFilePath);
 
-    return QProcess::execute(SQIM_CACHE_SCRIPT, args) == 0;
+    QStringList args;
+    args << imageFileInfo.canonicalFilePath();
+
+    if (QProcess::execute(SQIM_CACHE_SCRIPT, args))
+        return "";
+
+    return imageFileInfo.canonicalFilePath();
 }
 
 void MainWindow::importDir()
@@ -80,12 +85,14 @@ void MainWindow::importDir()
     statusBar()->showMessage("Searching " + dir + " and its subdirectories for images");
     const QStringList filePaths(findFiles(dir));
     statusBar()->showMessage("Found " + QString::number(filePaths.count()) + " files");
-    m_importWatcher->setFuture(QtConcurrent::filtered(filePaths, cacheImageInfo));
+    m_importWatcher->setFuture(QtConcurrent::mapped(filePaths, cacheImageInfo));
 }
 
 void MainWindow::importReadyAt(const int i)
 {
     const QString imageFilePath(m_importWatcher->resultAt(i));
+    if (imageFilePath.isEmpty())
+        return;
     const QString thumbnailPath(QDir::homePath()
                                 + "/.cache/sqim"
                                 + imageFilePath
