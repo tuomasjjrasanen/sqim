@@ -4,7 +4,6 @@
 #include <QMenuBar>
 #include <QProcess>
 #include <QStatusBar>
-#include <QMutex>
 
 #include "thumbnailwidget.hh"
 #include "mainwindow.hh"

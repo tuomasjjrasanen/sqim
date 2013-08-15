@@ -1,5 +1,6 @@
-#include "thumbnailwidget.hh"
 #include <QGridLayout>
+
+#include "thumbnailwidget.hh"
 
 ThumbnailWidget::ThumbnailWidget(QWidget *parent) :
     QWidget(parent)

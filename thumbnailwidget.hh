@@ -1,9 +1,6 @@
 #ifndef THUMBNAILWIDGET_H
 #define THUMBNAILWIDGET_H
 
-#include <QWidget>
-#include <QFutureWatcher>
-#include <QImage>
 #include <QListView>
 #include <QStandardItemModel>
 
