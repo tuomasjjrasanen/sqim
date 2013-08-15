@@ -67,7 +67,7 @@ static bool cacheImageInfo(const QString &imageFilePath)
     QStringList args;
     args << imageFilePath;
 
-    return QProcess::execute("qpicman-cache-image-info", args) == 0;
+    return QProcess::execute(QPICMAN_CACHE_SCRIPT, args) == 0;
 }
 
 void MainWindow::importDir()

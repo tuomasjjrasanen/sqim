@@ -18,7 +18,19 @@ HEADERS  += \
 
 FORMS    +=
 
-qpicman.path = /usr/local/bin
-qpicman.files = qpicman qpicman-cache-image-info
+isEmpty(PREFIX) {
+    PREFIX = /usr/local
+}
 
-INSTALLS += qpicman
+BINDIR=$$PREFIX/bin
+LIBDIR=$$PREFIX/lib/qpicman
+
+DEFINES += QPICMAN_CACHE_SCRIPT=\\\"$$LIBDIR/qpicman-cache-image-info\\\"
+
+qpicman.path = $$BINDIR
+qpicman.files = qpicman
+
+qpicmanscripts.path = $$LIBDIR
+qpicmanscripts.files = qpicman-cache-image-info
+
+INSTALLS += qpicman qpicmanscripts
