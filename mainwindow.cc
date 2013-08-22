@@ -41,7 +41,7 @@ MainWindow::MainWindow(QWidget *const parent) :
 
     QMenu *fileMenu = new QMenu("&File", menuBar());
     QAction *openDirAction = fileMenu->addAction("&Open directory...");
-    openDirAction->setShortcut(QKeySequence(Qt::Key_I));
+    openDirAction->setShortcut(QKeySequence(Qt::Key_O));
     fileMenu->addSeparator();
     QAction *quitAction = fileMenu->addAction("&Quit");
     quitAction->setShortcut(QKeySequence(Qt::Key_Q));
