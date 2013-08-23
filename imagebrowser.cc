@@ -1,8 +1,8 @@
 #include <QGridLayout>
 
-#include "thumbnailwidget.hh"
+#include "imagebrowser.hh"
 
-ThumbnailWidget::ThumbnailWidget(QWidget *parent) :
+ImageBrowser::ImageBrowser(QWidget *parent) :
     QWidget(parent)
 {
     QGridLayout *layout = new QGridLayout(this);
@@ -22,11 +22,11 @@ ThumbnailWidget::ThumbnailWidget(QWidget *parent) :
     m_iconView->setModel(m_iconModel);
 }
 
-ThumbnailWidget::~ThumbnailWidget()
+ImageBrowser::~ImageBrowser()
 {
 }
 
-void ThumbnailWidget::addThumbnail(const QStringList columns)
+void ImageBrowser::addImage(const QStringList columns)
 {
     const QString thumbnailFilePath = columns[COL_THUMB_FILEPATH];
     if (m_itemMap.contains(thumbnailFilePath))
@@ -52,12 +52,12 @@ void ThumbnailWidget::addThumbnail(const QStringList columns)
     m_itemMap[thumbnailFilePath] = item;
 }
 
-void ThumbnailWidget::sortOlderFirst()
+void ImageBrowser::sortOlderFirst()
 {
     m_iconModel->sort(COL_IMAGE_DATETIME, Qt::AscendingOrder);
 }
 
-void ThumbnailWidget::sortNewerFirst()
+void ImageBrowser::sortNewerFirst()
 {
     m_iconModel->sort(COL_IMAGE_DATETIME, Qt::DescendingOrder);
 }

@@ -34,10 +34,10 @@ static QStringList findFiles(QString dir)
 MainWindow::MainWindow(QWidget *const parent) :
     QMainWindow(parent)
 {
-    m_thumbnailWidget = new ThumbnailWidget(this);
+    m_imageBrowser = new ImageBrowser(this);
 
     setMenuBar(new QMenuBar(this));
-    setCentralWidget(m_thumbnailWidget);
+    setCentralWidget(m_imageBrowser);
     setStatusBar(new QStatusBar(this));
 
     QMenu *fileMenu = new QMenu("&File", menuBar());
@@ -60,9 +60,9 @@ MainWindow::MainWindow(QWidget *const parent) :
     connect(m_cacheWatcher, SIGNAL(resultReadyAt(int)), SLOT(cacheReadyAt(int)));
     connect(openDirAction, SIGNAL(triggered(bool)), SLOT(openDir()));
     connect(quitAction, SIGNAL(triggered(bool)), SLOT(close()));
-    m_thumbnailWidget->connect(sortOlderFirstAction, SIGNAL(triggered(bool)),
+    m_imageBrowser->connect(sortOlderFirstAction, SIGNAL(triggered(bool)),
                                SLOT(sortOlderFirst()));
-    m_thumbnailWidget->connect(sortNewerFirstAction, SIGNAL(triggered(bool)),
+    m_imageBrowser->connect(sortNewerFirstAction, SIGNAL(triggered(bool)),
                                SLOT(sortNewerFirst()));
     statusBar()->showMessage("Initialized");
 }
@@ -135,5 +135,5 @@ void MainWindow::cacheReadyAt(const int i)
     if (results.count() != COLS)
         return;
     
-   m_thumbnailWidget->addThumbnail(results);
+    m_imageBrowser->addImage(results);
 }

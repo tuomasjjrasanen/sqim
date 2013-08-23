@@ -1,5 +1,5 @@
-#ifndef THUMBNAILWIDGET_H
-#define THUMBNAILWIDGET_H
+#ifndef IMAGEBROWSER_H
+#define IMAGEBROWSER_H
 
 #include <QListView>
 #include <QHash>
@@ -12,15 +12,15 @@ enum {
     COLS
 };
 
-class ThumbnailWidget : public QWidget
+class ImageBrowser : public QWidget
 {
     Q_OBJECT
     
 public:
-    explicit ThumbnailWidget(QWidget *parent = 0);
-    ~ThumbnailWidget();
+    explicit ImageBrowser(QWidget *parent = 0);
+    ~ImageBrowser();
 
-    void addThumbnail(const QStringList columns);
+    void addImage(const QStringList columns);
 
 public slots:
     void sortOlderFirst();
@@ -32,4 +32,4 @@ private:
     QHash<QString, QStandardItem*> m_itemMap;
 };
 
-#endif // THUMBNAILWIDGET_H
+#endif // IMAGEBROWSER_H

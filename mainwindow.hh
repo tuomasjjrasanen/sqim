@@ -5,7 +5,7 @@
 #include <QMainWindow>
 #include <QStringList>
 
-#include "thumbnailwidget.hh"
+#include "imagebrowser.hh"
 
 class MainWindow : public QMainWindow
 {
@@ -21,7 +21,7 @@ private slots:
 
 private:
     QFutureWatcher<QStringList> *m_cacheWatcher;
-    ThumbnailWidget *m_thumbnailWidget;
+    ImageBrowser *m_imageBrowser;
 };
 
 #endif // MAINWINDOW_H
