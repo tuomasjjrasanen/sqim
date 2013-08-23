@@ -3,6 +3,7 @@
 
 #include <QFutureWatcher>
 #include <QMainWindow>
+#include <QStringList>
 
 class MainWindow : public QMainWindow
 {
@@ -17,7 +18,7 @@ private slots:
     void cacheReadyAt(int i);
 
 private:
-    QFutureWatcher<QString> *m_cacheWatcher;
+    QFutureWatcher<QStringList> *m_cacheWatcher;
 
 };
 

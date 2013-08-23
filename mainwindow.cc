@@ -47,7 +47,7 @@ MainWindow::MainWindow(QWidget *const parent) :
     quitAction->setShortcut(QKeySequence(Qt::Key_Q));
     menuBar()->addMenu(fileMenu);
 
-    m_cacheWatcher = new QFutureWatcher<QString>(this);
+    m_cacheWatcher = new QFutureWatcher<QStringList>(this);
 
     connect(m_cacheWatcher, SIGNAL(resultReadyAt(int)), SLOT(cacheReadyAt(int)));
     connect(openDirAction, SIGNAL(triggered(bool)), SLOT(openDir()));
@@ -61,17 +61,44 @@ MainWindow::~MainWindow()
     m_cacheWatcher->waitForFinished();
 }
 
-static QString cacheImageInfo(const QString &imageFilePath)
+static QStringList cacheImageInfo(const QString &imageFilePath)
 {
+    QStringList result;
     QFileInfo imageFileInfo(imageFilePath);
 
     QStringList args;
     args << imageFileInfo.canonicalFilePath();
 
-    if (QProcess::execute(SQIM_CACHE_SCRIPT, args))
-        return "";
+    QProcess cmdMakeThumbnail;
+    cmdMakeThumbnail.start(SQIM_CMD_MAKE_THUMBNAIL, args);
+    if (!cmdMakeThumbnail.waitForStarted())
+        return result;
 
-    return imageFileInfo.canonicalFilePath();
+    QProcess cmdParseDatetime;
+    cmdParseDatetime.start(SQIM_CMD_PARSE_DATETIME, args);
+    if (!cmdParseDatetime.waitForStarted())
+        return result;
+
+    QTextStream cmdMakeThumbnailOut(&cmdMakeThumbnail);
+    QTextStream cmdParseDatetimeOut(&cmdParseDatetime);
+
+    if (!cmdParseDatetime.waitForFinished())
+        return result;
+
+    if (!cmdMakeThumbnail.waitForFinished())
+        return result;
+
+    if (cmdParseDatetime.exitCode())
+        return result;
+
+    if (cmdMakeThumbnail.exitCode())
+        return result;
+
+    result.append(cmdMakeThumbnailOut.readLine());
+    result.append(cmdParseDatetimeOut.readLine());
+    result.append(imageFileInfo.canonicalFilePath());
+
+    return result;
 }
 
 void MainWindow::openDir()
@@ -89,12 +116,9 @@ void MainWindow::openDir()
 
 void MainWindow::cacheReadyAt(const int i)
 {
-    const QString imageFilePath(m_cacheWatcher->resultAt(i));
-    if (imageFilePath.isEmpty())
+    const QStringList results(m_cacheWatcher->resultAt(i));;
+    if (results.isEmpty())
         return;
-    const QString thumbnailFilePath(QDir::homePath()
-                                    + "/.cache/sqim"
-                                    + imageFilePath
-                                    + "/thumbnail.png");
-    ((ThumbnailWidget*) centralWidget())->addThumbnail(thumbnailFilePath);
+    
+    ((ThumbnailWidget*) centralWidget())->addThumbnail(results[0]);
 }
