@@ -6,9 +6,9 @@
 #include <QStandardItemModel>
 
 enum {
+    COL_THUMB_FILEPATH,
     COL_IMAGE_FILEPATH,
     COL_IMAGE_DATETIME,
-    COL_THUMB_FILEPATH,
     COLS
 };
 
@@ -21,6 +21,10 @@ public:
     ~ThumbnailWidget();
 
     void addThumbnail(const QStringList columns);
+
+public slots:
+    void sortOlderFirst();
+    void sortNewerFirst();
 
 private:
     QListView *m_iconView;

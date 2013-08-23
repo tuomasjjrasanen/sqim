@@ -32,9 +32,32 @@ void ThumbnailWidget::addThumbnail(const QStringList columns)
     if (m_itemMap.contains(thumbnailFilePath))
         return;
 
-    QStandardItem *item = new QStandardItem();
+    QList<QStandardItem*> items;
+    QStandardItem *item;
+
+    item = new QStandardItem();
     item->setIcon(QIcon(thumbnailFilePath));
-    m_iconModel->appendRow(item);
+    items.insert(COL_THUMB_FILEPATH, item);
+
+    item = new QStandardItem();
+    item->setText(columns[COL_IMAGE_FILEPATH]);
+    items.insert(COL_IMAGE_FILEPATH, item);
+
+    item = new QStandardItem();
+    item->setText(columns[COL_IMAGE_DATETIME]);
+    items.insert(COL_IMAGE_DATETIME, item);
+
+    m_iconModel->appendRow(items);
 
     m_itemMap[thumbnailFilePath] = item;
+}
+
+void ThumbnailWidget::sortOlderFirst()
+{
+    m_iconModel->sort(COL_IMAGE_DATETIME, Qt::AscendingOrder);
+}
+
+void ThumbnailWidget::sortNewerFirst()
+{
+    m_iconModel->sort(COL_IMAGE_DATETIME, Qt::DescendingOrder);
 }

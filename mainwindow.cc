@@ -5,7 +5,6 @@
 #include <QProcess>
 #include <QStatusBar>
 
-#include "thumbnailwidget.hh"
 #include "mainwindow.hh"
 
 static QStringList findFiles(QString dir)
@@ -35,8 +34,10 @@ static QStringList findFiles(QString dir)
 MainWindow::MainWindow(QWidget *const parent) :
     QMainWindow(parent)
 {
+    m_thumbnailWidget = new ThumbnailWidget(this);
+
     setMenuBar(new QMenuBar(this));
-    setCentralWidget(new ThumbnailWidget(this));
+    setCentralWidget(m_thumbnailWidget);
     setStatusBar(new QStatusBar(this));
 
     QMenu *fileMenu = new QMenu("&File", menuBar());
@@ -47,11 +48,22 @@ MainWindow::MainWindow(QWidget *const parent) :
     quitAction->setShortcut(QKeySequence(Qt::Key_Q));
     menuBar()->addMenu(fileMenu);
 
+    QMenu *viewMenu = new QMenu("&View", menuBar());
+    QAction *sortOlderFirstAction = viewMenu->addAction("&Sort older first");
+    sortOlderFirstAction->setShortcut(QKeySequence(Qt::Key_Less));
+    QAction *sortNewerFirstAction = viewMenu->addAction("&Sort newer first");
+    sortNewerFirstAction->setShortcut(QKeySequence(Qt::Key_Greater));
+    menuBar()->addMenu(viewMenu);
+
     m_cacheWatcher = new QFutureWatcher<QStringList>(this);
 
     connect(m_cacheWatcher, SIGNAL(resultReadyAt(int)), SLOT(cacheReadyAt(int)));
     connect(openDirAction, SIGNAL(triggered(bool)), SLOT(openDir()));
     connect(quitAction, SIGNAL(triggered(bool)), SLOT(close()));
+    m_thumbnailWidget->connect(sortOlderFirstAction, SIGNAL(triggered(bool)),
+                               SLOT(sortOlderFirst()));
+    m_thumbnailWidget->connect(sortNewerFirstAction, SIGNAL(triggered(bool)),
+                               SLOT(sortNewerFirst()));
     statusBar()->showMessage("Initialized");
 }
 
@@ -123,5 +135,5 @@ void MainWindow::cacheReadyAt(const int i)
     if (results.count() != COLS)
         return;
     
-    ((ThumbnailWidget*) centralWidget())->addThumbnail(results);
+   m_thumbnailWidget->addThumbnail(results);
 }
