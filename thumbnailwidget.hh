@@ -5,6 +5,13 @@
 #include <QHash>
 #include <QStandardItemModel>
 
+enum {
+    COL_IMAGE_FILEPATH,
+    COL_IMAGE_DATETIME,
+    COL_THUMB_FILEPATH,
+    COLS
+};
+
 class ThumbnailWidget : public QWidget
 {
     Q_OBJECT
@@ -13,7 +20,7 @@ public:
     explicit ThumbnailWidget(QWidget *parent = 0);
     ~ThumbnailWidget();
 
-    void addThumbnail(QString thumbnailFilePath);
+    void addThumbnail(const QStringList columns);
 
 private:
     QListView *m_iconView;

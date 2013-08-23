@@ -26,8 +26,9 @@ ThumbnailWidget::~ThumbnailWidget()
 {
 }
 
-void ThumbnailWidget::addThumbnail(QString thumbnailFilePath)
+void ThumbnailWidget::addThumbnail(const QStringList columns)
 {
+    const QString thumbnailFilePath = columns[COL_THUMB_FILEPATH];
     if (m_itemMap.contains(thumbnailFilePath))
         return;
 

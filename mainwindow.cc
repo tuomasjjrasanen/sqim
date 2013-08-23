@@ -66,6 +66,8 @@ static QStringList cacheImageInfo(const QString &imageFilePath)
     QStringList result;
     QFileInfo imageFileInfo(imageFilePath);
 
+    result.insert(COL_IMAGE_FILEPATH, imageFileInfo.canonicalFilePath());
+
     QStringList args;
     args << imageFileInfo.canonicalFilePath();
 
@@ -85,18 +87,18 @@ static QStringList cacheImageInfo(const QString &imageFilePath)
     if (!cmdParseDatetime.waitForFinished())
         return result;
 
-    if (!cmdMakeThumbnail.waitForFinished())
+    if (cmdParseDatetime.exitCode())
         return result;
 
-    if (cmdParseDatetime.exitCode())
+    result.insert(COL_IMAGE_DATETIME, cmdParseDatetimeOut.readLine());
+
+    if (!cmdMakeThumbnail.waitForFinished())
         return result;
 
     if (cmdMakeThumbnail.exitCode())
         return result;
 
-    result.append(cmdMakeThumbnailOut.readLine());
-    result.append(cmdParseDatetimeOut.readLine());
-    result.append(imageFileInfo.canonicalFilePath());
+    result.insert(COL_THUMB_FILEPATH, cmdMakeThumbnailOut.readLine());
 
     return result;
 }
@@ -116,9 +118,10 @@ void MainWindow::openDir()
 
 void MainWindow::cacheReadyAt(const int i)
 {
-    const QStringList results(m_cacheWatcher->resultAt(i));;
-    if (results.isEmpty())
+    const QStringList results(m_cacheWatcher->resultAt(i));
+
+    if (results.count() != COLS)
         return;
     
-    ((ThumbnailWidget*) centralWidget())->addThumbnail(results[0]);
+    ((ThumbnailWidget*) centralWidget())->addThumbnail(results);
 }
