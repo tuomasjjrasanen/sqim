@@ -18,8 +18,8 @@ public:
     void addImage(const Image &image);
 
 public slots:
-    void sortOlderFirst();
-    void sortNewerFirst();
+    void sortOldestFirst();
+    void sortOldestLast();
 
 private:
     QListView *m_iconView;

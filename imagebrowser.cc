@@ -64,12 +64,12 @@ void ImageBrowser::addImage(const Image &image)
     m_itemMap[image.filepath()] = item;
 }
 
-void ImageBrowser::sortOlderFirst()
+void ImageBrowser::sortOldestFirst()
 {
     m_iconModel->sort(COL_TIMESTAMP, Qt::AscendingOrder);
 }
 
-void ImageBrowser::sortNewerFirst()
+void ImageBrowser::sortOldestLast()
 {
     m_iconModel->sort(COL_TIMESTAMP, Qt::DescendingOrder);
 }
