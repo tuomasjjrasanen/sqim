@@ -60,7 +60,8 @@ MainWindow::MainWindow(QWidget *const parent) :
     menuBar()->addMenu(viewMenu);
 
     m_imagePreparer = new QFutureWatcher<Image>(this);
-
+    connect(m_imagePreparer, SIGNAL(started()), SLOT(imagePreparationStarted()));
+    connect(m_imagePreparer, SIGNAL(finished()), SLOT(imagePreparationFinished()));
     connect(m_imagePreparer, SIGNAL(resultReadyAt(int)), SLOT(imagePreparedAt(int)));
     connect(openDirAction, SIGNAL(triggered(bool)), SLOT(openDir()));
     connect(quitAction, SIGNAL(triggered(bool)), SLOT(close()));
@@ -133,7 +134,6 @@ void MainWindow::openDir()
 
     statusBar()->showMessage("Searching " + dir + " and its subdirectories for images");
     const QStringList filePaths(findFiles(dir));
-    statusBar()->showMessage("Found " + QString::number(filePaths.count()) + " files");
     m_imagePreparer->setFuture(QtConcurrent::mapped(filePaths, prepareImage));
 }
 
@@ -145,4 +145,14 @@ void MainWindow::imagePreparedAt(const int i)
         return;
     
     m_imageBrowser->addImage(image);
+}
+
+void MainWindow::imagePreparationStarted()
+{
+    statusBar()->showMessage("Opening files");
+}
+
+void MainWindow::imagePreparationFinished()
+{
+    statusBar()->showMessage("Opened " + QString::number(m_imagePreparer->future().resultCount()) + " images");
 }

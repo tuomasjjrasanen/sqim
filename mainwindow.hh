@@ -19,6 +19,8 @@ public:
 private slots:
     void openDir();
     void imagePreparedAt(int i);
+    void imagePreparationStarted();
+    void imagePreparationFinished();
 
 private:
     QFutureWatcher<Image> *m_imagePreparer;
