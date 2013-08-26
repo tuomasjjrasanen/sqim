@@ -55,9 +55,9 @@ MainWindow::MainWindow(QWidget *const parent) :
     sortNewerFirstAction->setShortcut(QKeySequence(Qt::Key_Greater));
     menuBar()->addMenu(viewMenu);
 
-    m_cacheWatcher = new QFutureWatcher<QStringList>(this);
+    m_imagePreparer = new QFutureWatcher<Image>(this);
 
-    connect(m_cacheWatcher, SIGNAL(resultReadyAt(int)), SLOT(cacheReadyAt(int)));
+    connect(m_imagePreparer, SIGNAL(resultReadyAt(int)), SLOT(imagePreparedAt(int)));
     connect(openDirAction, SIGNAL(triggered(bool)), SLOT(openDir()));
     connect(quitAction, SIGNAL(triggered(bool)), SLOT(close()));
     m_imageBrowser->connect(sortOlderFirstAction, SIGNAL(triggered(bool)),
@@ -69,16 +69,16 @@ MainWindow::MainWindow(QWidget *const parent) :
 
 MainWindow::~MainWindow()
 {
-    m_cacheWatcher->cancel();
-    m_cacheWatcher->waitForFinished();
+    m_imagePreparer->cancel();
+    m_imagePreparer->waitForFinished();
 }
 
-static QStringList cacheImageInfo(const QString &imageFilePath)
+static Image prepareImage(const QString &filepath)
 {
-    QStringList result;
-    QFileInfo imageFileInfo(imageFilePath);
+    Image image;
+    QFileInfo imageFileInfo(filepath);
 
-    result.insert(COL_IMAGE_FILEPATH, imageFileInfo.canonicalFilePath());
+    image.setFilepath(imageFileInfo.canonicalFilePath());
 
     QStringList args;
     args << imageFileInfo.canonicalFilePath();
@@ -86,33 +86,33 @@ static QStringList cacheImageInfo(const QString &imageFilePath)
     QProcess cmdMakeThumbnail;
     cmdMakeThumbnail.start(SQIM_CMD_MAKE_THUMBNAIL, args);
     if (!cmdMakeThumbnail.waitForStarted())
-        return result;
+        return image;
 
     QProcess cmdParseDatetime;
     cmdParseDatetime.start(SQIM_CMD_PARSE_DATETIME, args);
     if (!cmdParseDatetime.waitForStarted())
-        return result;
+        return image;
 
     QTextStream cmdMakeThumbnailOut(&cmdMakeThumbnail);
     QTextStream cmdParseDatetimeOut(&cmdParseDatetime);
 
     if (!cmdParseDatetime.waitForFinished())
-        return result;
+        return image;
 
     if (cmdParseDatetime.exitCode())
-        return result;
+        return image;
 
-    result.insert(COL_IMAGE_DATETIME, cmdParseDatetimeOut.readLine());
+    image.setTimestamp(cmdParseDatetimeOut.readLine());
 
     if (!cmdMakeThumbnail.waitForFinished())
-        return result;
+        return image;
 
     if (cmdMakeThumbnail.exitCode())
-        return result;
+        return image;
 
-    result.insert(COL_THUMB_FILEPATH, cmdMakeThumbnailOut.readLine());
+    image.setThumbnail(QImage(cmdMakeThumbnailOut.readLine()));
 
-    return result;
+    return image;
 }
 
 void MainWindow::openDir()
@@ -125,15 +125,15 @@ void MainWindow::openDir()
     statusBar()->showMessage("Searching " + dir + " and its subdirectories for images");
     const QStringList filePaths(findFiles(dir));
     statusBar()->showMessage("Found " + QString::number(filePaths.count()) + " files");
-    m_cacheWatcher->setFuture(QtConcurrent::mapped(filePaths, cacheImageInfo));
+    m_imagePreparer->setFuture(QtConcurrent::mapped(filePaths, prepareImage));
 }
 
-void MainWindow::cacheReadyAt(const int i)
+void MainWindow::imagePreparedAt(const int i)
 {
-    const QStringList results(m_cacheWatcher->resultAt(i));
+    const Image image(m_imagePreparer->resultAt(i));
 
-    if (results.count() != COLS)
+    if (!image.isValid())
         return;
     
-    m_imageBrowser->addImage(results);
+    m_imageBrowser->addImage(image);
 }

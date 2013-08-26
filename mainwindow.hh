@@ -5,6 +5,7 @@
 #include <QMainWindow>
 #include <QStringList>
 
+#include "image.hh"
 #include "imagebrowser.hh"
 
 class MainWindow : public QMainWindow
@@ -17,10 +18,10 @@ public:
 
 private slots:
     void openDir();
-    void cacheReadyAt(int i);
+    void imagePreparedAt(int i);
 
 private:
-    QFutureWatcher<QStringList> *m_cacheWatcher;
+    QFutureWatcher<Image> *m_imagePreparer;
     ImageBrowser *m_imageBrowser;
 };
 

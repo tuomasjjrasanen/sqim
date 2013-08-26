@@ -5,12 +5,7 @@
 #include <QHash>
 #include <QStandardItemModel>
 
-enum {
-    COL_THUMB_FILEPATH,
-    COL_IMAGE_FILEPATH,
-    COL_IMAGE_DATETIME,
-    COLS
-};
+#include "image.hh"
 
 class ImageBrowser : public QWidget
 {
@@ -20,7 +15,7 @@ public:
     explicit ImageBrowser(QWidget *parent = 0);
     ~ImageBrowser();
 
-    void addImage(const QStringList columns);
+    void addImage(const Image &image);
 
 public slots:
     void sortOlderFirst();

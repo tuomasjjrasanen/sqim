@@ -1,6 +1,14 @@
 #include <QGridLayout>
+#include <QPixmap>
 
 #include "imagebrowser.hh"
+
+enum {
+    COL_THUMBNAIL,
+    COL_FILEPATH,
+    COL_TIMESTAMP,
+    COLS
+};
 
 ImageBrowser::ImageBrowser(QWidget *parent) :
     QWidget(parent)
@@ -26,38 +34,37 @@ ImageBrowser::~ImageBrowser()
 {
 }
 
-void ImageBrowser::addImage(const QStringList columns)
+void ImageBrowser::addImage(const Image &image)
 {
-    const QString thumbnailFilePath = columns[COL_THUMB_FILEPATH];
-    if (m_itemMap.contains(thumbnailFilePath))
+    if (m_itemMap.contains(image.filepath()))
         return;
 
     QList<QStandardItem*> items;
     QStandardItem *item;
 
     item = new QStandardItem();
-    item->setIcon(QIcon(thumbnailFilePath));
-    items.insert(COL_THUMB_FILEPATH, item);
+    item->setIcon(QIcon(QPixmap::fromImage(image.thumbnail())));
+    items.insert(COL_THUMBNAIL, item);
 
     item = new QStandardItem();
-    item->setText(columns[COL_IMAGE_FILEPATH]);
-    items.insert(COL_IMAGE_FILEPATH, item);
+    item->setText(image.filepath());
+    items.insert(COL_FILEPATH, item);
 
     item = new QStandardItem();
-    item->setText(columns[COL_IMAGE_DATETIME]);
-    items.insert(COL_IMAGE_DATETIME, item);
+    item->setText(image.timestamp());
+    items.insert(COL_TIMESTAMP, item);
 
     m_iconModel->appendRow(items);
 
-    m_itemMap[thumbnailFilePath] = item;
+    m_itemMap[image.filepath()] = item;
 }
 
 void ImageBrowser::sortOlderFirst()
 {
-    m_iconModel->sort(COL_IMAGE_DATETIME, Qt::AscendingOrder);
+    m_iconModel->sort(COL_TIMESTAMP, Qt::AscendingOrder);
 }
 
 void ImageBrowser::sortNewerFirst()
 {
-    m_iconModel->sort(COL_IMAGE_DATETIME, Qt::DescendingOrder);
+    m_iconModel->sort(COL_TIMESTAMP, Qt::DescendingOrder);
 }
