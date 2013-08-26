@@ -7,6 +7,7 @@ enum {
     COL_THUMBNAIL,
     COL_FILEPATH,
     COL_TIMESTAMP,
+    COL_MTIME,
     COLS
 };
 
@@ -53,6 +54,10 @@ void ImageBrowser::addImage(const Image &image)
     item = new QStandardItem();
     item->setText(image.timestamp());
     items.insert(COL_TIMESTAMP, item);
+
+    item = new QStandardItem();
+    item->setText(image.modificationTime());
+    items.insert(COL_MTIME, item);
 
     m_iconModel->appendRow(items);
 

@@ -79,6 +79,7 @@ static Image prepareImage(const QString &filepath)
     QFileInfo imageFileInfo(filepath);
 
     image.setFilepath(imageFileInfo.canonicalFilePath());
+    image.setModificationTime(imageFileInfo.lastModified().toString("yyyy-MM-ddThh:mm:ss"));
 
     QStringList args;
     args << imageFileInfo.canonicalFilePath();
