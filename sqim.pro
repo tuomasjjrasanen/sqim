@@ -5,6 +5,8 @@ greaterThan(QT_MAJOR_VERSION, 4): QT += widgets
 TARGET = sqim
 TEMPLATE = app
 
+VERSION = 0.1.0
+
 QMAKE_STRIP =
 
 SOURCES +=\
