@@ -20,6 +20,8 @@ public:
 public slots:
     void sortOldestFirst();
     void sortOldestLast();
+    void sortLastModifiedFirst();
+    void sortLastModifiedLast();
 
 private:
     QListView *m_iconView;

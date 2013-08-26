@@ -73,3 +73,13 @@ void ImageBrowser::sortOldestLast()
 {
     m_iconModel->sort(COL_TIMESTAMP, Qt::DescendingOrder);
 }
+
+void ImageBrowser::sortLastModifiedFirst()
+{
+    m_iconModel->sort(COL_MTIME, Qt::DescendingOrder);
+}
+
+void ImageBrowser::sortLastModifiedLast()
+{
+    m_iconModel->sort(COL_MTIME, Qt::AscendingOrder);
+}

@@ -50,9 +50,13 @@ MainWindow::MainWindow(QWidget *const parent) :
 
     QMenu *viewMenu = new QMenu("&View", menuBar());
     QAction *sortOldestFirstAction = viewMenu->addAction("&Sort oldest first");
-    sortOldestFirstAction->setShortcut(QKeySequence(Qt::Key_Less));
+    sortOldestFirstAction->setShortcut(QKeySequence(Qt::Key_Less, Qt::Key_C));
     QAction *sortOldestLastAction = viewMenu->addAction("&Sort oldest last");
-    sortOldestLastAction->setShortcut(QKeySequence(Qt::Key_Greater));
+    sortOldestLastAction->setShortcut(QKeySequence(Qt::Key_Greater, Qt::Key_C));
+    QAction *sortLastModifiedFirstAction = viewMenu->addAction("&Sort last modified first");
+    sortLastModifiedFirstAction->setShortcut(QKeySequence(Qt::Key_Less, Qt::Key_M));
+    QAction *sortLastModifiedLastAction = viewMenu->addAction("&Sort last modified last");
+    sortLastModifiedLastAction->setShortcut(QKeySequence(Qt::Key_Greater, Qt::Key_M));
     menuBar()->addMenu(viewMenu);
 
     m_imagePreparer = new QFutureWatcher<Image>(this);
@@ -64,6 +68,10 @@ MainWindow::MainWindow(QWidget *const parent) :
                                SLOT(sortOldestFirst()));
     m_imageBrowser->connect(sortOldestLastAction, SIGNAL(triggered(bool)),
                                SLOT(sortOldestLast()));
+    m_imageBrowser->connect(sortLastModifiedFirstAction, SIGNAL(triggered(bool)),
+                               SLOT(sortLastModifiedFirst()));
+    m_imageBrowser->connect(sortLastModifiedLastAction, SIGNAL(triggered(bool)),
+                               SLOT(sortLastModifiedLast()));
     statusBar()->showMessage("Initialized");
 }
 
