@@ -3,7 +3,7 @@
 #include "imagebrowser.hh"
 
 enum {
-    COL_THUMBNAIL,
+    COL_THUMBNAILFILEPATH,
     COL_FILEPATH,
     COL_TIMESTAMP,
     COL_MTIME,
@@ -38,8 +38,8 @@ void ImageBrowser::addImage(ImageInfo imageInfo)
     QStandardItem *item;
 
     item = new QStandardItem();
-    item->setIcon(QIcon(QPixmap::fromImage(imageInfo.thumbnail())));
-    items.insert(COL_THUMBNAIL, item);
+    item->setIcon(QIcon(imageInfo.thumbnailFilepath()));
+    items.insert(COL_THUMBNAILFILEPATH, item);
 
     item = new QStandardItem();
     item->setText(imageInfo.filepath());

@@ -134,7 +134,7 @@ static ImageInfo prepareImage(const QString &filepath)
     if (cmdMakeThumbnail.exitCode())
         return imageInfo;
 
-    imageInfo.setThumbnail(QImage(cmdMakeThumbnailOut.readLine()));
+    imageInfo.setThumbnailFilepath(cmdMakeThumbnailOut.readLine());
 
     return imageInfo;
 }

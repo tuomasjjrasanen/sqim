@@ -14,14 +14,14 @@ public:
     :QSharedData(other)
     ,m_filepath(other.m_filepath)
     ,m_timestamp(other.m_timestamp) 
-    ,m_thumbnail(other.m_thumbnail)
+    ,m_thumbnailFilepath(other.m_thumbnailFilepath)
     ,m_modificationTime(other.m_modificationTime) {}
 
     ~ImageInfoData() {}
     
     QString m_filepath;
     QString m_timestamp;
-    QImage m_thumbnail;
+    QString m_thumbnailFilepath;
     QString m_modificationTime;
 };
 
@@ -43,8 +43,8 @@ public:
         m_imageInfoData->m_timestamp = timestamp;
     }
 
-    void setThumbnail(QImage thumbnail) {
-        m_imageInfoData->m_thumbnail = thumbnail;
+    void setThumbnailFilepath(QString thumbnailFilepath) {
+        m_imageInfoData->m_thumbnailFilepath = thumbnailFilepath;
     }
 
     void setModificationTime(QString modificationTime) {
@@ -59,8 +59,8 @@ public:
         return m_imageInfoData->m_timestamp;
     }
 
-    QImage thumbnail() const {
-        return m_imageInfoData->m_thumbnail;
+    QString thumbnailFilepath() const {
+        return m_imageInfoData->m_thumbnailFilepath;
     }
 
     QString modificationTime() const {
@@ -70,7 +70,7 @@ public:
     bool isValid() const {
         return !m_imageInfoData->m_filepath.isEmpty()
             && !m_imageInfoData->m_timestamp.isEmpty()
-            && !m_imageInfoData->m_thumbnail.isNull()
+            && !m_imageInfoData->m_thumbnailFilepath.isEmpty()
             && !m_imageInfoData->m_modificationTime.isEmpty();
     }
 
