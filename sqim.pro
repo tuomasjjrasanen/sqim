@@ -18,7 +18,6 @@ SOURCES +=\
 HEADERS  += \
     imagebrowser.hh \
     mainwindow.hh \
-    imageinfo.hh \
     imageinfowidget.hh
 
 FORMS    +=

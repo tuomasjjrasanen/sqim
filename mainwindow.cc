@@ -71,7 +71,7 @@ MainWindow::MainWindow(QWidget *const parent) :
     sortLastModifiedLastAction->setShortcut(QKeySequence(Qt::Key_Greater, Qt::Key_M));
     menuBar()->addMenu(viewMenu);
 
-    m_imagePreparer = new QFutureWatcher<ImageInfo>(this);
+    m_imagePreparer = new QFutureWatcher<QMap<QString, QString> >(this);
     connect(m_imagePreparer, SIGNAL(started()), SLOT(imagePreparationStarted()));
     connect(m_imagePreparer, SIGNAL(finished()), SLOT(imagePreparationFinished()));
     connect(m_imagePreparer, SIGNAL(resultReadyAt(int)), SLOT(imagePreparedAt(int)));
@@ -85,8 +85,8 @@ MainWindow::MainWindow(QWidget *const parent) :
                                SLOT(sortLastModifiedFirst()));
     m_imageBrowser->connect(sortLastModifiedLastAction, SIGNAL(triggered(bool)),
                                SLOT(sortLastModifiedLast()));
-    infoWidget->connect(m_imageBrowser, SIGNAL(currentImageChanged(ImageInfo)),
-                        SLOT(setImageInfo(ImageInfo)));
+    infoWidget->connect(m_imageBrowser, SIGNAL(currentImageChanged(QMap<QString, QString>)),
+                        SLOT(setImageInfo(QMap<QString, QString>)));
     statusBar()->showMessage("Initialized");
 }
 
@@ -96,13 +96,13 @@ MainWindow::~MainWindow()
     m_imagePreparer->waitForFinished();
 }
 
-static ImageInfo prepareImage(const QString &filepath)
+static QMap<QString, QString> prepareImage(const QString &filepath)
 {
-    ImageInfo imageInfo;
+    QMap<QString, QString> imageInfo;
     QFileInfo imageFileInfo(filepath);
 
-    imageInfo.setFilepath(imageFileInfo.canonicalFilePath());
-    imageInfo.setModificationTime(imageFileInfo.lastModified().toString("yyyy-MM-ddThh:mm:ss"));
+    imageInfo.insert("filepath", imageFileInfo.canonicalFilePath());
+    imageInfo.insert("modificationTime", imageFileInfo.lastModified().toString("yyyy-MM-ddThh:mm:ss"));
 
     QStringList args;
     args << imageFileInfo.canonicalFilePath();
@@ -126,7 +126,7 @@ static ImageInfo prepareImage(const QString &filepath)
     if (cmdParseDatetime.exitCode())
         return imageInfo;
 
-    imageInfo.setTimestamp(cmdParseDatetimeOut.readLine());
+    imageInfo.insert("timestamp", cmdParseDatetimeOut.readLine());
 
     if (!cmdMakeThumbnail.waitForFinished())
         return imageInfo;
@@ -134,7 +134,7 @@ static ImageInfo prepareImage(const QString &filepath)
     if (cmdMakeThumbnail.exitCode())
         return imageInfo;
 
-    imageInfo.setThumbnailFilepath(cmdMakeThumbnailOut.readLine());
+    imageInfo.insert("thumbnailFilepath", cmdMakeThumbnailOut.readLine());
 
     return imageInfo;
 }
@@ -154,10 +154,12 @@ void MainWindow::openDir()
 
 void MainWindow::imagePreparedAt(const int i)
 {
-    const ImageInfo imageInfo(m_imagePreparer->resultAt(i));
+    const QMap<QString, QString> imageInfo(m_imagePreparer->resultAt(i));
 
-    if (!imageInfo.isValid())
-        return;
+    foreach (QString value, imageInfo) {
+        if (value.isEmpty())
+            return;
+    }
     
     m_imageBrowser->addImage(imageInfo);
 }

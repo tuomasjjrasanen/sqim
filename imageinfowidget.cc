@@ -24,9 +24,9 @@ ImageInfoWidget::~ImageInfoWidget()
 {
 }
 
-void ImageInfoWidget::setImageInfo(ImageInfo imageInfo)
+void ImageInfoWidget::setImageInfo(QMap<QString, QString> imageInfo)
 {
-    m_filepathLabel->setText(imageInfo.filepath());
-    m_timestampLabel->setText(imageInfo.timestamp());
-    m_modificationTimeLabel->setText(imageInfo.modificationTime());
+    m_filepathLabel->setText(imageInfo.value("filepath"));
+    m_timestampLabel->setText(imageInfo.value("timestamp"));
+    m_modificationTimeLabel->setText(imageInfo.value("modificationTime"));
 }

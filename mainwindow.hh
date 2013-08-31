@@ -22,7 +22,7 @@ private slots:
     void imagePreparationFinished();
 
 private:
-    QFutureWatcher<ImageInfo> *m_imagePreparer;
+    QFutureWatcher<QMap<QString, QString> > *m_imagePreparer;
     ImageBrowser *m_imageBrowser;
     QAction *m_openDirAction;
 };

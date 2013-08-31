@@ -29,33 +29,33 @@ ImageBrowser::~ImageBrowser()
 {
 }
 
-void ImageBrowser::addImage(ImageInfo imageInfo)
+void ImageBrowser::addImage(QMap<QString, QString> imageInfo)
 {
-    if (m_imageInfoMap.contains(imageInfo.filepath()))
+    if (m_imageInfoMap.contains(imageInfo.value("filepath")))
         return;
 
     QList<QStandardItem*> items;
     QStandardItem *item;
 
     item = new QStandardItem();
-    item->setIcon(QIcon(imageInfo.thumbnailFilepath()));
+    item->setIcon(QIcon(imageInfo.value("thumbnailFilepath")));
     items.insert(COL_THUMBNAILFILEPATH, item);
 
     item = new QStandardItem();
-    item->setText(imageInfo.filepath());
+    item->setText(imageInfo.value("filepath"));
     items.insert(COL_FILEPATH, item);
 
     item = new QStandardItem();
-    item->setText(imageInfo.timestamp());
+    item->setText(imageInfo.value("timestamp"));
     items.insert(COL_TIMESTAMP, item);
 
     item = new QStandardItem();
-    item->setText(imageInfo.modificationTime());
+    item->setText(imageInfo.value("modificationTime"));
     items.insert(COL_MTIME, item);
 
     ((QStandardItemModel *)model())->appendRow(items);
 
-    m_imageInfoMap[imageInfo.filepath()] = imageInfo;
+    m_imageInfoMap.insert(imageInfo.value("filepath"), imageInfo);
 }
 
 void ImageBrowser::sortOldestFirst()
@@ -83,6 +83,6 @@ void ImageBrowser::currentChanged(const QModelIndex &current, const QModelIndex 
     QListView::currentChanged(current, previous);
 
     QStandardItemModel *m = (QStandardItemModel*) model();
-    ImageInfo imageInfo = m_imageInfoMap[m->item(current.row(), COL_FILEPATH)->text()];
+    QMap<QString, QString> imageInfo = m_imageInfoMap.value(m->item(current.row(), COL_FILEPATH)->text());
     emit currentImageChanged(imageInfo);
 }

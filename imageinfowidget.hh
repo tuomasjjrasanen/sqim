@@ -2,8 +2,7 @@
 #define IMAGEINFOWIDGET_HH
 
 #include <QLabel>
-
-#include "imageinfo.hh"
+#include <QMap>
 
 class ImageInfoWidget : public QWidget
 {
@@ -14,7 +13,7 @@ public:
     ~ImageInfoWidget();
 
 public slots:
-    void setImageInfo(ImageInfo imageInfo);
+    void setImageInfo(QMap<QString, QString> imageInfo);
 
 private:
     QLabel *m_filepathLabel;
