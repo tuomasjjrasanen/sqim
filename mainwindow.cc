@@ -71,7 +71,7 @@ MainWindow::MainWindow(QWidget *const parent) :
     sortLastModifiedLastAction->setShortcut(QKeySequence(Qt::Key_Greater, Qt::Key_M));
     menuBar()->addMenu(viewMenu);
 
-    m_imagePreparer = new QFutureWatcher<Image>(this);
+    m_imagePreparer = new QFutureWatcher<ImageInfo>(this);
     connect(m_imagePreparer, SIGNAL(started()), SLOT(imagePreparationStarted()));
     connect(m_imagePreparer, SIGNAL(finished()), SLOT(imagePreparationFinished()));
     connect(m_imagePreparer, SIGNAL(resultReadyAt(int)), SLOT(imagePreparedAt(int)));
@@ -85,8 +85,8 @@ MainWindow::MainWindow(QWidget *const parent) :
                                SLOT(sortLastModifiedFirst()));
     m_imageBrowser->connect(sortLastModifiedLastAction, SIGNAL(triggered(bool)),
                                SLOT(sortLastModifiedLast()));
-    infoWidget->connect(m_imageBrowser, SIGNAL(currentImageChanged(Image)),
-                        SLOT(setImage(Image)));
+    infoWidget->connect(m_imageBrowser, SIGNAL(currentImageChanged(ImageInfo)),
+                        SLOT(setImageInfo(ImageInfo)));
     statusBar()->showMessage("Initialized");
 }
 
@@ -96,13 +96,13 @@ MainWindow::~MainWindow()
     m_imagePreparer->waitForFinished();
 }
 
-static Image prepareImage(const QString &filepath)
+static ImageInfo prepareImage(const QString &filepath)
 {
-    Image image;
+    ImageInfo imageInfo;
     QFileInfo imageFileInfo(filepath);
 
-    image.setFilepath(imageFileInfo.canonicalFilePath());
-    image.setModificationTime(imageFileInfo.lastModified().toString("yyyy-MM-ddThh:mm:ss"));
+    imageInfo.setFilepath(imageFileInfo.canonicalFilePath());
+    imageInfo.setModificationTime(imageFileInfo.lastModified().toString("yyyy-MM-ddThh:mm:ss"));
 
     QStringList args;
     args << imageFileInfo.canonicalFilePath();
@@ -110,33 +110,33 @@ static Image prepareImage(const QString &filepath)
     QProcess cmdMakeThumbnail;
     cmdMakeThumbnail.start(SQIM_CMD_MAKE_THUMBNAIL, args);
     if (!cmdMakeThumbnail.waitForStarted())
-        return image;
+        return imageInfo;
 
     QProcess cmdParseDatetime;
     cmdParseDatetime.start(SQIM_CMD_PARSE_DATETIME, args);
     if (!cmdParseDatetime.waitForStarted())
-        return image;
+        return imageInfo;
 
     QTextStream cmdMakeThumbnailOut(&cmdMakeThumbnail);
     QTextStream cmdParseDatetimeOut(&cmdParseDatetime);
 
     if (!cmdParseDatetime.waitForFinished())
-        return image;
+        return imageInfo;
 
     if (cmdParseDatetime.exitCode())
-        return image;
+        return imageInfo;
 
-    image.setTimestamp(cmdParseDatetimeOut.readLine());
+    imageInfo.setTimestamp(cmdParseDatetimeOut.readLine());
 
     if (!cmdMakeThumbnail.waitForFinished())
-        return image;
+        return imageInfo;
 
     if (cmdMakeThumbnail.exitCode())
-        return image;
+        return imageInfo;
 
-    image.setThumbnail(QImage(cmdMakeThumbnailOut.readLine()));
+    imageInfo.setThumbnail(QImage(cmdMakeThumbnailOut.readLine()));
 
-    return image;
+    return imageInfo;
 }
 
 void MainWindow::openDir()
@@ -154,12 +154,12 @@ void MainWindow::openDir()
 
 void MainWindow::imagePreparedAt(const int i)
 {
-    const Image image(m_imagePreparer->resultAt(i));
+    const ImageInfo imageInfo(m_imagePreparer->resultAt(i));
 
-    if (!image.isValid())
+    if (!imageInfo.isValid())
         return;
     
-    m_imageBrowser->addImage(image);
+    m_imageBrowser->addImage(imageInfo);
 }
 
 void MainWindow::imagePreparationStarted()

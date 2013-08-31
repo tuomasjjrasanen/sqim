@@ -3,7 +3,7 @@
 
 #include <QLabel>
 
-#include "image.hh"
+#include "imageinfo.hh"
 
 class ImageInfoWidget : public QWidget
 {
@@ -14,7 +14,7 @@ public:
     ~ImageInfoWidget();
 
 public slots:
-    void setImage(Image image);
+    void setImageInfo(ImageInfo imageInfo);
 
 private:
     QLabel *m_filepathLabel;

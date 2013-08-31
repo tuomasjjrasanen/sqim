@@ -5,7 +5,6 @@
 #include <QHash>
 #include <QStandardItemModel>
 
-#include "image.hh"
 #include "imageinfowidget.hh"
 
 class ImageBrowser : public QListView
@@ -16,10 +15,10 @@ public:
     explicit ImageBrowser(QWidget *parent = 0);
     ~ImageBrowser();
 
-    void addImage(const Image &image);
+    void addImage(ImageInfo imageinfo);
 
 signals:
-    void currentImageChanged(Image image);
+    void currentImageChanged(ImageInfo imageInfo);
 
 public slots:
     void sortOldestFirst();
@@ -31,7 +30,7 @@ protected:
     virtual void currentChanged(const QModelIndex &current, const QModelIndex &previous);
 
 private:
-    QHash<QString, Image> m_itemMap;
+    QHash<QString, ImageInfo> m_imageInfoMap;
     ImageInfoWidget *m_imageInfoWidget;
 };
 

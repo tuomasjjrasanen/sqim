@@ -24,9 +24,9 @@ ImageInfoWidget::~ImageInfoWidget()
 {
 }
 
-void ImageInfoWidget::setImage(Image image)
+void ImageInfoWidget::setImageInfo(ImageInfo imageInfo)
 {
-    m_filepathLabel->setText(image.filepath());
-    m_timestampLabel->setText(image.timestamp());
-    m_modificationTimeLabel->setText(image.modificationTime());
+    m_filepathLabel->setText(imageInfo.filepath());
+    m_timestampLabel->setText(imageInfo.timestamp());
+    m_modificationTimeLabel->setText(imageInfo.modificationTime());
 }
