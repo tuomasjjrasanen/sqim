@@ -50,8 +50,8 @@ MainWindow::MainWindow(QWidget *const parent) :
     setStatusBar(new QStatusBar(this));
 
     QMenu *fileMenu = new QMenu("&File", menuBar());
-    QAction *openDirAction = fileMenu->addAction("&Open directory...");
-    openDirAction->setShortcut(QKeySequence(Qt::Key_O));
+    m_openDirAction = fileMenu->addAction("&Open directory...");
+    m_openDirAction->setShortcut(QKeySequence(Qt::Key_O));
     fileMenu->addSeparator();
     QAction *quitAction = fileMenu->addAction("&Quit");
     quitAction->setShortcut(QKeySequence(Qt::Key_Q));
@@ -75,7 +75,7 @@ MainWindow::MainWindow(QWidget *const parent) :
     connect(m_imagePreparer, SIGNAL(started()), SLOT(imagePreparationStarted()));
     connect(m_imagePreparer, SIGNAL(finished()), SLOT(imagePreparationFinished()));
     connect(m_imagePreparer, SIGNAL(resultReadyAt(int)), SLOT(imagePreparedAt(int)));
-    connect(openDirAction, SIGNAL(triggered(bool)), SLOT(openDir()));
+    connect(m_openDirAction, SIGNAL(triggered(bool)), SLOT(openDir()));
     connect(quitAction, SIGNAL(triggered(bool)), SLOT(close()));
     m_imageBrowser->connect(sortOldestFirstAction, SIGNAL(triggered(bool)),
                                SLOT(sortOldestFirst()));
@@ -148,6 +148,7 @@ void MainWindow::openDir()
 
     statusBar()->showMessage("Searching " + dir + " and its subdirectories for images");
     const QStringList filePaths(findFiles(dir));
+    m_openDirAction->setEnabled(false);
     m_imagePreparer->setFuture(QtConcurrent::mapped(filePaths, prepareImage));
 }
 
@@ -169,4 +170,5 @@ void MainWindow::imagePreparationStarted()
 void MainWindow::imagePreparationFinished()
 {
     statusBar()->showMessage("Opened " + QString::number(m_imagePreparer->future().resultCount()) + " images");
+    m_openDirAction->setEnabled(true);
 }

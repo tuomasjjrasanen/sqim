@@ -25,6 +25,7 @@ private slots:
 private:
     QFutureWatcher<Image> *m_imagePreparer;
     ImageBrowser *m_imageBrowser;
+    QAction *m_openDirAction;
 };
 
 #endif // MAINWINDOW_H
