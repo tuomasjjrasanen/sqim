@@ -12,12 +12,14 @@ QMAKE_STRIP =
 SOURCES +=\
     imagebrowser.cc \
     main.cc \
-    mainwindow.cc
+    mainwindow.cc \
+    imageinfowidget.cc
 
 HEADERS  += \
     imagebrowser.hh \
     mainwindow.hh \
-    image.hh
+    image.hh \
+    imageinfowidget.hh
 
 FORMS    +=
 

@@ -1,10 +1,13 @@
 #include <QtCore>
+#include <QDockWidget>
 #include <QFileDialog>
-#include <QGridLayout>
+#include <QFormLayout>
+#include <QLabel>
 #include <QMenuBar>
 #include <QProcess>
 #include <QStatusBar>
 
+#include "imageinfowidget.hh"
 #include "mainwindow.hh"
 
 static QStringList findFiles(QString dir)
@@ -34,7 +37,13 @@ static QStringList findFiles(QString dir)
 MainWindow::MainWindow(QWidget *const parent) :
     QMainWindow(parent)
 {
+    QDockWidget *dockWidget = new QDockWidget("&Image info", this);
     m_imageBrowser = new ImageBrowser(this);
+
+    ImageInfoWidget *infoWidget = new ImageInfoWidget();
+
+    dockWidget->setWidget(infoWidget);
+    addDockWidget(Qt::BottomDockWidgetArea, dockWidget);
 
     setMenuBar(new QMenuBar(this));
     setCentralWidget(m_imageBrowser);
@@ -49,6 +58,9 @@ MainWindow::MainWindow(QWidget *const parent) :
     menuBar()->addMenu(fileMenu);
 
     QMenu *viewMenu = new QMenu("&View", menuBar());
+    viewMenu->addAction(dockWidget->toggleViewAction());
+    dockWidget->toggleViewAction()->setShortcut(QKeySequence(Qt::Key_I));
+    viewMenu->addSeparator();
     QAction *sortOldestFirstAction = viewMenu->addAction("&Sort oldest first");
     sortOldestFirstAction->setShortcut(QKeySequence(Qt::Key_Less, Qt::Key_C));
     QAction *sortOldestLastAction = viewMenu->addAction("&Sort oldest last");
@@ -73,6 +85,8 @@ MainWindow::MainWindow(QWidget *const parent) :
                                SLOT(sortLastModifiedFirst()));
     m_imageBrowser->connect(sortLastModifiedLastAction, SIGNAL(triggered(bool)),
                                SLOT(sortLastModifiedLast()));
+    infoWidget->connect(m_imageBrowser, SIGNAL(currentImageChanged(Image)),
+                        SLOT(setImage(Image)));
     statusBar()->showMessage("Initialized");
 }
 

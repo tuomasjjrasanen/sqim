@@ -1,4 +1,3 @@
-#include <QGridLayout>
 #include <QPixmap>
 
 #include "imagebrowser.hh"
@@ -12,23 +11,18 @@ enum {
 };
 
 ImageBrowser::ImageBrowser(QWidget *parent) :
-    QWidget(parent)
+    QListView(parent)
 {
-    QGridLayout *layout = new QGridLayout(this);
-    m_iconView = new QListView(this);
+    setViewMode(QListView::IconMode);
+    setMovement(QListView::Static);
+    setSelectionMode(QListView::SingleSelection);
+    setEditTriggers(QAbstractItemView::NoEditTriggers);
+    setResizeMode(QListView::Adjust);
+    setIconSize(QSize(50, 50));
+    setStyleSheet("background: grey;");
+    setUniformItemSizes(true);
 
-    layout->addWidget(m_iconView);
-
-    m_iconView->setViewMode(QListView::IconMode);
-    m_iconView->setMovement(QListView::Static);
-    m_iconView->setSelectionMode(QListView::SingleSelection);
-    m_iconView->setEditTriggers(QAbstractItemView::NoEditTriggers);
-    m_iconView->setResizeMode(QListView::Adjust);
-    m_iconView->setIconSize(QSize(50, 50));
-    m_iconView->setStyleSheet("background: grey;");
-
-    m_iconModel = new QStandardItemModel(this);
-    m_iconView->setModel(m_iconModel);
+    setModel(new QStandardItemModel(this));
 }
 
 ImageBrowser::~ImageBrowser()
@@ -59,27 +53,34 @@ void ImageBrowser::addImage(const Image &image)
     item->setText(image.modificationTime());
     items.insert(COL_MTIME, item);
 
-    m_iconModel->appendRow(items);
+    ((QStandardItemModel *)model())->appendRow(items);
 
-    m_itemMap[image.filepath()] = item;
+    m_itemMap[image.filepath()] = image;
 }
 
 void ImageBrowser::sortOldestFirst()
 {
-    m_iconModel->sort(COL_TIMESTAMP, Qt::AscendingOrder);
+    model()->sort(COL_TIMESTAMP, Qt::AscendingOrder);
 }
 
 void ImageBrowser::sortOldestLast()
 {
-    m_iconModel->sort(COL_TIMESTAMP, Qt::DescendingOrder);
+    model()->sort(COL_TIMESTAMP, Qt::DescendingOrder);
 }
 
 void ImageBrowser::sortLastModifiedFirst()
 {
-    m_iconModel->sort(COL_MTIME, Qt::DescendingOrder);
+    model()->sort(COL_MTIME, Qt::DescendingOrder);
 }
 
 void ImageBrowser::sortLastModifiedLast()
 {
-    m_iconModel->sort(COL_MTIME, Qt::AscendingOrder);
+    model()->sort(COL_MTIME, Qt::AscendingOrder);
+}
+
+void ImageBrowser::currentChanged(const QModelIndex &current, const QModelIndex &previous)
+{
+    QListView::currentChanged(current, previous);
+    Image image = m_itemMap[((QStandardItemModel*)model())->item(current.row(), COL_FILEPATH)->text()];
+    emit currentImageChanged(image);
 }
