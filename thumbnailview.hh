@@ -1,5 +1,5 @@
-#ifndef IMAGEBROWSER_H
-#define IMAGEBROWSER_H
+#ifndef THUMBNAILVIEW_H
+#define THUMBNAILVIEW_H
 
 #include <QListView>
 #include <QHash>
@@ -8,18 +8,18 @@
 
 #include "imageinfowidget.hh"
 
-class ImageBrowser : public QListView
+class ThumbnailView : public QListView
 {
     Q_OBJECT
     
 public:
-    explicit ImageBrowser(QWidget *parent = 0);
-    ~ImageBrowser();
+    explicit ThumbnailView(QWidget *parent = 0);
+    ~ThumbnailView();
 
-    void addImage(QMap<QString, QString> imageinfo);
+    void addThumbnail(QMap<QString, QString> imageinfo);
 
 signals:
-    void currentImageChanged(QMap<QString, QString> imageInfo);
+    void currentThumbnailChanged(QMap<QString, QString> imageInfo);
 
 public slots:
     void sortOldestFirst();
@@ -32,7 +32,6 @@ protected:
 
 private:
     QHash<QString, QMap<QString, QString> > m_imageInfoMap;
-    ImageInfoWidget *m_imageInfoWidget;
 };
 
-#endif // IMAGEBROWSER_H
+#endif // THUMBNAILVIEW_H

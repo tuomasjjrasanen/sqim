@@ -38,7 +38,7 @@ MainWindow::MainWindow(QWidget *const parent) :
     QMainWindow(parent)
 {
     QDockWidget *dockWidget = new QDockWidget("&Image info", this);
-    m_imageBrowser = new ImageBrowser(this);
+    m_thumbnailView = new ThumbnailView(this);
 
     ImageInfoWidget *infoWidget = new ImageInfoWidget();
 
@@ -46,7 +46,7 @@ MainWindow::MainWindow(QWidget *const parent) :
     addDockWidget(Qt::BottomDockWidgetArea, dockWidget);
 
     setMenuBar(new QMenuBar(this));
-    setCentralWidget(m_imageBrowser);
+    setCentralWidget(m_thumbnailView);
     setStatusBar(new QStatusBar(this));
 
     QMenu *fileMenu = new QMenu("&File", menuBar());
@@ -77,15 +77,15 @@ MainWindow::MainWindow(QWidget *const parent) :
     connect(m_imagePreparer, SIGNAL(resultReadyAt(int)), SLOT(imagePreparedAt(int)));
     connect(m_openDirAction, SIGNAL(triggered(bool)), SLOT(openDir()));
     connect(quitAction, SIGNAL(triggered(bool)), SLOT(close()));
-    m_imageBrowser->connect(sortOldestFirstAction, SIGNAL(triggered(bool)),
-                               SLOT(sortOldestFirst()));
-    m_imageBrowser->connect(sortOldestLastAction, SIGNAL(triggered(bool)),
-                               SLOT(sortOldestLast()));
-    m_imageBrowser->connect(sortLastModifiedFirstAction, SIGNAL(triggered(bool)),
-                               SLOT(sortLastModifiedFirst()));
-    m_imageBrowser->connect(sortLastModifiedLastAction, SIGNAL(triggered(bool)),
-                               SLOT(sortLastModifiedLast()));
-    infoWidget->connect(m_imageBrowser, SIGNAL(currentImageChanged(QMap<QString, QString>)),
+    m_thumbnailView->connect(sortOldestFirstAction, SIGNAL(triggered(bool)),
+                             SLOT(sortOldestFirst()));
+    m_thumbnailView->connect(sortOldestLastAction, SIGNAL(triggered(bool)),
+                             SLOT(sortOldestLast()));
+    m_thumbnailView->connect(sortLastModifiedFirstAction, SIGNAL(triggered(bool)),
+                             SLOT(sortLastModifiedFirst()));
+    m_thumbnailView->connect(sortLastModifiedLastAction, SIGNAL(triggered(bool)),
+                             SLOT(sortLastModifiedLast()));
+    infoWidget->connect(m_thumbnailView, SIGNAL(currentThumbnailChanged(QMap<QString, QString>)),
                         SLOT(setImageInfo(QMap<QString, QString>)));
 }
 
@@ -159,7 +159,7 @@ void MainWindow::imagePreparedAt(const int i)
             return;
     }
     
-    m_imageBrowser->addImage(imageInfo);
+    m_thumbnailView->addThumbnail(imageInfo);
 }
 
 void MainWindow::imagePreparationStarted()

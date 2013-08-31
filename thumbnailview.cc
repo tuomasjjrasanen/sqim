@@ -1,6 +1,6 @@
 #include <QPixmap>
 
-#include "imagebrowser.hh"
+#include "thumbnailview.hh"
 
 enum {
     COL_THUMBNAILFILEPATH,
@@ -10,7 +10,7 @@ enum {
     COLS
 };
 
-ImageBrowser::ImageBrowser(QWidget *parent) :
+ThumbnailView::ThumbnailView(QWidget *parent) :
     QListView(parent)
 {
     setViewMode(QListView::IconMode);
@@ -25,11 +25,11 @@ ImageBrowser::ImageBrowser(QWidget *parent) :
     setModel(new QStandardItemModel(this));
 }
 
-ImageBrowser::~ImageBrowser()
+ThumbnailView::~ThumbnailView()
 {
 }
 
-void ImageBrowser::addImage(QMap<QString, QString> imageInfo)
+void ThumbnailView::addThumbnail(QMap<QString, QString> imageInfo)
 {
     if (m_imageInfoMap.contains(imageInfo.value("filepath")))
         return;
@@ -58,31 +58,31 @@ void ImageBrowser::addImage(QMap<QString, QString> imageInfo)
     m_imageInfoMap.insert(imageInfo.value("filepath"), imageInfo);
 }
 
-void ImageBrowser::sortOldestFirst()
+void ThumbnailView::sortOldestFirst()
 {
     model()->sort(COL_TIMESTAMP, Qt::AscendingOrder);
 }
 
-void ImageBrowser::sortOldestLast()
+void ThumbnailView::sortOldestLast()
 {
     model()->sort(COL_TIMESTAMP, Qt::DescendingOrder);
 }
 
-void ImageBrowser::sortLastModifiedFirst()
+void ThumbnailView::sortLastModifiedFirst()
 {
     model()->sort(COL_MTIME, Qt::DescendingOrder);
 }
 
-void ImageBrowser::sortLastModifiedLast()
+void ThumbnailView::sortLastModifiedLast()
 {
     model()->sort(COL_MTIME, Qt::AscendingOrder);
 }
 
-void ImageBrowser::currentChanged(const QModelIndex &current, const QModelIndex &previous)
+void ThumbnailView::currentChanged(const QModelIndex &current, const QModelIndex &previous)
 {
     QListView::currentChanged(current, previous);
 
     QStandardItemModel *m = (QStandardItemModel*) model();
     QMap<QString, QString> imageInfo = m_imageInfoMap.value(m->item(current.row(), COL_FILEPATH)->text());
-    emit currentImageChanged(imageInfo);
+    emit currentThumbnailChanged(imageInfo);
 }

@@ -5,7 +5,7 @@
 #include <QMainWindow>
 #include <QStringList>
 
-#include "imagebrowser.hh"
+#include "thumbnailview.hh"
 
 class MainWindow : public QMainWindow
 {
@@ -23,7 +23,7 @@ private slots:
 
 private:
     QFutureWatcher<QMap<QString, QString> > *m_imagePreparer;
-    ImageBrowser *m_imageBrowser;
+    ThumbnailView *m_thumbnailView;
     QAction *m_openDirAction;
 };
 

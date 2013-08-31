@@ -10,13 +10,13 @@ VERSION = 0.1.0
 QMAKE_STRIP =
 
 SOURCES +=\
-    imagebrowser.cc \
+    thumbnailview.cc \
     main.cc \
     mainwindow.cc \
     imageinfowidget.cc
 
 HEADERS  += \
-    imagebrowser.hh \
+    thumbnailview.hh \
     mainwindow.hh \
     imageinfowidget.hh
 
