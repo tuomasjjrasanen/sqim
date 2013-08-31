@@ -87,7 +87,6 @@ MainWindow::MainWindow(QWidget *const parent) :
                                SLOT(sortLastModifiedLast()));
     infoWidget->connect(m_imageBrowser, SIGNAL(currentImageChanged(QMap<QString, QString>)),
                         SLOT(setImageInfo(QMap<QString, QString>)));
-    statusBar()->showMessage("Initialized");
 }
 
 MainWindow::~MainWindow()
@@ -146,7 +145,6 @@ void MainWindow::openDir()
     if (dir.isEmpty())
         return;
 
-    statusBar()->showMessage("Searching " + dir + " and its subdirectories for images");
     const QStringList filePaths(findFiles(dir));
     m_openDirAction->setEnabled(false);
     m_imagePreparer->setFuture(QtConcurrent::mapped(filePaths, prepareImage));
@@ -171,6 +169,7 @@ void MainWindow::imagePreparationStarted()
 
 void MainWindow::imagePreparationFinished()
 {
-    statusBar()->showMessage("Opened " + QString::number(m_imagePreparer->future().resultCount()) + " images");
+    QString msg("Opened " + QString::number(m_imagePreparer->future().resultCount()) + " images");
+    statusBar()->showMessage(msg, 3500);
     m_openDirAction->setEnabled(true);
 }
