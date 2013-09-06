@@ -5,9 +5,11 @@
 #include <QLabel>
 #include <QMenuBar>
 #include <QProcess>
+#include <QStackedWidget>
 #include <QStatusBar>
 
 #include "imageinfowidget.hh"
+#include "imagewidget.hh"
 #include "mainwindow.hh"
 
 static QStringList findFiles(QString dir)
@@ -34,19 +36,33 @@ static QStringList findFiles(QString dir)
     return retval;
 }
 
-MainWindow::MainWindow(QWidget *const parent) :
-    QMainWindow(parent)
+void MainWindow::showImageWidget()
 {
-    QDockWidget *dockWidget = new QDockWidget("&Image info", this);
-    m_thumbnailView = new ThumbnailView(this);
+    ((QStackedWidget*) centralWidget())->setCurrentIndex(1);
+}
 
+void MainWindow::showThumbnailView()
+{
+    ((QStackedWidget*) centralWidget())->setCurrentIndex(0);
+}
+
+MainWindow::MainWindow(QWidget *const parent)
+    : QMainWindow(parent)
+    , m_thumbnailView(new ThumbnailView(this))
+{
+    QStackedWidget *stackedWidget = new QStackedWidget(this);
+    stackedWidget->addWidget(m_thumbnailView);
+
+    QDockWidget *dockWidget = new QDockWidget("&Image info", this);
     ImageInfoWidget *infoWidget = new ImageInfoWidget();
+    ImageWidget *imageWidget = new ImageWidget(this);
+    stackedWidget->addWidget(imageWidget);
 
     dockWidget->setWidget(infoWidget);
     addDockWidget(Qt::BottomDockWidgetArea, dockWidget);
 
     setMenuBar(new QMenuBar(this));
-    setCentralWidget(m_thumbnailView);
+    setCentralWidget(stackedWidget);
     setStatusBar(new QStatusBar(this));
 
     QMenu *fileMenu = new QMenu("&File", menuBar());
@@ -58,6 +74,8 @@ MainWindow::MainWindow(QWidget *const parent) :
     menuBar()->addMenu(fileMenu);
 
     QMenu *viewMenu = new QMenu("&View", menuBar());
+    QAction *showThumbnailViewAction = viewMenu->addAction("Show &thumbnails");
+    showThumbnailViewAction->setShortcut(QKeySequence(Qt::Key_T));
     viewMenu->addAction(dockWidget->toggleViewAction());
     dockWidget->toggleViewAction()->setShortcut(QKeySequence(Qt::Key_I));
     viewMenu->addSeparator();
@@ -87,6 +105,12 @@ MainWindow::MainWindow(QWidget *const parent) :
                              SLOT(sortLastModifiedLast()));
     infoWidget->connect(m_thumbnailView, SIGNAL(currentThumbnailChanged(QMap<QString, QString>)),
                         SLOT(setImageInfo(QMap<QString, QString>)));
+    imageWidget->connect(m_thumbnailView, SIGNAL(thumbnailActivated(QMap<QString, QString>)),
+                         SLOT(setImage(QMap<QString, QString>)));
+    connect(m_thumbnailView, SIGNAL(thumbnailActivated(QMap<QString, QString>)),
+            SLOT(showImageWidget()));
+    connect(showThumbnailViewAction, SIGNAL(triggered(bool)),
+            SLOT(showThumbnailView()));
 }
 
 MainWindow::~MainWindow()

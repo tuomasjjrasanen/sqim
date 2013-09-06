@@ -20,6 +20,7 @@ public:
 
 signals:
     void currentThumbnailChanged(QMap<QString, QString> imageInfo);
+    void thumbnailActivated(QMap<QString, QString> imageInfo);
 
 public slots:
     void sortOldestFirst();
@@ -32,6 +33,9 @@ protected:
 
 private:
     QHash<QString, QMap<QString, QString> > m_imageInfoMap;
+
+private slots:
+    void fireThumbnailActivated(const QModelIndex &index);
 };
 
 #endif // THUMBNAILVIEW_H

@@ -20,6 +20,8 @@ private slots:
     void imagePreparedAt(int i);
     void imagePreparationStarted();
     void imagePreparationFinished();
+    void showImageWidget();
+    void showThumbnailView();
 
 private:
     QFutureWatcher<QMap<QString, QString> > *m_imagePreparer;

@@ -13,12 +13,14 @@ SOURCES +=\
     thumbnailview.cc \
     main.cc \
     mainwindow.cc \
-    imageinfowidget.cc
+    imageinfowidget.cc \
+    imagewidget.cc
 
 HEADERS  += \
     thumbnailview.hh \
     mainwindow.hh \
-    imageinfowidget.hh
+    imageinfowidget.hh \
+    imagewidget.hh
 
 FORMS    +=
 
