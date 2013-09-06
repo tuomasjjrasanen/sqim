@@ -1,15 +1,9 @@
-#include <QtCore>
-#include <QDockWidget>
 #include <QFileDialog>
 #include <QFormLayout>
 #include <QLabel>
-#include <QMenuBar>
 #include <QProcess>
-#include <QStackedWidget>
-#include <QStatusBar>
+#include <QtCore>
 
-#include "imageinfowidget.hh"
-#include "imagewidget.hh"
 #include "mainwindow.hh"
 
 static QStringList findFiles(QString dir)
@@ -38,79 +32,110 @@ static QStringList findFiles(QString dir)
 
 void MainWindow::showImageWidget()
 {
-    ((QStackedWidget*) centralWidget())->setCurrentIndex(1);
+    m_viewStack->setCurrentIndex(1);
 }
 
 void MainWindow::showThumbnailView()
 {
-    ((QStackedWidget*) centralWidget())->setCurrentIndex(0);
+    m_viewStack->setCurrentIndex(0);
 }
 
-MainWindow::MainWindow(QWidget *const parent)
-    : QMainWindow(parent)
-    , m_thumbnailView(new ThumbnailView(this))
+void MainWindow::setupCentralWidget()
 {
-    QStackedWidget *stackedWidget = new QStackedWidget(this);
-    stackedWidget->addWidget(m_thumbnailView);
+    m_viewStack = new QStackedWidget(this);
+    m_thumbnailView = new ThumbnailView(m_viewStack);
+    m_imageWidget = new ImageWidget(m_viewStack);
 
-    QDockWidget *dockWidget = new QDockWidget("&Image info", this);
-    ImageInfoWidget *infoWidget = new ImageInfoWidget();
-    ImageWidget *imageWidget = new ImageWidget(this);
-    stackedWidget->addWidget(imageWidget);
+    m_viewStack->addWidget(m_thumbnailView);
+    m_viewStack->addWidget(m_imageWidget);
 
-    dockWidget->setWidget(infoWidget);
-    addDockWidget(Qt::BottomDockWidgetArea, dockWidget);
+    setCentralWidget(m_viewStack);
+}
 
-    setMenuBar(new QMenuBar(this));
-    setCentralWidget(stackedWidget);
-    setStatusBar(new QStatusBar(this));
+void MainWindow::setupDockWidgets()
+{
+    m_infoDockWidget = new QDockWidget("&Image info", this);
+    m_infoWidget = new ImageInfoWidget(m_infoDockWidget);
 
-    QMenu *fileMenu = new QMenu("&File", menuBar());
+    m_infoDockWidget->setWidget(m_infoWidget);
+
+    addDockWidget(Qt::BottomDockWidgetArea, m_infoDockWidget);
+}
+
+void MainWindow::setupStatusBar()
+{
+    QStatusBar *statusBar = new QStatusBar(this);
+
+    setStatusBar(statusBar);
+}
+
+void MainWindow::setupMenuBar()
+{
+    QMenuBar *menuBar = new QMenuBar(this);
+
+    QMenu *fileMenu = new QMenu("&File", menuBar);
     m_openDirAction = fileMenu->addAction("&Open directory...");
     m_openDirAction->setShortcut(QKeySequence(Qt::Key_O));
     fileMenu->addSeparator();
-    QAction *quitAction = fileMenu->addAction("&Quit");
-    quitAction->setShortcut(QKeySequence(Qt::Key_Q));
-    menuBar()->addMenu(fileMenu);
+    m_quitAction = fileMenu->addAction("&Quit");
+    m_quitAction->setShortcut(QKeySequence(Qt::Key_Q));
+    menuBar->addMenu(fileMenu);
 
-    QMenu *viewMenu = new QMenu("&View", menuBar());
-    QAction *showThumbnailViewAction = viewMenu->addAction("Show &thumbnails");
-    showThumbnailViewAction->setShortcut(QKeySequence(Qt::Key_T));
-    viewMenu->addAction(dockWidget->toggleViewAction());
-    dockWidget->toggleViewAction()->setShortcut(QKeySequence(Qt::Key_I));
+    QMenu *viewMenu = new QMenu("&View", menuBar);
+    m_showThumbnailViewAction = viewMenu->addAction("Show &thumbnails");
+    m_showThumbnailViewAction->setShortcut(QKeySequence(Qt::Key_T));
+    viewMenu->addAction(m_infoDockWidget->toggleViewAction());
+    m_infoDockWidget->toggleViewAction()->setShortcut(QKeySequence(Qt::Key_I));
     viewMenu->addSeparator();
-    QAction *sortOldestFirstAction = viewMenu->addAction("&Sort oldest first");
-    sortOldestFirstAction->setShortcut(QKeySequence(Qt::Key_Less, Qt::Key_C));
-    QAction *sortOldestLastAction = viewMenu->addAction("&Sort oldest last");
-    sortOldestLastAction->setShortcut(QKeySequence(Qt::Key_Greater, Qt::Key_C));
-    QAction *sortLastModifiedFirstAction = viewMenu->addAction("&Sort last modified first");
-    sortLastModifiedFirstAction->setShortcut(QKeySequence(Qt::Key_Less, Qt::Key_M));
-    QAction *sortLastModifiedLastAction = viewMenu->addAction("&Sort last modified last");
-    sortLastModifiedLastAction->setShortcut(QKeySequence(Qt::Key_Greater, Qt::Key_M));
-    menuBar()->addMenu(viewMenu);
+    m_sortOldestFirstAction = viewMenu->addAction("&Sort oldest first");
+    m_sortOldestFirstAction->setShortcut(QKeySequence(Qt::Key_Less, Qt::Key_C));
+    m_sortOldestLastAction = viewMenu->addAction("&Sort oldest last");
+    m_sortOldestLastAction->setShortcut(QKeySequence(Qt::Key_Greater, Qt::Key_C));
+    m_sortLastModifiedFirstAction = viewMenu->addAction("&Sort last modified first");
+    m_sortLastModifiedFirstAction->setShortcut(QKeySequence(Qt::Key_Less, Qt::Key_M));
+    m_sortLastModifiedLastAction = viewMenu->addAction("&Sort last modified last");
+    m_sortLastModifiedLastAction->setShortcut(QKeySequence(Qt::Key_Greater, Qt::Key_M));
+    menuBar->addMenu(viewMenu);
 
-    m_imagePreparer = new QFutureWatcher<QMap<QString, QString> >(this);
+    setMenuBar(menuBar);
+}
+
+void MainWindow::connectSignals()
+{
     connect(m_imagePreparer, SIGNAL(started()), SLOT(imagePreparationStarted()));
     connect(m_imagePreparer, SIGNAL(finished()), SLOT(imagePreparationFinished()));
     connect(m_imagePreparer, SIGNAL(resultReadyAt(int)), SLOT(imagePreparedAt(int)));
     connect(m_openDirAction, SIGNAL(triggered(bool)), SLOT(openDir()));
-    connect(quitAction, SIGNAL(triggered(bool)), SLOT(close()));
-    m_thumbnailView->connect(sortOldestFirstAction, SIGNAL(triggered(bool)),
+    connect(m_quitAction, SIGNAL(triggered(bool)), SLOT(close()));
+    m_thumbnailView->connect(m_sortOldestFirstAction, SIGNAL(triggered(bool)),
                              SLOT(sortOldestFirst()));
-    m_thumbnailView->connect(sortOldestLastAction, SIGNAL(triggered(bool)),
+    m_thumbnailView->connect(m_sortOldestLastAction, SIGNAL(triggered(bool)),
                              SLOT(sortOldestLast()));
-    m_thumbnailView->connect(sortLastModifiedFirstAction, SIGNAL(triggered(bool)),
+    m_thumbnailView->connect(m_sortLastModifiedFirstAction, SIGNAL(triggered(bool)),
                              SLOT(sortLastModifiedFirst()));
-    m_thumbnailView->connect(sortLastModifiedLastAction, SIGNAL(triggered(bool)),
+    m_thumbnailView->connect(m_sortLastModifiedLastAction, SIGNAL(triggered(bool)),
                              SLOT(sortLastModifiedLast()));
-    infoWidget->connect(m_thumbnailView, SIGNAL(currentThumbnailChanged(QMap<QString, QString>)),
-                        SLOT(setImageInfo(QMap<QString, QString>)));
-    imageWidget->connect(m_thumbnailView, SIGNAL(thumbnailActivated(QMap<QString, QString>)),
-                         SLOT(setImage(QMap<QString, QString>)));
+    m_infoWidget->connect(m_thumbnailView, SIGNAL(currentThumbnailChanged(QMap<QString, QString>)),
+                          SLOT(setImageInfo(QMap<QString, QString>)));
+    m_imageWidget->connect(m_thumbnailView, SIGNAL(thumbnailActivated(QMap<QString, QString>)),
+                           SLOT(setImage(QMap<QString, QString>)));
     connect(m_thumbnailView, SIGNAL(thumbnailActivated(QMap<QString, QString>)),
             SLOT(showImageWidget()));
-    connect(showThumbnailViewAction, SIGNAL(triggered(bool)),
+    connect(m_showThumbnailViewAction, SIGNAL(triggered(bool)),
             SLOT(showThumbnailView()));
+}
+
+MainWindow::MainWindow(QWidget *const parent)
+    : QMainWindow(parent)
+{
+
+    m_imagePreparer = new QFutureWatcher<QMap<QString, QString> >(this);
+
+    setupCentralWidget();
+    setupDockWidgets();
+    setupStatusBar();
+    setupMenuBar();
+    connectSignals();
 }
 
 MainWindow::~MainWindow()
