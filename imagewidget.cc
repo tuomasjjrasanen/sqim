@@ -29,4 +29,26 @@ void ImageWidget::setImage(QMap<QString, QString> imageInfo)
     QPixmap pixmap(QPixmap::fromImage(image));
     m_imageLabel->setPixmap(pixmap);
     m_imageLabel->adjustSize();
+    m_zoomLevel = 1.0;
+}
+
+void ImageWidget::zoomIn()
+{
+    zoomBy(1.25);
+}
+
+void ImageWidget::zoomOut()
+{
+    zoomBy(0.8);
+}
+
+void ImageWidget::zoomBy(const double zoomFactor)
+{
+    zoomTo(m_zoomLevel * zoomFactor);
+}
+
+void ImageWidget::zoomTo(const double zoomLevel)
+{
+    m_zoomLevel = qMax(0.1, qMin(3.0, zoomLevel));
+    m_imageLabel->resize(m_zoomLevel * m_imageLabel->pixmap()->size());
 }

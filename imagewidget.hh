@@ -16,9 +16,15 @@ public:
 
 public slots:
     void setImage(QMap<QString, QString> imageInfo);
+    void zoomIn();
+    void zoomOut();
+    void zoomBy(double zoomFactor);
+    void zoomTo(double zoomLevel);
 
 private:
     QLabel *m_imageLabel;
+    double m_zoomLevel;
+
 };
 
 #endif

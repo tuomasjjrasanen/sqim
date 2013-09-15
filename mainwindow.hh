@@ -47,6 +47,8 @@ private:
     QAction *m_sortLastModifiedFirstAction;
     QAction *m_sortLastModifiedLastAction;
     QAction *m_showThumbnailViewAction;
+    QAction *m_zoomInAction;
+    QAction *m_zoomOutAction;
 
     void setupDockWidgets();
     void setupCentralWidget();

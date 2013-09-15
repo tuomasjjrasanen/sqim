@@ -95,6 +95,13 @@ void MainWindow::setupMenuBar()
     m_sortLastModifiedFirstAction->setShortcut(QKeySequence(Qt::Key_Less, Qt::Key_M));
     m_sortLastModifiedLastAction = viewMenu->addAction("&Sort last modified last");
     m_sortLastModifiedLastAction->setShortcut(QKeySequence(Qt::Key_Greater, Qt::Key_M));
+
+    m_zoomInAction = viewMenu->addAction("&Zoom in");
+    m_zoomInAction->setShortcut(QKeySequence(Qt::Key_Plus));
+
+    m_zoomOutAction = viewMenu->addAction("&Zoom out");
+    m_zoomOutAction->setShortcut(QKeySequence(Qt::Key_Minus));
+
     menuBar->addMenu(viewMenu);
 
     setMenuBar(menuBar);
@@ -119,6 +126,10 @@ void MainWindow::connectSignals()
                           SLOT(setImageInfo(QMap<QString, QString>)));
     m_imageWidget->connect(m_thumbnailView, SIGNAL(thumbnailActivated(QMap<QString, QString>)),
                            SLOT(setImage(QMap<QString, QString>)));
+    m_imageWidget->connect(m_zoomInAction, SIGNAL(triggered(bool)),
+                           SLOT(zoomIn()));
+    m_imageWidget->connect(m_zoomOutAction, SIGNAL(triggered(bool)),
+                           SLOT(zoomOut()));
     connect(m_thumbnailView, SIGNAL(thumbnailActivated(QMap<QString, QString>)),
             SLOT(showImageWidget()));
     connect(m_showThumbnailViewAction, SIGNAL(triggered(bool)),
