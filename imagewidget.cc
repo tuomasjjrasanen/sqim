@@ -1,23 +1,16 @@
 #include "imagewidget.hh"
 
 #include <QImage>
-#include <QScrollArea>
-#include <QVBoxLayout>
 
 ImageWidget::ImageWidget(QWidget *parent)
-    :QWidget(parent)
+    :QScrollArea(parent)
 {
-    QVBoxLayout *layout = new QVBoxLayout(this);
-    QScrollArea *scrollArea = new QScrollArea(this);
     m_imageLabel = new QLabel(this);
-    m_imageLabel->setSizePolicy(QSizePolicy::Ignored, QSizePolicy::Ignored);
     m_imageLabel->setScaledContents(true);
 
-    scrollArea->setBackgroundRole(QPalette::Dark);
-    scrollArea->setWidget(m_imageLabel);
-    scrollArea->setAlignment(Qt::AlignHCenter | Qt::AlignVCenter);
-    layout->addWidget(scrollArea);
-    setLayout(layout);
+    setBackgroundRole(QPalette::Dark);
+    setWidget(m_imageLabel);
+    setAlignment(Qt::AlignHCenter | Qt::AlignVCenter);
 }
 
 ImageWidget::~ImageWidget()
@@ -52,4 +45,20 @@ void ImageWidget::zoomTo(const double zoomLevel)
 {
     m_zoomLevel = qMax(0.1, qMin(3.0, zoomLevel));
     m_imageLabel->resize(m_zoomLevel * m_imageLabel->pixmap()->size());
+}
+
+void ImageWidget::wheelEvent(QWheelEvent *event)
+{
+    if (event->modifiers() & Qt::ControlModifier
+        && event->orientation() == Qt::Vertical
+        && event->buttons() == Qt::NoButton) {
+        if (event->delta() > 0) {
+            zoomIn();
+        } else {
+            zoomOut();
+        }
+        event->accept();
+        return;
+    }
+    QScrollArea::wheelEvent(event);
 }

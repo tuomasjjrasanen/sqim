@@ -3,10 +3,12 @@
 
 #include <QLabel>
 #include <QMap>
+#include <QScrollArea>
 #include <QString>
+#include <QWheelEvent>
 #include <QWidget>
 
-class ImageWidget : public QWidget
+class ImageWidget : public QScrollArea
 {
     Q_OBJECT
 
@@ -20,6 +22,9 @@ public slots:
     void zoomOut();
     void zoomBy(double zoomFactor);
     void zoomTo(double zoomLevel);
+
+protected:
+    void wheelEvent(QWheelEvent *event);
 
 private:
     QLabel *m_imageLabel;
