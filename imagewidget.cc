@@ -15,6 +15,7 @@ ImageWidget::ImageWidget(QWidget *parent)
 
     scrollArea->setBackgroundRole(QPalette::Dark);
     scrollArea->setWidget(m_imageLabel);
+    scrollArea->setAlignment(Qt::AlignHCenter | Qt::AlignVCenter);
     layout->addWidget(scrollArea);
     setLayout(layout);
 }
