@@ -22,8 +22,12 @@ void ImageWidget::setImage(QMap<QString, QString> imageInfo)
     QImage image(imageInfo.value("filepath"));
     QPixmap pixmap(QPixmap::fromImage(image));
     m_imageLabel->setPixmap(pixmap);
-    m_imageLabel->adjustSize();
-    m_zoomLevel = 1.0;
+
+    // Zoom out to fit the viewport.
+    QSizeF a(pixmap.size());
+    QSizeF b(a);
+    b.scale(maximumViewportSize(), Qt::KeepAspectRatio);
+    zoomTo(qMin(1.0, qMin(b.width() / a.width(), b.height() / a.height())));
 }
 
 void ImageWidget::zoomIn()
