@@ -30,36 +30,24 @@ static QStringList findFiles(QString dir)
     return retval;
 }
 
-void MainWindow::showImageWidget()
-{
-    m_viewStack->setCurrentIndex(1);
-}
-
-void MainWindow::showThumbnailView()
-{
-    m_viewStack->setCurrentIndex(0);
-}
-
 void MainWindow::setupCentralWidget()
 {
-    m_viewStack = new QStackedWidget(this);
-    m_thumbnailView = new ThumbnailView(m_viewStack);
-    m_imageWidget = new ImageWidget(m_viewStack);
+    m_imageWidget = new ImageWidget(this);
 
-    m_viewStack->addWidget(m_thumbnailView);
-    m_viewStack->addWidget(m_imageWidget);
-
-    setCentralWidget(m_viewStack);
+    setCentralWidget(m_imageWidget);
 }
 
 void MainWindow::setupDockWidgets()
 {
     m_infoDockWidget = new QDockWidget("&Image info", this);
     m_infoWidget = new ImageInfoWidget(m_infoDockWidget);
-
     m_infoDockWidget->setWidget(m_infoWidget);
-
     addDockWidget(Qt::BottomDockWidgetArea, m_infoDockWidget);
+
+    m_thumbnailDockWidget = new QDockWidget("&Thumbnails", this);
+    m_thumbnailView = new ThumbnailView(m_thumbnailDockWidget);
+    m_thumbnailDockWidget->setWidget(m_thumbnailView);
+    addDockWidget(Qt::LeftDockWidgetArea, m_thumbnailDockWidget);
 }
 
 void MainWindow::setupStatusBar()
@@ -82,8 +70,8 @@ void MainWindow::setupMenuBar()
     menuBar->addMenu(fileMenu);
 
     QMenu *viewMenu = new QMenu("&View", menuBar);
-    m_showThumbnailViewAction = viewMenu->addAction("Show &thumbnails");
-    m_showThumbnailViewAction->setShortcut(QKeySequence(Qt::Key_T));
+    viewMenu->addAction(m_thumbnailDockWidget->toggleViewAction());
+    m_thumbnailDockWidget->toggleViewAction()->setShortcut(QKeySequence(Qt::Key_T));
     viewMenu->addAction(m_infoDockWidget->toggleViewAction());
     m_infoDockWidget->toggleViewAction()->setShortcut(QKeySequence(Qt::Key_I));
     viewMenu->addSeparator();
@@ -130,10 +118,6 @@ void MainWindow::connectSignals()
                            SLOT(zoomIn()));
     m_imageWidget->connect(m_zoomOutAction, SIGNAL(triggered(bool)),
                            SLOT(zoomOut()));
-    connect(m_thumbnailView, SIGNAL(thumbnailActivated(QMap<QString, QString>)),
-            SLOT(showImageWidget()));
-    connect(m_showThumbnailViewAction, SIGNAL(triggered(bool)),
-            SLOT(showThumbnailView()));
 }
 
 MainWindow::MainWindow(QWidget *const parent)

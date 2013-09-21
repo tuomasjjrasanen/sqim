@@ -7,7 +7,6 @@
 #include <QMainWindow>
 #include <QMap>
 #include <QMenuBar>
-#include <QStackedWidget>
 #include <QStatusBar>
 #include <QStringList>
 #include <QStringList>
@@ -30,17 +29,15 @@ private slots:
     void imagePreparedAt(int i);
     void imagePreparationStarted();
     void imagePreparationFinished();
-    void showImageWidget();
-    void showThumbnailView();
 
 private:
     QFutureWatcher<QMap<QString, QString> > *m_imagePreparer;
     ThumbnailView *m_thumbnailView;
     QAction *m_openDirAction;
-    QStackedWidget *m_viewStack;
     ImageInfoWidget *m_infoWidget;
     ImageWidget *m_imageWidget;
     QDockWidget *m_infoDockWidget;
+    QDockWidget *m_thumbnailDockWidget;
     QAction *m_quitAction;
     QAction *m_sortOldestFirstAction;
     QAction *m_sortOldestLastAction;
