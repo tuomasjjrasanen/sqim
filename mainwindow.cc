@@ -42,7 +42,7 @@ void MainWindow::setupDockWidgets()
     m_infoDockWidget = new QDockWidget("&Image info", this);
     m_infoWidget = new ImageInfoWidget(m_infoDockWidget);
     m_infoDockWidget->setWidget(m_infoWidget);
-    addDockWidget(Qt::BottomDockWidgetArea, m_infoDockWidget);
+    addDockWidget(Qt::LeftDockWidgetArea, m_infoDockWidget);
 
     m_thumbnailDockWidget = new QDockWidget("&Thumbnails", this);
     m_thumbnailView = new ThumbnailView(m_thumbnailDockWidget);
