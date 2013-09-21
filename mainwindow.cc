@@ -112,7 +112,7 @@ void MainWindow::connectSignals()
                              SLOT(sortLastModifiedLast()));
     m_infoWidget->connect(m_thumbnailView, SIGNAL(currentThumbnailChanged(QMap<QString, QString>)),
                           SLOT(setImageInfo(QMap<QString, QString>)));
-    m_imageWidget->connect(m_thumbnailView, SIGNAL(thumbnailActivated(QMap<QString, QString>)),
+    m_imageWidget->connect(m_thumbnailView, SIGNAL(currentThumbnailChanged(QMap<QString, QString>)),
                            SLOT(setImage(QMap<QString, QString>)));
     m_imageWidget->connect(m_zoomInAction, SIGNAL(triggered(bool)),
                            SLOT(zoomIn()));

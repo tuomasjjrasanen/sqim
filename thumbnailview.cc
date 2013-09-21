@@ -23,9 +23,6 @@ ThumbnailView::ThumbnailView(QWidget *parent) :
     setUniformItemSizes(true);
 
     setModel(new QStandardItemModel(this));
-    connect(this, SIGNAL(activated(const QModelIndex&)),
-            SLOT(fireThumbnailActivated(const QModelIndex&)));
-
 }
 
 ThumbnailView::~ThumbnailView()
@@ -88,11 +85,4 @@ void ThumbnailView::currentChanged(const QModelIndex &current, const QModelIndex
     QStandardItemModel *m = (QStandardItemModel*) model();
     QMap<QString, QString> imageInfo = m_imageInfoMap.value(m->item(current.row(), COL_FILEPATH)->text());
     emit currentThumbnailChanged(imageInfo);
-}
-
-void ThumbnailView::fireThumbnailActivated(const QModelIndex &index)
-{
-    QStandardItemModel *m = (QStandardItemModel*) model();
-    QMap<QString, QString> imageInfo = m_imageInfoMap.value(m->item(index.row(), COL_FILEPATH)->text());
-    emit thumbnailActivated(imageInfo);
 }
