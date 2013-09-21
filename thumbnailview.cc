@@ -56,6 +56,10 @@ void ThumbnailView::addThumbnail(QMap<QString, QString> imageInfo)
     ((QStandardItemModel *)model())->appendRow(items);
 
     m_imageInfoMap.insert(imageInfo.value("filepath"), imageInfo);
+
+    if (((QStandardItemModel *)model())->rowCount() == 1) {
+        setCurrentIndex(((QStandardItemModel *)model())->index(0, 0));
+    }
 }
 
 void ThumbnailView::sortOldestFirst()
