@@ -85,28 +85,30 @@ void MainWindow::setupMenuBar()
     m_quitAction->setShortcut(QKeySequence(Qt::Key_Q));
     menuBar->addMenu(fileMenu);
 
-    QMenu *viewMenu = new QMenu("&View", menuBar);
-    viewMenu->addAction(m_thumbnailDockWidget->toggleViewAction());
-    m_thumbnailDockWidget->toggleViewAction()->setShortcut(QKeySequence(Qt::Key_T));
-    viewMenu->addAction(m_infoDockWidget->toggleViewAction());
-    m_infoDockWidget->toggleViewAction()->setShortcut(QKeySequence(Qt::Key_I));
-    viewMenu->addSeparator();
-    m_sortOldestFirstAction = viewMenu->addAction("&Sort oldest first");
+    QMenu *thumbnailsMenu = new QMenu("&Thumbnails", menuBar);
+    m_sortOldestFirstAction = thumbnailsMenu->addAction("&Sort oldest first");
     m_sortOldestFirstAction->setShortcut(QKeySequence(Qt::Key_Less, Qt::Key_C));
-    m_sortOldestLastAction = viewMenu->addAction("&Sort oldest last");
+    m_sortOldestLastAction = thumbnailsMenu->addAction("&Sort oldest last");
     m_sortOldestLastAction->setShortcut(QKeySequence(Qt::Key_Greater, Qt::Key_C));
-    m_sortLastModifiedFirstAction = viewMenu->addAction("&Sort last modified first");
+    m_sortLastModifiedFirstAction = thumbnailsMenu->addAction("&Sort last modified first");
     m_sortLastModifiedFirstAction->setShortcut(QKeySequence(Qt::Key_Less, Qt::Key_M));
-    m_sortLastModifiedLastAction = viewMenu->addAction("&Sort last modified last");
+    m_sortLastModifiedLastAction = thumbnailsMenu->addAction("&Sort last modified last");
     m_sortLastModifiedLastAction->setShortcut(QKeySequence(Qt::Key_Greater, Qt::Key_M));
+    menuBar->addMenu(thumbnailsMenu);
 
-    m_zoomInAction = viewMenu->addAction("&Zoom in");
+    QMenu *imageMenu = new QMenu("&Image", menuBar);
+    m_zoomInAction = imageMenu->addAction("&Zoom in");
     m_zoomInAction->setShortcut(QKeySequence(Qt::Key_Plus));
-
-    m_zoomOutAction = viewMenu->addAction("&Zoom out");
+    m_zoomOutAction = imageMenu->addAction("&Zoom out");
     m_zoomOutAction->setShortcut(QKeySequence(Qt::Key_Minus));
+    menuBar->addMenu(imageMenu);
 
-    menuBar->addMenu(viewMenu);
+    QMenu *windowsMenu = new QMenu("&Windows", menuBar);
+    windowsMenu->addAction(m_thumbnailDockWidget->toggleViewAction());
+    m_thumbnailDockWidget->toggleViewAction()->setShortcut(QKeySequence(Qt::Key_T));
+    windowsMenu->addAction(m_infoDockWidget->toggleViewAction());
+    m_infoDockWidget->toggleViewAction()->setShortcut(QKeySequence(Qt::Key_I));
+    menuBar->addMenu(windowsMenu);
 
     setMenuBar(menuBar);
 }
