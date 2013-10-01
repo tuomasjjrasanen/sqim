@@ -63,6 +63,10 @@ void ImageWidget::zoomBy(const double zoomFactor)
 
 void ImageWidget::zoomTo(const double zoomLevel)
 {
+    if (!m_imageLabel->pixmap()) {
+        // Image has not been set yet.
+        return;
+    }
     m_zoomLevel = qMax(0.1, qMin(3.0, zoomLevel));
     m_imageLabel->resize(m_zoomLevel * m_imageLabel->pixmap()->size());
 }
