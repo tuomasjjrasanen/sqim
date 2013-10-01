@@ -17,6 +17,7 @@
 #include <QFileDialog>
 #include <QFormLayout>
 #include <QLabel>
+#include <QMessageBox>
 #include <QProcess>
 #include <QtCore>
 
@@ -44,6 +45,23 @@ static QStringList findFiles(QString dir)
     }
 
     return retval;
+}
+
+void MainWindow::about()
+{
+    static QString aboutText = QString::fromUtf8(
+        "<h1>Simply Qute Image Manager</h1>"
+        "<p>Copyright © 2013 <a href=\"http://tjjr.fi\">Tuomas Räsänen</a></p>"
+        "<p>This program is free software: you can redistribute it and/or modify "
+        "it under the terms of the GNU General Public License as published by "
+        "the Free Software Foundation, either version 3 of the License, or (at "
+        "your option) any later version.</p>"
+        "<p>This program is distributed in the hope that it will be useful, but "
+        "WITHOUT ANY WARRANTY; without even the implied warranty of "
+        "MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.</p>"
+        "<p>See the <a href=\"https://www.gnu.org/licenses/gpl-3.0.html\">GNU "
+        "General Public License</a> for more details.</p>");
+    QMessageBox::about(this, "About SQIM", aboutText);
 }
 
 void MainWindow::setupCentralWidget()
@@ -110,6 +128,10 @@ void MainWindow::setupMenuBar()
     m_infoDockWidget->toggleViewAction()->setShortcut(QKeySequence(Qt::Key_I));
     menuBar->addMenu(windowsMenu);
 
+    QMenu *helpMenu = new QMenu("&Help", menuBar);
+    m_aboutAction = helpMenu->addAction("&About");
+    menuBar->addMenu(helpMenu);
+
     setMenuBar(menuBar);
 }
 
@@ -136,6 +158,7 @@ void MainWindow::connectSignals()
                            SLOT(zoomIn()));
     m_imageWidget->connect(m_zoomOutAction, SIGNAL(triggered(bool)),
                            SLOT(zoomOut()));
+    connect(m_aboutAction, SIGNAL(triggered(bool)), SLOT(about()));
 }
 
 MainWindow::MainWindow(QWidget *const parent)

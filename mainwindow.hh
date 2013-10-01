@@ -45,6 +45,7 @@ private slots:
     void imagePreparedAt(int i);
     void imagePreparationStarted();
     void imagePreparationFinished();
+    void about();
 
 private:
     QFutureWatcher<QMap<QString, QString> > *m_imagePreparer;
@@ -62,6 +63,7 @@ private:
     QAction *m_showThumbnailViewAction;
     QAction *m_zoomInAction;
     QAction *m_zoomOutAction;
+    QAction *m_aboutAction;
 
     void setupDockWidgets();
     void setupCentralWidget();
