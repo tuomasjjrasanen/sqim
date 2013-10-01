@@ -23,6 +23,7 @@ enum {
     COL_FILEPATH,
     COL_TIMESTAMP,
     COL_MTIME,
+    COL_FILESIZE,
     COLS
 };
 
@@ -68,6 +69,10 @@ void ThumbnailView::addThumbnail(QMap<QString, QString> imageInfo)
     item = new QStandardItem();
     item->setText(imageInfo.value("modificationTime"));
     items.insert(COL_MTIME, item);
+
+    item = new QStandardItem();
+    item->setText(imageInfo.value("fileSize"));
+    items.insert(COL_FILESIZE, item);
 
     ((QStandardItemModel *)model())->appendRow(items);
 

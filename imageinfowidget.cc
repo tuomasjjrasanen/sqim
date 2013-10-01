@@ -24,15 +24,18 @@ ImageInfoWidget::ImageInfoWidget(QWidget *parent)
     m_filepathLabel = new QLabel();
     m_timestampLabel = new QLabel();
     m_modificationTimeLabel = new QLabel();
+    m_fileSizeLabel = new QLabel();
 
     m_filepathLabel->setTextInteractionFlags(Qt::TextBrowserInteraction);
     m_timestampLabel->setTextInteractionFlags(Qt::TextBrowserInteraction);
     m_modificationTimeLabel->setTextInteractionFlags(Qt::TextBrowserInteraction);
+    m_fileSizeLabel->setTextInteractionFlags(Qt::TextBrowserInteraction);
 
     QFormLayout *infoLayout = new QFormLayout(this);
     infoLayout->addRow("Filepath", m_filepathLabel);
     infoLayout->addRow("Timestamp", m_timestampLabel);
     infoLayout->addRow("Last modified", m_modificationTimeLabel);
+    infoLayout->addRow("File size", m_fileSizeLabel);
     setLayout(infoLayout);
 }
 
@@ -45,4 +48,5 @@ void ImageInfoWidget::setImageInfo(QMap<QString, QString> imageInfo)
     m_filepathLabel->setText(imageInfo.value("filepath"));
     m_timestampLabel->setText(imageInfo.value("timestamp"));
     m_modificationTimeLabel->setText(imageInfo.value("modificationTime"));
+    m_fileSizeLabel->setText(imageInfo.value("fileSize"));
 }

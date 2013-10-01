@@ -157,6 +157,23 @@ MainWindow::~MainWindow()
     m_imagePreparer->waitForFinished();
 }
 
+static QString fileSizeToString(const qint64 bytes)
+{
+    static double KiB = 1024;
+    static double MiB = KiB * KiB;
+    static double GiB = MiB * KiB;
+    if (bytes > GiB) {
+        return QString::number(bytes / GiB, 'f', 1) + " GiB (" + QString::number(bytes) + " B)";
+    }
+    if (bytes > MiB) {
+        return QString::number(bytes / MiB, 'f', 1) + " MiB (" + QString::number(bytes) + " B)";
+    }
+    if (bytes > KiB) {
+        return QString::number(bytes / KiB, 'f', 1) + " KiB (" + QString::number(bytes) + " B)";
+    }
+    return QString::number(bytes) + " B";
+}
+
 static QMap<QString, QString> prepareImage(const QString &filepath)
 {
     QMap<QString, QString> imageInfo;
@@ -164,6 +181,7 @@ static QMap<QString, QString> prepareImage(const QString &filepath)
 
     imageInfo.insert("filepath", imageFileInfo.canonicalFilePath());
     imageInfo.insert("modificationTime", imageFileInfo.lastModified().toString("yyyy-MM-ddThh:mm:ss"));
+    imageInfo.insert("fileSize", fileSizeToString(imageFileInfo.size()));
 
     QStringList args;
     args << imageFileInfo.canonicalFilePath();

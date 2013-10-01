@@ -35,6 +35,7 @@ private:
     QLabel *m_filepathLabel;
     QLabel *m_timestampLabel;
     QLabel *m_modificationTimeLabel;
+    QLabel *m_fileSizeLabel;
 
 };
 
