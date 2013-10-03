@@ -199,12 +199,14 @@ static QString fileSizeToString(const qint64 bytes)
 
 static QMap<QString, QString> prepareImage(const QString &filepath)
 {
+    QImage image(filepath);
     QMap<QString, QString> imageInfo;
     QFileInfo imageFileInfo(filepath);
 
     imageInfo.insert("filepath", imageFileInfo.canonicalFilePath());
     imageInfo.insert("modificationTime", imageFileInfo.lastModified().toString("yyyy-MM-ddThh:mm:ss"));
     imageInfo.insert("fileSize", fileSizeToString(imageFileInfo.size()));
+    imageInfo.insert("imageSize", QString::number(image.width()) + " x " + QString::number(image.height()) + " (" + QString::number(image.height() * image.width() / 1000000.0, 'f', 1) + " megapixels)");
 
     QStringList args;
     args << imageFileInfo.canonicalFilePath();

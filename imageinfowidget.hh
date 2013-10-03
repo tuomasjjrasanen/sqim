@@ -36,6 +36,7 @@ private:
     QLabel *m_timestampLabel;
     QLabel *m_modificationTimeLabel;
     QLabel *m_fileSizeLabel;
+    QLabel *m_imageSizeLabel;
 
 };
 
