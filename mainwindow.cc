@@ -259,11 +259,6 @@ void MainWindow::imagePreparedAt(const int i)
 {
     const QMap<QString, QString> imageInfo(m_imagePreparer->resultAt(i));
 
-    foreach (QString value, imageInfo) {
-        if (value.isEmpty())
-            return;
-    }
-    
     m_thumbnailView->addThumbnail(imageInfo);
 }
 
