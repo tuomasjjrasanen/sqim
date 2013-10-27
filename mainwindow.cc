@@ -229,6 +229,11 @@ static QMap<QString, QString> prepareImage(const QString &filepath)
     QMap<QString, QString> imageInfo;
     QFileInfo imageFileInfo(filepath);
 
+    if (!image.format()) {
+        qWarning() << filepath << " has unknown image format";
+        return imageInfo;
+    }
+
     imageInfo.insert("filepath", imageFileInfo.canonicalFilePath());
     imageInfo.insert("modificationTime", imageFileInfo.lastModified().toString("yyyy-MM-ddThh:mm:ss"));
     imageInfo.insert("fileSize", fileSizeToString(imageFileInfo.size()));
@@ -271,6 +276,10 @@ void MainWindow::openDir()
 void MainWindow::imagePreparedAt(const int i)
 {
     const QMap<QString, QString> imageInfo(m_imagePreparer->resultAt(i));
+
+    if (imageInfo.empty()) {
+        return;
+    }
 
     m_thumbnailView->addThumbnail(imageInfo);
 }
