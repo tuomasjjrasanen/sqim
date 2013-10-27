@@ -20,6 +20,9 @@
 #include <QMessageBox>
 #include <QProcess>
 #include <QtCore>
+#include <QtDebug>
+
+#include <exiv2/exiv2.hpp>
 
 #include "mainwindow.hh"
 
@@ -197,6 +200,29 @@ static QString fileSizeToString(const qint64 bytes)
     return QString::number(bytes) + " B";
 }
 
+static QString getTimestamp(const QString &filepath)
+{
+    try {
+        Exiv2::Image::AutoPtr image = Exiv2::ImageFactory::open(filepath.toStdString());
+        if (image.get() == 0) {
+            qWarning() << filepath << " is not recognized as a valid image file";
+            return "";
+        }
+        image->readMetadata();
+
+        Exiv2::ExifData &exifData = image->exifData();
+        if (exifData.empty()) {
+            qWarning() << filepath << " does not have EXIF data";
+            return "";
+        }
+
+        return QString::fromStdString(exifData["Exif.Photo.DateTimeOriginal"].toString());
+    } catch (Exiv2::AnyError& e) {
+        qWarning() << "failed to retrieve timestamp from " << filepath << ": " << e.what();
+    }
+    return "";
+}
+
 static QMap<QString, QString> prepareImage(const QString &filepath)
 {
     QImage image(filepath);
@@ -207,6 +233,7 @@ static QMap<QString, QString> prepareImage(const QString &filepath)
     imageInfo.insert("modificationTime", imageFileInfo.lastModified().toString("yyyy-MM-ddThh:mm:ss"));
     imageInfo.insert("fileSize", fileSizeToString(imageFileInfo.size()));
     imageInfo.insert("imageSize", QString::number(image.width()) + " x " + QString::number(image.height()) + " (" + QString::number(image.height() * image.width() / 1000000.0, 'f', 1) + " megapixels)");
+    imageInfo.insert("timestamp", getTimestamp(filepath));
 
     QStringList args;
     args << imageFileInfo.canonicalFilePath();
@@ -216,21 +243,7 @@ static QMap<QString, QString> prepareImage(const QString &filepath)
     if (!cmdMakeThumbnail.waitForStarted())
         return imageInfo;
 
-    QProcess cmdParseDatetime;
-    cmdParseDatetime.start(SQIM_CMD_PARSE_DATETIME, args);
-    if (!cmdParseDatetime.waitForStarted())
-        return imageInfo;
-
     QTextStream cmdMakeThumbnailOut(&cmdMakeThumbnail);
-    QTextStream cmdParseDatetimeOut(&cmdParseDatetime);
-
-    if (!cmdParseDatetime.waitForFinished())
-        return imageInfo;
-
-    if (cmdParseDatetime.exitCode())
-        return imageInfo;
-
-    imageInfo.insert("timestamp", cmdParseDatetimeOut.readLine());
 
     if (!cmdMakeThumbnail.waitForFinished())
         return imageInfo;
