@@ -31,14 +31,9 @@ isEmpty(PREFIX) {
 BINDIR=$$PREFIX/bin
 LIBDIR=$$PREFIX/lib/sqim
 
-DEFINES += SQIM_CMD_MAKE_THUMBNAIL=\\\"$$LIBDIR/make-thumbnail\\\"
-
 sqim.path = $$BINDIR
 sqim.files = sqim
 
-sqimscripts.path = $$LIBDIR
-sqimscripts.files = make-thumbnail
-
-INSTALLS += sqim sqimscripts
+INSTALLS += sqim
 
 LIBS += -lexiv2

@@ -223,6 +223,35 @@ static QString getTimestamp(const QString &filepath)
     return "";
 }
 
+static QString makeThumbnail(const QImage &image, const QFileInfo &imageFileInfo)
+{
+    QFileInfo thumbnailFileInfo(QDir::homePath()
+                                + "/.cache/sqim"
+                                + imageFileInfo.canonicalFilePath()
+                                + "/thumbnail.png");
+
+    // Ensure the thumbnail directory exists.
+    thumbnailFileInfo.dir().mkpath(".");
+
+    if (!thumbnailFileInfo.exists()
+        || thumbnailFileInfo.lastModified() < imageFileInfo.lastModified()) {
+        QImage thumbnail = image.scaled(50, 50, Qt::KeepAspectRatio);
+        if (thumbnail.isNull()) {
+            qWarning() << "failed to create a thumbnail image from "
+                       << imageFileInfo.filePath();
+            return "";
+        }
+
+        if (!thumbnail.save(thumbnailFileInfo.filePath())) {
+            qWarning() << "failed to save thumbnail to "
+                       << thumbnailFileInfo.filePath();
+            return "";
+        }
+    }
+
+    return thumbnailFileInfo.filePath();
+}
+
 static QMap<QString, QString> prepareImage(const QString &filepath)
 {
     QImage image(filepath);
@@ -234,29 +263,18 @@ static QMap<QString, QString> prepareImage(const QString &filepath)
         return imageInfo;
     }
 
+    QString thumbnailFilepath = makeThumbnail(image, imageFileInfo);
+    if (thumbnailFilepath.isEmpty()) {
+        qWarning() << "failed to create a thumbnail from " << filepath;
+        return imageInfo;
+    }
+
     imageInfo.insert("filepath", imageFileInfo.canonicalFilePath());
     imageInfo.insert("modificationTime", imageFileInfo.lastModified().toString("yyyy-MM-ddThh:mm:ss"));
     imageInfo.insert("fileSize", fileSizeToString(imageFileInfo.size()));
     imageInfo.insert("imageSize", QString::number(image.width()) + " x " + QString::number(image.height()) + " (" + QString::number(image.height() * image.width() / 1000000.0, 'f', 1) + " megapixels)");
     imageInfo.insert("timestamp", getTimestamp(filepath));
-
-    QStringList args;
-    args << imageFileInfo.canonicalFilePath();
-
-    QProcess cmdMakeThumbnail;
-    cmdMakeThumbnail.start(SQIM_CMD_MAKE_THUMBNAIL, args);
-    if (!cmdMakeThumbnail.waitForStarted())
-        return imageInfo;
-
-    QTextStream cmdMakeThumbnailOut(&cmdMakeThumbnail);
-
-    if (!cmdMakeThumbnail.waitForFinished())
-        return imageInfo;
-
-    if (cmdMakeThumbnail.exitCode())
-        return imageInfo;
-
-    imageInfo.insert("thumbnailFilepath", cmdMakeThumbnailOut.readLine());
+    imageInfo.insert("thumbnailFilepath", thumbnailFilepath);
 
     return imageInfo;
 }
