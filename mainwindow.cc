@@ -192,6 +192,25 @@ static QString fileSizeToString(const qint64 bytes)
     return QString::number(bytes) + " B";
 }
 
+static QString getImageSize(const QString &filepath)
+{
+    try {
+        Exiv2::Image::AutoPtr image = Exiv2::ImageFactory::open(filepath.toStdString());
+        if (image.get() == 0) {
+            qWarning() << filepath << " is not recognized as a valid image file";
+            return "";
+        }
+        image->readMetadata();
+
+        const int w = image->pixelWidth();
+        const int h = image->pixelHeight();
+        return QString("%1 x %2 (%3 megapixels)").arg(w).arg(h).arg(w * h / 1000000.0, 0, 'f', 1);
+    } catch (Exiv2::AnyError& e) {
+        qWarning() << "failed to retrieve timestamp from " << filepath << ": " << e.what();
+    }
+    return "";
+}
+
 static QString getTimestamp(const QString &filepath)
 {
     try {
@@ -215,7 +234,7 @@ static QString getTimestamp(const QString &filepath)
     return "";
 }
 
-static QString makeThumbnail(const QImage &image, const QFileInfo &imageFileInfo)
+static QString makeThumbnail(const QFileInfo &imageFileInfo)
 {
     QFileInfo thumbnailFileInfo(QDir::homePath()
                                 + "/.cache/sqim"
@@ -227,6 +246,12 @@ static QString makeThumbnail(const QImage &image, const QFileInfo &imageFileInfo
 
     if (!thumbnailFileInfo.exists()
         || thumbnailFileInfo.lastModified() < imageFileInfo.lastModified()) {
+        QImage image(imageFileInfo.filePath());
+        if (!image.format()) {
+            qWarning() << imageFileInfo.filePath() << " has unknown image format";
+            return "";
+        }
+
         QImage thumbnail = image.scaled(50, 50, Qt::KeepAspectRatio);
         if (thumbnail.isNull()) {
             qWarning() << "failed to create a thumbnail image from "
@@ -246,16 +271,10 @@ static QString makeThumbnail(const QImage &image, const QFileInfo &imageFileInfo
 
 static QMap<QString, QString> prepareImage(const QString &filepath)
 {
-    QImage image(filepath);
     QMap<QString, QString> imageInfo;
     QFileInfo imageFileInfo(filepath);
 
-    if (!image.format()) {
-        qWarning() << filepath << " has unknown image format";
-        return imageInfo;
-    }
-
-    QString thumbnailFilepath = makeThumbnail(image, imageFileInfo);
+    QString thumbnailFilepath = makeThumbnail(imageFileInfo);
     if (thumbnailFilepath.isEmpty()) {
         qWarning() << "failed to create a thumbnail from " << filepath;
         return imageInfo;
@@ -264,7 +283,7 @@ static QMap<QString, QString> prepareImage(const QString &filepath)
     imageInfo.insert("filepath", imageFileInfo.canonicalFilePath());
     imageInfo.insert("modificationTime", imageFileInfo.lastModified().toString("yyyy-MM-ddThh:mm:ss"));
     imageInfo.insert("fileSize", fileSizeToString(imageFileInfo.size()));
-    imageInfo.insert("imageSize", QString::number(image.width()) + " x " + QString::number(image.height()) + " (" + QString::number(image.height() * image.width() / 1000000.0, 'f', 1) + " megapixels)");
+    imageInfo.insert("imageSize", getImageSize(filepath));
     imageInfo.insert("timestamp", getTimestamp(filepath));
     imageInfo.insert("thumbnailFilepath", thumbnailFilepath);
 
