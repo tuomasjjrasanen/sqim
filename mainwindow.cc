@@ -192,46 +192,38 @@ static QString fileSizeToString(const qint64 bytes)
     return QString::number(bytes) + " B";
 }
 
-static QString getImageSize(const QString &filepath)
+static bool fillWithMetadata(const QString &filepath,
+                             QMap<QString, QString> &imageInfo)
 {
     try {
         Exiv2::Image::AutoPtr image = Exiv2::ImageFactory::open(filepath.toStdString());
         if (image.get() == 0) {
             qWarning() << filepath << " is not recognized as a valid image file";
-            return "";
+            return false;
         }
         image->readMetadata();
 
         const int w = image->pixelWidth();
         const int h = image->pixelHeight();
-        return QString("%1 x %2 (%3 megapixels)").arg(w).arg(h).arg(w * h / 1000000.0, 0, 'f', 1);
-    } catch (Exiv2::AnyError& e) {
-        qWarning() << "failed to retrieve timestamp from " << filepath << ": " << e.what();
-    }
-    return "";
-}
-
-static QString getTimestamp(const QString &filepath)
-{
-    try {
-        Exiv2::Image::AutoPtr image = Exiv2::ImageFactory::open(filepath.toStdString());
-        if (image.get() == 0) {
-            qWarning() << filepath << " is not recognized as a valid image file";
-            return "";
-        }
-        image->readMetadata();
+        imageInfo.insert("imageSize",
+                         QString("%1 x %2 (%3 megapixels)")
+                         .arg(w).arg(h).arg(w * h / 1000000.0, 0, 'f', 1));
 
         Exiv2::ExifData &exifData = image->exifData();
         if (exifData.empty()) {
             qWarning() << filepath << " does not have EXIF data";
-            return "";
+            return false;
         }
 
-        return QString::fromStdString(exifData["Exif.Photo.DateTimeOriginal"].toString());
+        imageInfo.insert("timestamp",
+                         QString::fromStdString(
+                             exifData["Exif.Photo.DateTimeOriginal"].toString()));
+
+        return true;
     } catch (Exiv2::AnyError& e) {
-        qWarning() << "failed to retrieve timestamp from " << filepath << ": " << e.what();
+        qWarning() << "failed to retrieve metadata from " << filepath << ": " << e.what();
     }
-    return "";
+    return false;
 }
 
 static QString makeThumbnail(const QFileInfo &imageFileInfo)
@@ -283,9 +275,8 @@ static QMap<QString, QString> prepareImage(const QString &filepath)
     imageInfo.insert("filepath", imageFileInfo.canonicalFilePath());
     imageInfo.insert("modificationTime", imageFileInfo.lastModified().toString("yyyy-MM-ddThh:mm:ss"));
     imageInfo.insert("fileSize", fileSizeToString(imageFileInfo.size()));
-    imageInfo.insert("imageSize", getImageSize(filepath));
-    imageInfo.insert("timestamp", getTimestamp(filepath));
     imageInfo.insert("thumbnailFilepath", thumbnailFilepath);
+    fillWithMetadata(filepath, imageInfo);
 
     return imageInfo;
 }
