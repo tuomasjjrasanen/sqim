@@ -88,24 +88,14 @@ void ThumbnailView::addThumbnail(QMap<QString, QString> imageInfo)
     }
 }
 
-void ThumbnailView::sortOldestFirst()
+void ThumbnailView::sortAscTimeOrder()
 {
     model()->sort(COL_TIMESTAMP, Qt::AscendingOrder);
 }
 
-void ThumbnailView::sortOldestLast()
+void ThumbnailView::sortDescTimeOrder()
 {
     model()->sort(COL_TIMESTAMP, Qt::DescendingOrder);
-}
-
-void ThumbnailView::sortLastModifiedFirst()
-{
-    model()->sort(COL_MTIME, Qt::DescendingOrder);
-}
-
-void ThumbnailView::sortLastModifiedLast()
-{
-    model()->sort(COL_MTIME, Qt::AscendingOrder);
 }
 
 void ThumbnailView::currentChanged(const QModelIndex &current, const QModelIndex &previous)

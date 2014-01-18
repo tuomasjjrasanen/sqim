@@ -107,14 +107,10 @@ void MainWindow::setupMenuBar()
     menuBar->addMenu(fileMenu);
 
     QMenu *thumbnailsMenu = new QMenu("&Thumbnails", menuBar);
-    m_sortOldestFirstAction = thumbnailsMenu->addAction("&Sort oldest first");
-    m_sortOldestFirstAction->setShortcut(QKeySequence(Qt::Key_Less, Qt::Key_C));
-    m_sortOldestLastAction = thumbnailsMenu->addAction("&Sort oldest last");
-    m_sortOldestLastAction->setShortcut(QKeySequence(Qt::Key_Greater, Qt::Key_C));
-    m_sortLastModifiedFirstAction = thumbnailsMenu->addAction("&Sort last modified first");
-    m_sortLastModifiedFirstAction->setShortcut(QKeySequence(Qt::Key_Less, Qt::Key_M));
-    m_sortLastModifiedLastAction = thumbnailsMenu->addAction("&Sort last modified last");
-    m_sortLastModifiedLastAction->setShortcut(QKeySequence(Qt::Key_Greater, Qt::Key_M));
+    m_sortAscTimeOrderAction = thumbnailsMenu->addAction("&Ascending time order");
+    m_sortAscTimeOrderAction->setShortcut(QKeySequence(Qt::Key_Less, Qt::Key_T));
+    m_sortDescTimeOrderAction = thumbnailsMenu->addAction("&Descending time order");
+    m_sortDescTimeOrderAction->setShortcut(QKeySequence(Qt::Key_Greater, Qt::Key_T));
     menuBar->addMenu(thumbnailsMenu);
 
     QMenu *imageMenu = new QMenu("&Image", menuBar);
@@ -145,14 +141,10 @@ void MainWindow::connectSignals()
     connect(m_imagePreparer, SIGNAL(resultReadyAt(int)), SLOT(imagePreparedAt(int)));
     connect(m_openDirAction, SIGNAL(triggered(bool)), SLOT(openDir()));
     connect(m_quitAction, SIGNAL(triggered(bool)), SLOT(close()));
-    m_thumbnailView->connect(m_sortOldestFirstAction, SIGNAL(triggered(bool)),
-                             SLOT(sortOldestFirst()));
-    m_thumbnailView->connect(m_sortOldestLastAction, SIGNAL(triggered(bool)),
-                             SLOT(sortOldestLast()));
-    m_thumbnailView->connect(m_sortLastModifiedFirstAction, SIGNAL(triggered(bool)),
-                             SLOT(sortLastModifiedFirst()));
-    m_thumbnailView->connect(m_sortLastModifiedLastAction, SIGNAL(triggered(bool)),
-                             SLOT(sortLastModifiedLast()));
+    m_thumbnailView->connect(m_sortAscTimeOrderAction, SIGNAL(triggered(bool)),
+                             SLOT(sortAscTimeOrder()));
+    m_thumbnailView->connect(m_sortDescTimeOrderAction, SIGNAL(triggered(bool)),
+                             SLOT(sortDescTimeOrder()));
     m_infoWidget->connect(m_thumbnailView, SIGNAL(currentThumbnailChanged(QMap<QString, QString>)),
                           SLOT(setImageInfo(QMap<QString, QString>)));
     m_imageWidget->connect(m_thumbnailView, SIGNAL(currentThumbnailChanged(QMap<QString, QString>)),

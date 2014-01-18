@@ -38,10 +38,8 @@ signals:
     void currentThumbnailChanged(QMap<QString, QString> imageInfo);
 
 public slots:
-    void sortOldestFirst();
-    void sortOldestLast();
-    void sortLastModifiedFirst();
-    void sortLastModifiedLast();
+    void sortAscTimeOrder();
+    void sortDescTimeOrder();
 
 protected:
     virtual void currentChanged(const QModelIndex &current, const QModelIndex &previous);

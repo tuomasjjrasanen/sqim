@@ -56,10 +56,8 @@ private:
     QDockWidget *m_infoDockWidget;
     QDockWidget *m_thumbnailDockWidget;
     QAction *m_quitAction;
-    QAction *m_sortOldestFirstAction;
-    QAction *m_sortOldestLastAction;
-    QAction *m_sortLastModifiedFirstAction;
-    QAction *m_sortLastModifiedLastAction;
+    QAction *m_sortAscTimeOrderAction;;
+    QAction *m_sortDescTimeOrderAction;;
     QAction *m_showThumbnailViewAction;
     QAction *m_zoomInAction;
     QAction *m_zoomOutAction;
