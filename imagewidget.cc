@@ -42,11 +42,7 @@ void ImageWidget::setImage(QMap<QString, QString> imageInfo)
     QPixmap pixmap(QPixmap::fromImage(image));
     m_imageLabel->setPixmap(pixmap);
 
-    // Zoom out to fit the viewport.
-    QSizeF a(pixmap.size());
-    QSizeF b(a);
-    b.scale(maximumViewportSize(), Qt::KeepAspectRatio);
-    zoomTo(qMin(1.0, qMin(b.width() / a.width(), b.height() / a.height())));
+    zoomToFit();
 }
 
 const QPoint ImageWidget::viewportCenter() const {
@@ -95,6 +91,14 @@ void ImageWidget::adjustScrollBars(const QPoint &focalPoint)
                                         * horizontalScrollBar()->maximum()));
     verticalScrollBar()->setValue(int(verticalFactor
                                       * verticalScrollBar()->maximum()));
+}
+
+void ImageWidget::zoomToFit()
+{
+    QSizeF a(m_imageLabel->pixmap()->size());
+    QSizeF b(a);
+    b.scale(maximumViewportSize(), Qt::KeepAspectRatio);
+    zoomTo(qMin(1.0, qMin(b.width() / a.width(), b.height() / a.height())));
 }
 
 void ImageWidget::zoomTo(const double zoomLevel)

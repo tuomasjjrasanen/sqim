@@ -40,6 +40,7 @@ public slots:
     void zoomOut(const QPoint &focalPoint);
     void zoomBy(double zoomFactor);
     void zoomBy(double zoomFactor, const QPoint &focalPoint);
+    void zoomToFit();
     void zoomTo(double zoomLevel);
     void zoomTo(double zoomLevel, const QPoint &focalPoint);
 

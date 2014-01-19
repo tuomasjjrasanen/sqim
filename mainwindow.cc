@@ -118,6 +118,8 @@ void MainWindow::setupMenuBar()
     m_zoomInAction->setShortcut(QKeySequence(Qt::Key_Plus));
     m_zoomOutAction = imageMenu->addAction("&Zoom out");
     m_zoomOutAction->setShortcut(QKeySequence(Qt::Key_Minus));
+    m_zoomToFitAction = imageMenu->addAction("&Zoom to fit");
+    m_zoomToFitAction->setShortcut(QKeySequence(Qt::Key_Equal));
     menuBar->addMenu(imageMenu);
 
     QMenu *windowsMenu = new QMenu("&Windows", menuBar);
@@ -153,6 +155,8 @@ void MainWindow::connectSignals()
                            SLOT(zoomIn()));
     m_imageWidget->connect(m_zoomOutAction, SIGNAL(triggered(bool)),
                            SLOT(zoomOut()));
+    m_imageWidget->connect(m_zoomToFitAction, SIGNAL(triggered(bool)),
+                           SLOT(zoomToFit()));
     connect(m_aboutAction, SIGNAL(triggered(bool)), SLOT(about()));
 }
 

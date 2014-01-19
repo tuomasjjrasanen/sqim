@@ -61,6 +61,7 @@ private:
     QAction *m_showThumbnailViewAction;
     QAction *m_zoomInAction;
     QAction *m_zoomOutAction;
+    QAction *m_zoomToFitAction;
     QAction *m_aboutAction;
 
     void setupDockWidgets();
