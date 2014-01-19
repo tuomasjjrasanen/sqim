@@ -36,13 +36,20 @@ public slots:
     void setImage(QMap<QString, QString> imageInfo);
     void zoomIn();
     void zoomOut();
+    void zoomIn(const QPoint &focalPoint);
+    void zoomOut(const QPoint &focalPoint);
     void zoomBy(double zoomFactor);
+    void zoomBy(double zoomFactor, const QPoint &focalPoint);
     void zoomTo(double zoomLevel);
+    void zoomTo(double zoomLevel, const QPoint &focalPoint);
 
 protected:
     void wheelEvent(QWheelEvent *event);
 
 private:
+    void adjustScrollBars(const QPoint &focalPoint);
+    const QPoint viewportCenter() const;
+
     QLabel *m_imageLabel;
     double m_zoomLevel;
 
