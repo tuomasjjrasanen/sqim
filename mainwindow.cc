@@ -106,12 +106,12 @@ void MainWindow::setupMenuBar()
     m_quitAction->setShortcut(QKeySequence(Qt::Key_Q));
     menuBar->addMenu(fileMenu);
 
-    QMenu *thumbnailsMenu = new QMenu("&Thumbnails", menuBar);
-    m_sortAscTimeOrderAction = thumbnailsMenu->addAction("&Ascending time order");
+    m_thumbnailsMenu = new QMenu("&Thumbnails", menuBar);
+    m_sortAscTimeOrderAction = m_thumbnailsMenu->addAction("&Ascending time order");
     m_sortAscTimeOrderAction->setShortcut(QKeySequence(Qt::Key_Less, Qt::Key_T));
-    m_sortDescTimeOrderAction = thumbnailsMenu->addAction("&Descending time order");
+    m_sortDescTimeOrderAction = m_thumbnailsMenu->addAction("&Descending time order");
     m_sortDescTimeOrderAction->setShortcut(QKeySequence(Qt::Key_Greater, Qt::Key_T));
-    menuBar->addMenu(thumbnailsMenu);
+    menuBar->addMenu(m_thumbnailsMenu);
 
     QMenu *imageMenu = new QMenu("&Image", menuBar);
     m_zoomInAction = imageMenu->addAction("&Zoom in");
@@ -143,6 +143,12 @@ void MainWindow::connectSignals()
     connect(m_imagePreparer, SIGNAL(resultReadyAt(int)), SLOT(imagePreparedAt(int)));
     connect(m_openDirAction, SIGNAL(triggered(bool)), SLOT(openDir()));
     connect(m_quitAction, SIGNAL(triggered(bool)), SLOT(close()));
+    m_thumbnailsMenu->connect(m_thumbnailDockWidget->toggleViewAction(), SIGNAL(triggered(bool)),
+                              SLOT(setEnabled(bool)));
+    m_sortAscTimeOrderAction->connect(m_thumbnailDockWidget->toggleViewAction(), SIGNAL(triggered(bool)),
+                                      SLOT(setEnabled(bool)));
+    m_sortDescTimeOrderAction->connect(m_thumbnailDockWidget->toggleViewAction(), SIGNAL(triggered(bool)),
+                                       SLOT(setEnabled(bool)));
     m_thumbnailView->connect(m_sortAscTimeOrderAction, SIGNAL(triggered(bool)),
                              SLOT(sortAscTimeOrder()));
     m_thumbnailView->connect(m_sortDescTimeOrderAction, SIGNAL(triggered(bool)),

@@ -63,6 +63,7 @@ private:
     QAction *m_zoomOutAction;
     QAction *m_zoomToFitAction;
     QAction *m_aboutAction;
+    QMenu *m_thumbnailsMenu;
 
     void setupDockWidgets();
     void setupCentralWidget();
