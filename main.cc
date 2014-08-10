@@ -15,12 +15,53 @@
 // along with this program. If not, see <http://www.gnu.org/licenses/>.
 
 #include <QApplication>
+#include <QTextStream>
 
 #include "mainwindow.hh"
+
+static void mainPrintHelp()
+{
+    QTextStream cout(stdout);
+
+    cout << "Usage: sqim [OPTIONS]" << endl;
+    cout << endl;
+    cout << "Options:" << endl;
+    cout << " -h, --help    display this help and exit" << endl;
+}
+
+static void mainPrintError(QString message)
+{
+    QTextStream cerr(stderr);
+
+    cerr << QString("error: %1").arg(message) << endl;
+    cerr << "Try --help for more information." << endl;
+}
+
+static void mainParseArgs(QApplication &app)
+{
+    QStringList args = app.arguments();
+
+    // Skip the first argument which is the program name in Linux.
+    QStringList::ConstIterator i;
+    for (i = args.constBegin() + 1; i != args.constEnd(); ++i) {
+        QString arg = *i;
+
+        if (arg == "--help" || arg == "-h") {
+            mainPrintHelp();
+            exit(0);
+        }
+
+        mainPrintError(QString("unrecognized argument '%1'").arg(arg));
+        exit(1);
+    }
+}
 
 int main(int argc, char *argv[])
 {
     QApplication app(argc, argv);
+
+    mainParseArgs(app);
+
     MainWindow w;
     w.show();
 
