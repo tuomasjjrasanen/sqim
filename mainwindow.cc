@@ -209,6 +209,8 @@ static QString fileSizeToString(const qint64 bytes)
 static bool fillWithMetadata(const QString &filepath,
                              QMap<QString, QString> &imageInfo)
 {
+    static QMutex mutex;
+    QMutexLocker locker(&mutex);
     try {
         Exiv2::Image::AutoPtr image = Exiv2::ImageFactory::open(filepath.toStdString());
         if (image.get() == 0) {
