@@ -14,6 +14,7 @@
 // You should have received a copy of the GNU General Public License
 // along with this program. If not, see <http://www.gnu.org/licenses/>.
 
+#include <QDataStream>
 #include <QFileDialog>
 #include <QFormLayout>
 #include <QLabel>
@@ -206,9 +207,28 @@ static QString fileSizeToString(const qint64 bytes)
     return QString::number(bytes) + " B";
 }
 
-static bool fillWithMetadata(const QString &filepath,
+static bool fillWithMetadata(const QFileInfo metadataFileInfo,
+                             const QFileInfo imageFileInfo,
                              QMap<QString, QString> &imageInfo)
 {
+    if (metadataFileInfo.exists()
+        && metadataFileInfo.lastModified() >= imageFileInfo.lastModified()) {
+        QFile metadataFile(metadataFileInfo.filePath());
+        if (!metadataFile.open(QIODevice::ReadOnly)) {
+            qWarning() << "failed to open metadata file for reading";
+            return false;
+        }
+        QDataStream in(&metadataFile);
+        in >> imageInfo;
+        if (in.status() != QDataStream::Ok) {
+            qWarning() << "failed to read metadata file";
+            return false;
+        }
+        return true;
+    }
+
+    QString filepath = imageFileInfo.filePath();
+
     static QMutex mutex;
     QMutexLocker locker(&mutex);
     try {
@@ -234,68 +254,87 @@ static bool fillWithMetadata(const QString &filepath,
         imageInfo.insert("timestamp",
                          QString::fromStdString(
                              exifData["Exif.Photo.DateTimeOriginal"].toString()));
-
-        return true;
     } catch (Exiv2::AnyError& e) {
         qWarning() << "failed to retrieve metadata from " << filepath << ": " << e.what();
-    }
-    return false;
-}
-
-static QString makeThumbnail(const QFileInfo &imageFileInfo)
-{
-    QFileInfo thumbnailFileInfo(QDir::homePath()
-                                + "/.cache/sqim"
-                                + imageFileInfo.canonicalFilePath()
-                                + "/thumbnail.png");
-
-    if (!thumbnailFileInfo.exists()
-        || thumbnailFileInfo.lastModified() < imageFileInfo.lastModified()) {
-        static QMutex mutex;
-        QMutexLocker locker(&mutex);
-        // Ensure the thumbnail directory exists.
-        thumbnailFileInfo.dir().mkpath(".");
-        locker.unlock();
-
-        QImage image(imageFileInfo.filePath());
-        if (!image.format()) {
-            qWarning() << imageFileInfo.filePath() << " has unknown image format";
-            return "";
-        }
-
-        QImage thumbnail = image.scaled(50, 50, Qt::KeepAspectRatio);
-        if (thumbnail.isNull()) {
-            qWarning() << "failed to create a thumbnail image from "
-                       << imageFileInfo.filePath();
-            return "";
-        }
-
-        if (!thumbnail.save(thumbnailFileInfo.filePath())) {
-            qWarning() << "failed to save thumbnail to "
-                       << thumbnailFileInfo.filePath();
-            return "";
-        }
-    }
-
-    return thumbnailFileInfo.filePath();
-}
-
-static QMap<QString, QString> prepareImage(const QString &filepath)
-{
-    QMap<QString, QString> imageInfo;
-    QFileInfo imageFileInfo(filepath);
-
-    QString thumbnailFilepath = makeThumbnail(imageFileInfo);
-    if (thumbnailFilepath.isEmpty()) {
-        qWarning() << "failed to create a thumbnail from " << filepath;
-        return imageInfo;
     }
 
     imageInfo.insert("filepath", imageFileInfo.canonicalFilePath());
     imageInfo.insert("modificationTime", imageFileInfo.lastModified().toString("yyyy-MM-ddThh:mm:ss"));
     imageInfo.insert("fileSize", fileSizeToString(imageFileInfo.size()));
-    imageInfo.insert("thumbnailFilepath", thumbnailFilepath);
-    fillWithMetadata(filepath, imageInfo);
+
+    QFile metadataFile(metadataFileInfo.filePath());
+    if (!metadataFile.open(QIODevice::WriteOnly)) {
+        qWarning() << "failed to open metadata file for writing";
+        return false;
+    }
+    QDataStream out(&metadataFile);
+    out << imageInfo;
+    if (out.status() != QDataStream::Ok) {
+        qWarning() << "failed to write to the metadata file";
+        return false;
+    }
+
+    return true;
+}
+
+static bool makeThumbnail(const QFileInfo imageFileInfo,
+                          const QFileInfo thumbnailFileInfo)
+{
+    if (thumbnailFileInfo.exists()
+        && thumbnailFileInfo.lastModified() >= imageFileInfo.lastModified()) {
+        return true;
+    }
+
+    QImage image(imageFileInfo.filePath());
+    if (!image.format()) {
+        qWarning() << imageFileInfo.filePath() << " has unknown image format";
+        return false;
+    }
+
+    QImage thumbnail = image.scaled(50, 50, Qt::KeepAspectRatio);
+    if (thumbnail.isNull()) {
+        qWarning() << "failed to create a thumbnail image from "
+                   << imageFileInfo.filePath();
+        return false;
+    }
+
+    if (!thumbnail.save(thumbnailFileInfo.filePath())) {
+        qWarning() << "failed to save the thumbnail image to "
+                   << thumbnailFileInfo.filePath();
+        return false;
+    }
+
+    return true;
+}
+
+static QMap<QString, QString> prepareImage(const QString &filepath)
+{
+    QFileInfo imageFileInfo(filepath);
+    QDir cacheDir(QDir::homePath()
+                  + "/.cache/sqim"
+                  + imageFileInfo.canonicalFilePath());
+
+    static QMutex mutex;
+    QMutexLocker locker(&mutex);
+    // Ensure the cache directory exists.
+    if (!cacheDir.mkpath(".")) {
+        qWarning() << "failed to create the cache directory";
+        return QMap<QString, QString>();
+    }
+    locker.unlock();
+
+    QFileInfo thumbnailFileInfo(cacheDir, "thumbnail.png");
+    if (!makeThumbnail(imageFileInfo, thumbnailFileInfo)) {
+        qWarning() << "failed to make a thumbnail";
+        return QMap<QString, QString>();
+    }
+
+    QMap<QString, QString> imageInfo;
+    QFileInfo metadataFileInfo(cacheDir, "meta.dat");
+    if (!fillWithMetadata(metadataFileInfo, imageFileInfo, imageInfo)) {
+        qWarning() << "failed to fill metadata";
+        return QMap<QString, QString>();
+    }
 
     return imageInfo;
 }

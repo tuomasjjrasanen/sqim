@@ -14,6 +14,8 @@
 // You should have received a copy of the GNU General Public License
 // along with this program. If not, see <http://www.gnu.org/licenses/>.
 
+#include <QDir>
+#include <QFileInfo>
 #include <QPixmap>
 
 #include "thumbnailview.hh"
@@ -55,8 +57,14 @@ void ThumbnailView::addThumbnail(QMap<QString, QString> imageInfo)
     QList<QStandardItem*> items;
     QStandardItem *item;
 
+    QFileInfo imageFileInfo(imageInfo.value("filepath"));
+    QDir cacheDir(QDir::homePath()
+                  + "/.cache/sqim"
+                  + imageFileInfo.canonicalFilePath());
+    QFileInfo thumbnailFileInfo(cacheDir, "thumbnail.png");
+
     item = new QStandardItem();
-    item->setIcon(QIcon(imageInfo.value("thumbnailFilepath")));
+    item->setIcon(QIcon(thumbnailFileInfo.filePath()));
     items.insert(COL_THUMBNAILFILEPATH, item);
 
     item = new QStandardItem();
