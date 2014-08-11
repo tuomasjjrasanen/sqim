@@ -249,14 +249,14 @@ static QString makeThumbnail(const QFileInfo &imageFileInfo)
                                 + imageFileInfo.canonicalFilePath()
                                 + "/thumbnail.png");
 
-    static QMutex mutex;
-    QMutexLocker locker(&mutex);
-    // Ensure the thumbnail directory exists.
-    thumbnailFileInfo.dir().mkpath(".");
-    locker.unlock();
-
     if (!thumbnailFileInfo.exists()
         || thumbnailFileInfo.lastModified() < imageFileInfo.lastModified()) {
+        static QMutex mutex;
+        QMutexLocker locker(&mutex);
+        // Ensure the thumbnail directory exists.
+        thumbnailFileInfo.dir().mkpath(".");
+        locker.unlock();
+
         QImage image(imageFileInfo.filePath());
         if (!image.format()) {
             qWarning() << imageFileInfo.filePath() << " has unknown image format";
