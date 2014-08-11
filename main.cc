@@ -19,14 +19,20 @@
 
 #include "mainwindow.hh"
 
+static QString mainInitialDir;
+
 static void mainPrintHelp()
 {
     QTextStream cout(stdout);
 
     cout << "Usage: sqim [OPTIONS]" << endl;
+    cout << "Usage: sqim [OPTIONS] [--] DIR" << endl;
     cout << endl;
     cout << "Options:" << endl;
     cout << " -h, --help    display this help and exit" << endl;
+    cout << endl;
+    cout << "Parameters:" << endl;
+    cout << " DIR           directory to search for images" << endl;
 }
 
 static void mainPrintError(QString message)
@@ -49,9 +55,23 @@ static void mainParseArgs(QApplication &app)
         if (arg == "--help" || arg == "-h") {
             mainPrintHelp();
             exit(0);
+        } else if (arg == "--" || !arg.startsWith("-")) {
+            // Option parsing stops, positional parameter parsing
+            // starts.
+            break;
         }
 
         mainPrintError(QString("unrecognized argument '%1'").arg(arg));
+        exit(1);
+    }
+
+    if (i != args.constEnd()) {
+        mainInitialDir = *i;
+        ++i;
+    }
+
+    if (i != args.constEnd()) {
+        mainPrintError("too many arguments");
         exit(1);
     }
 }
@@ -63,6 +83,10 @@ int main(int argc, char *argv[])
     mainParseArgs(app);
 
     MainWindow w;
+
+    if (!mainInitialDir.isEmpty())
+        w.openDir(mainInitialDir);
+
     w.show();
 
     return app.exec();

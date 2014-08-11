@@ -291,16 +291,22 @@ static QMap<QString, QString> prepareImage(const QString &filepath)
     return imageInfo;
 }
 
-void MainWindow::openDir()
+void MainWindow::openDir(QString dir)
 {
-    const QString dir(QFileDialog::getExistingDirectory(this,
-                                                        "Open images from a directory and its subdirectories"));
     if (dir.isEmpty())
         return;
 
     const QStringList filePaths(findFiles(dir));
     m_openDirAction->setEnabled(false);
     m_imagePreparer->setFuture(QtConcurrent::mapped(filePaths, prepareImage));
+}
+
+void MainWindow::openDir()
+{
+    const QString dir(QFileDialog::getExistingDirectory(this,
+                                                        "Open images from a directory and its subdirectories"));
+
+    openDir(dir);
 }
 
 void MainWindow::imagePreparedAt(const int i)
