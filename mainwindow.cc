@@ -26,11 +26,15 @@
 
 #include "mainwindow.hh"
 
-static QStringList findFiles(QString dir)
+static QStringList findFiles(QString dir, bool recursive)
 {
     QStringList retval;
 
     QStringList findArgs;
+    if (!recursive) {
+      findArgs << "-mindepth" << "1";
+      findArgs << "-maxdepth" << "1";
+    }
     findArgs << dir << "-type" << "f";
     QProcess find;
     find.start("find", findArgs);
@@ -291,14 +295,19 @@ static QMap<QString, QString> prepareImage(const QString &filepath)
     return imageInfo;
 }
 
-void MainWindow::openDir(QString dir)
+void MainWindow::openDir(QString dir, bool recursive)
 {
     if (dir.isEmpty())
         return;
 
-    const QStringList filePaths(findFiles(dir));
+    const QStringList filePaths(findFiles(dir, recursive));
     m_openDirAction->setEnabled(false);
     m_imagePreparer->setFuture(QtConcurrent::mapped(filePaths, prepareImage));
+}
+
+void MainWindow::openDir(QString dir)
+{
+    openDir(dir, true);
 }
 
 void MainWindow::openDir()

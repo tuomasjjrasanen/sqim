@@ -39,6 +39,7 @@ class MainWindow : public QMainWindow
 public:
     explicit MainWindow(QWidget *parent = 0);
     void openDir(QString dir);
+    void openDir(QString dir, bool recursive);
     ~MainWindow();
 
 private slots:

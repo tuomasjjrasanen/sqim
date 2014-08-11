@@ -20,6 +20,7 @@
 #include "mainwindow.hh"
 
 static QString mainInitialDir;
+static bool mainRecursiveOpen;
 
 static void mainPrintHelp()
 {
@@ -29,10 +30,11 @@ static void mainPrintHelp()
     cout << "Usage: sqim [OPTIONS] [--] DIR" << endl;
     cout << endl;
     cout << "Options:" << endl;
-    cout << " -h, --help    display this help and exit" << endl;
+    cout << " -h, --help         display this help and exit" << endl;
+    cout << " -r, --recursive    search DIR recursively" << endl;
     cout << endl;
     cout << "Parameters:" << endl;
-    cout << " DIR           directory to search for images" << endl;
+    cout << " DIR                directory to search for images" << endl;
 }
 
 static void mainPrintError(QString message)
@@ -55,6 +57,9 @@ static void mainParseArgs(QApplication &app)
         if (arg == "--help" || arg == "-h") {
             mainPrintHelp();
             exit(0);
+        } else if (arg == "--recursive" || arg == "-r") {
+            mainRecursiveOpen = true;
+            continue;
         } else if (arg == "--" || !arg.startsWith("-")) {
             // Option parsing stops, positional parameter parsing
             // starts.
@@ -85,7 +90,7 @@ int main(int argc, char *argv[])
     MainWindow w;
 
     if (!mainInitialDir.isEmpty())
-        w.openDir(mainInitialDir);
+        w.openDir(mainInitialDir, mainRecursiveOpen);
 
     w.show();
 
