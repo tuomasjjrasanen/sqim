@@ -314,14 +314,16 @@ static QMap<QString, QString> prepareImage(const QString &filepath)
                   + "/.cache/sqim"
                   + imageFileInfo.canonicalFilePath());
 
-    static QMutex mutex;
-    QMutexLocker locker(&mutex);
-    // Ensure the cache directory exists.
-    if (!cacheDir.mkpath(".")) {
-        qWarning() << "failed to create the cache directory";
-        return QMap<QString, QString>();
+    if (!cacheDir.exists()) {
+        static QMutex mutex;
+        QMutexLocker locker(&mutex);
+        // Ensure the cache directory exists.
+        if (!cacheDir.mkpath(".")) {
+            qWarning() << "failed to create the cache directory";
+            return QMap<QString, QString>();
+        }
+        locker.unlock();
     }
-    locker.unlock();
 
     QFileInfo thumbnailFileInfo(cacheDir, "thumbnail.png");
     if (!makeThumbnail(imageFileInfo, thumbnailFileInfo)) {
