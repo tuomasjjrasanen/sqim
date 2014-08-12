@@ -66,6 +66,8 @@ private:
     QAction *m_zoomOutAction;
     QAction *m_zoomToFitAction;
     QAction *m_aboutAction;
+    QAction *m_rotateLeftAction;
+    QAction *m_rotateRightAction;
     QMenu *m_thumbnailsMenu;
     QToolBar *m_toolBar;
 

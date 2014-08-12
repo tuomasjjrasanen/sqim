@@ -103,6 +103,8 @@ void MainWindow::setupToolBars()
 {
     m_toolBar = addToolBar("Hep");
     m_toolBar->addAction(m_zoomToFitAction);
+    m_rotateLeftAction = m_toolBar->addAction("Rotate left");
+    m_rotateRightAction = m_toolBar->addAction("Rotate right");
 }
 
 void MainWindow::setupMenuBar()
@@ -174,6 +176,10 @@ void MainWindow::connectSignals()
                            SLOT(zoomOut()));
     m_imageWidget->connect(m_zoomToFitAction, SIGNAL(triggered(bool)),
                            SLOT(zoomToFit()));
+    m_imageWidget->connect(m_rotateLeftAction, SIGNAL(triggered(bool)),
+                           SLOT(rotateLeft()));
+    m_imageWidget->connect(m_rotateRightAction, SIGNAL(triggered(bool)),
+                           SLOT(rotateRight()));
     connect(m_aboutAction, SIGNAL(triggered(bool)), SLOT(about()));
 }
 

@@ -119,6 +119,23 @@ void ImageWidget::zoomTo(const double zoomLevel, const QPoint &focalPoint)
     adjustScrollBars(focalPoint);
 }
 
+void ImageWidget::rotate(qreal degrees)
+{
+    m_imageLabel->setPixmap(m_imageLabel->pixmap()->transformed(
+                                QTransform().rotate(degrees)));
+    zoomTo(m_zoomLevel * 1.0);
+}
+
+void ImageWidget::rotateLeft()
+{
+    rotate(-90);
+}
+
+void ImageWidget::rotateRight()
+{
+    rotate(90);
+}
+
 void ImageWidget::wheelEvent(QWheelEvent *event)
 {
     if (event->modifiers() & Qt::ControlModifier

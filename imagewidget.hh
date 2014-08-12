@@ -43,6 +43,8 @@ public slots:
     void zoomToFit();
     void zoomTo(double zoomLevel);
     void zoomTo(double zoomLevel, const QPoint &focalPoint);
+    void rotateRight();
+    void rotateLeft();
 
 protected:
     void wheelEvent(QWheelEvent *event);
@@ -50,6 +52,7 @@ protected:
 private:
     void adjustScrollBars(const QPoint &focalPoint);
     const QPoint viewportCenter() const;
+    void rotate(qreal degrees);
 
     QLabel *m_imageLabel;
     double m_zoomLevel;
