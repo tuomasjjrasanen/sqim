@@ -26,6 +26,7 @@
 #include <QStatusBar>
 #include <QStringList>
 #include <QStringList>
+#include <QToolBar>
 #include <QWidget>
 
 #include "imageinfowidget.hh"
@@ -66,10 +67,12 @@ private:
     QAction *m_zoomToFitAction;
     QAction *m_aboutAction;
     QMenu *m_thumbnailsMenu;
+    QToolBar *m_toolBar;
 
     void setupDockWidgets();
     void setupCentralWidget();
     void setupStatusBar();
+    void setupToolBars();
     void setupMenuBar();
     void connectSignals();
 };

@@ -99,6 +99,12 @@ void MainWindow::setupStatusBar()
     setStatusBar(statusBar);
 }
 
+void MainWindow::setupToolBars()
+{
+    m_toolBar = addToolBar("Hep");
+    m_toolBar->addAction(m_zoomToFitAction);
+}
+
 void MainWindow::setupMenuBar()
 {
     QMenuBar *menuBar = new QMenuBar(this);
@@ -181,6 +187,7 @@ MainWindow::MainWindow(QWidget *const parent)
     setupDockWidgets();
     setupStatusBar();
     setupMenuBar();
+    setupToolBars();
     connectSignals();
 }
 
