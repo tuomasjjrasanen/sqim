@@ -361,6 +361,7 @@ void MainWindow::openDir(QString dir, bool recursive)
 
     const QStringList filePaths(findFiles(dir, recursive));
     m_openDirAction->setEnabled(false);
+    m_openCount = 0;
     m_imagePreparer->setFuture(QtConcurrent::mapped(filePaths, prepareImage));
 }
 
@@ -385,7 +386,9 @@ void MainWindow::imagePreparedAt(const int i)
         return;
     }
 
-    m_thumbnailView->addThumbnail(imageInfo);
+    if (m_thumbnailView->addThumbnail(imageInfo)) {
+        m_openCount.fetchAndAddOrdered(1);
+    }
 }
 
 void MainWindow::imagePreparationStarted()
@@ -395,7 +398,9 @@ void MainWindow::imagePreparationStarted()
 
 void MainWindow::imagePreparationFinished()
 {
-    QString msg("Opened " + QString::number(m_imagePreparer->future().resultCount()) + " images");
-    statusBar()->showMessage(msg, 3500);
+    QString msg = QString("Opened %1/%2 images")
+        .arg(m_openCount)
+        .arg(m_imagePreparer->progressMaximum());
+    statusBar()->showMessage(msg);
     m_openDirAction->setEnabled(true);
 }

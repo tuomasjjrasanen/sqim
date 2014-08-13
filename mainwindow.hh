@@ -70,6 +70,7 @@ private:
     QAction *m_rotateRightAction;
     QMenu *m_thumbnailsMenu;
     QToolBar *m_toolBar;
+    QAtomicInt m_openCount;
 
     void setupDockWidgets();
     void setupCentralWidget();

@@ -49,10 +49,10 @@ ThumbnailView::~ThumbnailView()
 {
 }
 
-void ThumbnailView::addThumbnail(QMap<QString, QString> imageInfo)
+bool ThumbnailView::addThumbnail(QMap<QString, QString> imageInfo)
 {
     if (m_imageInfoMap.contains(imageInfo.value("filepath")))
-        return;
+        return false;
 
     QList<QStandardItem*> items;
     QStandardItem *item;
@@ -94,6 +94,8 @@ void ThumbnailView::addThumbnail(QMap<QString, QString> imageInfo)
     if (((QStandardItemModel *)model())->rowCount() == 1) {
         setCurrentIndex(((QStandardItemModel *)model())->index(0, 0));
     }
+
+    return true;
 }
 
 void ThumbnailView::sortAscTimeOrder()

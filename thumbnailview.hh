@@ -32,7 +32,7 @@ public:
     explicit ThumbnailView(QWidget *parent = 0);
     ~ThumbnailView();
 
-    void addThumbnail(QMap<QString, QString> imageinfo);
+    bool addThumbnail(QMap<QString, QString> imageinfo);
 
 signals:
     void currentThumbnailChanged(QMap<QString, QString> imageInfo);
