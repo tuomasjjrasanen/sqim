@@ -120,10 +120,14 @@ void MainWindow::setupMenuBar()
     menuBar->addMenu(fileMenu);
 
     m_thumbnailsMenu = new QMenu("&Thumbnails", menuBar);
-    m_sortAscTimeOrderAction = m_thumbnailsMenu->addAction("&Ascending time order");
-    m_sortAscTimeOrderAction->setShortcut(QKeySequence(Qt::Key_Less, Qt::Key_T));
-    m_sortDescTimeOrderAction = m_thumbnailsMenu->addAction("&Descending time order");
-    m_sortDescTimeOrderAction->setShortcut(QKeySequence(Qt::Key_Greater, Qt::Key_T));
+    m_sortAscTimeOrderAction = m_thumbnailsMenu->addAction(
+        "&Ascending time order");
+    m_sortAscTimeOrderAction->setShortcut(
+        QKeySequence(Qt::Key_Less, Qt::Key_T));
+    m_sortDescTimeOrderAction = m_thumbnailsMenu->addAction(
+        "&Descending time order");
+    m_sortDescTimeOrderAction->setShortcut(
+        QKeySequence(Qt::Key_Greater, Qt::Key_T));
     menuBar->addMenu(m_thumbnailsMenu);
 
     QMenu *imageMenu = new QMenu("&Image", menuBar);
@@ -137,9 +141,11 @@ void MainWindow::setupMenuBar()
 
     QMenu *windowsMenu = new QMenu("&Windows", menuBar);
     windowsMenu->addAction(m_thumbnailDockWidget->toggleViewAction());
-    m_thumbnailDockWidget->toggleViewAction()->setShortcut(QKeySequence(Qt::Key_T));
+    m_thumbnailDockWidget->toggleViewAction()->setShortcut(
+        QKeySequence(Qt::Key_T));
     windowsMenu->addAction(m_infoDockWidget->toggleViewAction());
-    m_infoDockWidget->toggleViewAction()->setShortcut(QKeySequence(Qt::Key_I));
+    m_infoDockWidget->toggleViewAction()->setShortcut(
+        QKeySequence(Qt::Key_I));
     menuBar->addMenu(windowsMenu);
 
     QMenu *helpMenu = new QMenu("&Help", menuBar);
@@ -151,36 +157,60 @@ void MainWindow::setupMenuBar()
 
 void MainWindow::connectSignals()
 {
-    connect(m_imagePreparer, SIGNAL(started()), SLOT(imagePreparationStarted()));
-    connect(m_imagePreparer, SIGNAL(finished()), SLOT(imagePreparationFinished()));
-    connect(m_imagePreparer, SIGNAL(resultReadyAt(int)), SLOT(imagePreparedAt(int)));
-    connect(m_openDirAction, SIGNAL(triggered(bool)), SLOT(openDir()));
-    connect(m_quitAction, SIGNAL(triggered(bool)), SLOT(close()));
-    m_thumbnailsMenu->connect(m_thumbnailDockWidget->toggleViewAction(), SIGNAL(triggered(bool)),
+    connect(m_imagePreparer,
+            SIGNAL(started()),
+            SLOT(imagePreparationStarted()));
+    connect(m_imagePreparer,
+            SIGNAL(finished()),
+            SLOT(imagePreparationFinished()));
+    connect(m_imagePreparer,
+            SIGNAL(resultReadyAt(int)),
+            SLOT(imagePreparedAt(int)));
+    connect(m_openDirAction,
+            SIGNAL(triggered(bool)),
+            SLOT(openDir()));
+    connect(m_quitAction,
+            SIGNAL(triggered(bool)),
+            SLOT(close()));
+    m_thumbnailsMenu->connect(m_thumbnailDockWidget->toggleViewAction(),
+                              SIGNAL(triggered(bool)),
                               SLOT(setEnabled(bool)));
-    m_sortAscTimeOrderAction->connect(m_thumbnailDockWidget->toggleViewAction(), SIGNAL(triggered(bool)),
+    m_sortAscTimeOrderAction->connect(m_thumbnailDockWidget->toggleViewAction(),
+                                      SIGNAL(triggered(bool)),
                                       SLOT(setEnabled(bool)));
-    m_sortDescTimeOrderAction->connect(m_thumbnailDockWidget->toggleViewAction(), SIGNAL(triggered(bool)),
+    m_sortDescTimeOrderAction->connect(m_thumbnailDockWidget->toggleViewAction(),
+                                       SIGNAL(triggered(bool)),
                                        SLOT(setEnabled(bool)));
-    m_thumbnailView->connect(m_sortAscTimeOrderAction, SIGNAL(triggered(bool)),
+    m_thumbnailView->connect(m_sortAscTimeOrderAction,
+                             SIGNAL(triggered(bool)),
                              SLOT(sortAscTimeOrder()));
-    m_thumbnailView->connect(m_sortDescTimeOrderAction, SIGNAL(triggered(bool)),
+    m_thumbnailView->connect(m_sortDescTimeOrderAction,
+                             SIGNAL(triggered(bool)),
                              SLOT(sortDescTimeOrder()));
-    m_infoWidget->connect(m_thumbnailView, SIGNAL(currentThumbnailChanged(QMap<QString, QString>)),
+    m_infoWidget->connect(m_thumbnailView,
+                          SIGNAL(currentThumbnailChanged(QMap<QString, QString>)),
                           SLOT(setImageInfo(QMap<QString, QString>)));
-    m_imageWidget->connect(m_thumbnailView, SIGNAL(currentThumbnailChanged(QMap<QString, QString>)),
+    m_imageWidget->connect(m_thumbnailView,
+                           SIGNAL(currentThumbnailChanged(QMap<QString, QString>)),
                            SLOT(setImage(QMap<QString, QString>)));
-    m_imageWidget->connect(m_zoomInAction, SIGNAL(triggered(bool)),
+    m_imageWidget->connect(m_zoomInAction,
+                           SIGNAL(triggered(bool)),
                            SLOT(zoomIn()));
-    m_imageWidget->connect(m_zoomOutAction, SIGNAL(triggered(bool)),
+    m_imageWidget->connect(m_zoomOutAction,
+                           SIGNAL(triggered(bool)),
                            SLOT(zoomOut()));
-    m_imageWidget->connect(m_zoomToFitAction, SIGNAL(triggered(bool)),
+    m_imageWidget->connect(m_zoomToFitAction,
+                           SIGNAL(triggered(bool)),
                            SLOT(zoomToFit()));
-    m_imageWidget->connect(m_rotateLeftAction, SIGNAL(triggered(bool)),
+    m_imageWidget->connect(m_rotateLeftAction,
+                           SIGNAL(triggered(bool)),
                            SLOT(rotateLeft()));
-    m_imageWidget->connect(m_rotateRightAction, SIGNAL(triggered(bool)),
+    m_imageWidget->connect(m_rotateRightAction,
+                           SIGNAL(triggered(bool)),
                            SLOT(rotateRight()));
-    connect(m_aboutAction, SIGNAL(triggered(bool)), SLOT(about()));
+    connect(m_aboutAction,
+            SIGNAL(triggered(bool)),
+            SLOT(about()));
 }
 
 MainWindow::MainWindow(QWidget *const parent)
@@ -209,13 +239,16 @@ static QString fileSizeToString(const qint64 bytes)
     static double MiB = KiB * KiB;
     static double GiB = MiB * KiB;
     if (bytes > GiB) {
-        return QString::number(bytes / GiB, 'f', 1) + " GiB (" + QString::number(bytes) + " B)";
+        return QString::number(bytes / GiB, 'f', 1)
+            + " GiB (" + QString::number(bytes) + " B)";
     }
     if (bytes > MiB) {
-        return QString::number(bytes / MiB, 'f', 1) + " MiB (" + QString::number(bytes) + " B)";
+        return QString::number(bytes / MiB, 'f', 1)
+            + " MiB (" + QString::number(bytes) + " B)";
     }
     if (bytes > KiB) {
-        return QString::number(bytes / KiB, 'f', 1) + " KiB (" + QString::number(bytes) + " B)";
+        return QString::number(bytes / KiB, 'f', 1)
+            + " KiB (" + QString::number(bytes) + " B)";
     }
     return QString::number(bytes) + " B";
 }
@@ -245,7 +278,8 @@ static bool fillWithMetadata(const QFileInfo metadataFileInfo,
     static QMutex mutex;
     QMutexLocker locker(&mutex);
     try {
-        Exiv2::Image::AutoPtr image = Exiv2::ImageFactory::open(filepath.toStdString());
+        Exiv2::Image::AutoPtr image = Exiv2::ImageFactory::open(
+            filepath.toStdString());
         if (image.get() == 0) {
             qWarning() << filepath << " is not recognized as a valid image file";
             return false;
@@ -266,13 +300,17 @@ static bool fillWithMetadata(const QFileInfo metadataFileInfo,
 
         imageInfo.insert("timestamp",
                          QString::fromStdString(
-                             exifData["Exif.Photo.DateTimeOriginal"].toString()));
+                             exifData["Exif.Photo.DateTimeOriginal"]
+                             .toString()));
     } catch (Exiv2::AnyError& e) {
-        qWarning() << "failed to retrieve metadata from " << filepath << ": " << e.what();
+        qWarning() << "failed to retrieve metadata from " 
+                   << filepath << ": " << e.what();
     }
 
     imageInfo.insert("filepath", imageFileInfo.canonicalFilePath());
-    imageInfo.insert("modificationTime", imageFileInfo.lastModified().toString("yyyy-MM-ddThh:mm:ss"));
+    imageInfo.insert("modificationTime",
+                     imageFileInfo.lastModified()
+                     .toString("yyyy-MM-ddThh:mm:ss"));
     imageInfo.insert("fileSize", fileSizeToString(imageFileInfo.size()));
 
     QFile metadataFile(metadataFileInfo.filePath());
@@ -372,8 +410,9 @@ void MainWindow::openDir(QString dir)
 
 void MainWindow::openDir()
 {
-    const QString dir(QFileDialog::getExistingDirectory(this,
-                                                        "Open images from a directory and its subdirectories"));
+    const QString dir(
+        QFileDialog::getExistingDirectory(
+            this, "Open images from a directory and its subdirectories"));
 
     openDir(dir);
 }

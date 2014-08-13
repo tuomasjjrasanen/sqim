@@ -108,11 +108,13 @@ void ThumbnailView::sortDescTimeOrder()
     model()->sort(COL_TIMESTAMP, Qt::DescendingOrder);
 }
 
-void ThumbnailView::currentChanged(const QModelIndex &current, const QModelIndex &previous)
+void ThumbnailView::currentChanged(const QModelIndex &current,
+                                   const QModelIndex &previous)
 {
     QListView::currentChanged(current, previous);
 
     QStandardItemModel *m = (QStandardItemModel*) model();
-    QMap<QString, QString> imageInfo = m_imageInfoMap.value(m->item(current.row(), COL_FILEPATH)->text());
+    QMap<QString, QString> imageInfo = m_imageInfoMap.value(
+        m->item(current.row(), COL_FILEPATH)->text());
     emit currentThumbnailChanged(imageInfo);
 }
