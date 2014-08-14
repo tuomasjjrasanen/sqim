@@ -23,6 +23,11 @@
 
 ImageWidget::ImageWidget(QWidget *parent)
     :QScrollArea(parent)
+    ,m_rotateLeftAction(new QAction("Rotate left", this))
+    ,m_rotateRightAction(new QAction("Rotate right", this))
+    ,m_zoomInAction(new QAction("&Zoom in", this))
+    ,m_zoomOutAction(new QAction("&Zoom out", this))
+    ,m_zoomToFitAction(new QAction("&Zoom to fit", this))
 {
     m_imageLabel = new QLabel(this);
     m_imageLabel->setScaledContents(true);
@@ -30,6 +35,16 @@ ImageWidget::ImageWidget(QWidget *parent)
     setBackgroundRole(QPalette::Dark);
     setWidget(m_imageLabel);
     setAlignment(Qt::AlignHCenter | Qt::AlignVCenter);
+
+    m_zoomInAction->setShortcut(QKeySequence(Qt::Key_Plus));
+    m_zoomOutAction->setShortcut(QKeySequence(Qt::Key_Minus));
+    m_zoomToFitAction->setShortcut(QKeySequence(Qt::Key_Equal));
+
+    connect(m_zoomInAction, SIGNAL(triggered(bool)), SLOT(zoomIn()));
+    connect(m_zoomOutAction, SIGNAL(triggered(bool)), SLOT(zoomOut()));
+    connect(m_zoomToFitAction, SIGNAL(triggered(bool)), SLOT(zoomToFit()));
+    connect(m_rotateLeftAction, SIGNAL(triggered(bool)), SLOT(rotateLeft()));
+    connect(m_rotateRightAction, SIGNAL(triggered(bool)), SLOT(rotateRight()));
 }
 
 ImageWidget::~ImageWidget()
@@ -160,4 +175,29 @@ void ImageWidget::wheelEvent(QWheelEvent *event)
         return;
     }
     QScrollArea::wheelEvent(event);
+}
+
+QAction* ImageWidget::rotateLeftAction() const
+{
+    return m_rotateLeftAction;
+}
+
+QAction* ImageWidget::rotateRightAction() const
+{
+    return m_rotateRightAction;
+}
+
+QAction* ImageWidget::zoomInAction() const
+{
+    return m_zoomInAction;
+}
+
+QAction* ImageWidget::zoomOutAction() const
+{
+    return m_zoomOutAction;
+}
+
+QAction* ImageWidget::zoomToFitAction() const
+{
+    return m_zoomToFitAction;
 }

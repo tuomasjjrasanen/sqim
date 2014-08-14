@@ -17,6 +17,7 @@
 #ifndef IMAGEWIDGET_HH
 #define IMAGEWIDGET_HH
 
+#include <QAction>
 #include <QLabel>
 #include <QMap>
 #include <QScrollArea>
@@ -31,6 +32,12 @@ class ImageWidget : public QScrollArea
 public:
     explicit ImageWidget(QWidget *parent = 0);
     ~ImageWidget();
+
+    QAction* rotateLeftAction() const;
+    QAction* rotateRightAction() const;
+    QAction* zoomInAction() const;
+    QAction* zoomOutAction() const;
+    QAction* zoomToFitAction() const;
 
 public slots:
     void setImage(QMap<QString, QString> imageInfo);
@@ -56,6 +63,12 @@ private:
 
     QLabel *m_imageLabel;
     double m_zoomLevel;
+
+    QAction *m_rotateLeftAction;
+    QAction *m_rotateRightAction;
+    QAction *m_zoomInAction;
+    QAction *m_zoomOutAction;
+    QAction *m_zoomToFitAction;
 
 };
 

@@ -62,12 +62,7 @@ private:
     QAction *m_sortAscTimeOrderAction;;
     QAction *m_sortDescTimeOrderAction;;
     QAction *m_showThumbnailViewAction;
-    QAction *m_zoomInAction;
-    QAction *m_zoomOutAction;
-    QAction *m_zoomToFitAction;
     QAction *m_aboutAction;
-    QAction *m_rotateLeftAction;
-    QAction *m_rotateRightAction;
     QMenu *m_thumbnailsMenu;
     QToolBar *m_toolBar;
     QAtomicInt m_openCount;

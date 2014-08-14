@@ -102,9 +102,9 @@ void MainWindow::setupStatusBar()
 void MainWindow::setupToolBars()
 {
     m_toolBar = addToolBar("Hep");
-    m_toolBar->addAction(m_zoomToFitAction);
-    m_rotateLeftAction = m_toolBar->addAction("Rotate left");
-    m_rotateRightAction = m_toolBar->addAction("Rotate right");
+    m_toolBar->addAction(m_imageWidget->zoomToFitAction());
+    m_toolBar->addAction(m_imageWidget->rotateLeftAction());
+    m_toolBar->addAction(m_imageWidget->rotateRightAction());
 }
 
 void MainWindow::setupMenuBar()
@@ -131,12 +131,9 @@ void MainWindow::setupMenuBar()
     menuBar->addMenu(m_thumbnailsMenu);
 
     QMenu *imageMenu = new QMenu("&Image", menuBar);
-    m_zoomInAction = imageMenu->addAction("&Zoom in");
-    m_zoomInAction->setShortcut(QKeySequence(Qt::Key_Plus));
-    m_zoomOutAction = imageMenu->addAction("&Zoom out");
-    m_zoomOutAction->setShortcut(QKeySequence(Qt::Key_Minus));
-    m_zoomToFitAction = imageMenu->addAction("&Zoom to fit");
-    m_zoomToFitAction->setShortcut(QKeySequence(Qt::Key_Equal));
+    imageMenu->addAction(m_imageWidget->zoomInAction());
+    imageMenu->addAction(m_imageWidget->zoomOutAction());
+    imageMenu->addAction(m_imageWidget->zoomToFitAction());
     menuBar->addMenu(imageMenu);
 
     QMenu *windowsMenu = new QMenu("&Windows", menuBar);
@@ -193,21 +190,6 @@ void MainWindow::connectSignals()
     m_imageWidget->connect(m_thumbnailView,
                            SIGNAL(currentThumbnailChanged(QMap<QString, QString>)),
                            SLOT(setImage(QMap<QString, QString>)));
-    m_imageWidget->connect(m_zoomInAction,
-                           SIGNAL(triggered(bool)),
-                           SLOT(zoomIn()));
-    m_imageWidget->connect(m_zoomOutAction,
-                           SIGNAL(triggered(bool)),
-                           SLOT(zoomOut()));
-    m_imageWidget->connect(m_zoomToFitAction,
-                           SIGNAL(triggered(bool)),
-                           SLOT(zoomToFit()));
-    m_imageWidget->connect(m_rotateLeftAction,
-                           SIGNAL(triggered(bool)),
-                           SLOT(rotateLeft()));
-    m_imageWidget->connect(m_rotateRightAction,
-                           SIGNAL(triggered(bool)),
-                           SLOT(rotateRight()));
     connect(m_aboutAction,
             SIGNAL(triggered(bool)),
             SLOT(about()));
