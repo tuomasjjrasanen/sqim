@@ -16,7 +16,6 @@
 
 #include "imagewidget.hh"
 
-#include <QDebug>
 #include <QScrollBar>
 #include <QImage>
 #include <QPoint>

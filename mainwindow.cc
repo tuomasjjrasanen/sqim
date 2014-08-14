@@ -16,12 +16,9 @@
 
 #include <QDataStream>
 #include <QFileDialog>
-#include <QFormLayout>
-#include <QLabel>
 #include <QMessageBox>
 #include <QProcess>
 #include <QtCore>
-#include <QtDebug>
 
 #include <exiv2/exiv2.hpp>
 
