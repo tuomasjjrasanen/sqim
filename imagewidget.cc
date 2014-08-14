@@ -58,9 +58,9 @@ ImageWidget::~ImageWidget()
 {
 }
 
-void ImageWidget::setImage(QMap<QString, QString> imageInfo)
+void ImageWidget::setImage(Metadata metadata)
 {
-    QImage image(imageInfo.value("filepath"));
+    QImage image(metadata.value("filepath"));
     QPixmap pixmap(QPixmap::fromImage(image));
     m_imageLabel->setPixmap(pixmap);
 

@@ -23,7 +23,7 @@
 #include <QMap>
 #include <QStandardItemModel>
 
-#include "imageinfowidget.hh"
+#include "metadatawidget.hh"
 
 class ThumbnailView : public QListView
 {
@@ -33,12 +33,12 @@ public:
     explicit ThumbnailView(QWidget *parent = 0);
     ~ThumbnailView();
 
-    bool addThumbnail(QMap<QString, QString> imageinfo);
+    bool addThumbnail(Metadata metadata);
     QAction* sortAscTimeOrderAction() const;
     QAction* sortDescTimeOrderAction() const;
 
 signals:
-    void currentThumbnailChanged(QMap<QString, QString> imageInfo);
+    void currentThumbnailChanged(Metadata metadata);
 
 public slots:
     void sortAscTimeOrder();
@@ -50,7 +50,7 @@ protected:
     virtual void showEvent(QShowEvent *event);
 
 private:
-    QHash<QString, QMap<QString, QString> > m_imageInfoMap;
+    QHash<QString, Metadata> m_metadataMap;
 
     QAction *m_sortAscTimeOrderAction;
     QAction *m_sortDescTimeOrderAction;

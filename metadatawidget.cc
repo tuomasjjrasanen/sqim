@@ -16,9 +16,9 @@
 
 #include <QFormLayout>
 
-#include "imageinfowidget.hh"
+#include "metadatawidget.hh"
 
-ImageInfoWidget::ImageInfoWidget(QWidget *parent)
+MetadataWidget::MetadataWidget(QWidget *parent)
     :QWidget(parent)
     ,m_filepathLabel(new QLabel(this))
     ,m_timestampLabel(new QLabel(this))
@@ -32,24 +32,24 @@ ImageInfoWidget::ImageInfoWidget(QWidget *parent)
     m_fileSizeLabel->setTextInteractionFlags(Qt::TextBrowserInteraction);
     m_imageSizeLabel->setTextInteractionFlags(Qt::TextBrowserInteraction);
 
-    QFormLayout *infoLayout = new QFormLayout(this);
-    infoLayout->addRow("Filepath", m_filepathLabel);
-    infoLayout->addRow("Timestamp", m_timestampLabel);
-    infoLayout->addRow("Last modified", m_modificationTimeLabel);
-    infoLayout->addRow("File size", m_fileSizeLabel);
-    infoLayout->addRow("Image size", m_imageSizeLabel);
-    setLayout(infoLayout);
+    QFormLayout *layout = new QFormLayout(this);
+    layout->addRow("Filepath", m_filepathLabel);
+    layout->addRow("Timestamp", m_timestampLabel);
+    layout->addRow("Last modified", m_modificationTimeLabel);
+    layout->addRow("File size", m_fileSizeLabel);
+    layout->addRow("Image size", m_imageSizeLabel);
+    setLayout(layout);
 }
 
-ImageInfoWidget::~ImageInfoWidget()
+MetadataWidget::~MetadataWidget()
 {
 }
 
-void ImageInfoWidget::setImageInfo(QMap<QString, QString> imageInfo)
+void MetadataWidget::setMetadata(Metadata metadata)
 {
-    m_filepathLabel->setText(imageInfo.value("filepath"));
-    m_timestampLabel->setText(imageInfo.value("timestamp"));
-    m_modificationTimeLabel->setText(imageInfo.value("modificationTime"));
-    m_fileSizeLabel->setText(imageInfo.value("fileSize"));
-    m_imageSizeLabel->setText(imageInfo.value("imageSize"));
+    m_filepathLabel->setText(metadata.value("filepath"));
+    m_timestampLabel->setText(metadata.value("timestamp"));
+    m_modificationTimeLabel->setText(metadata.value("modificationTime"));
+    m_fileSizeLabel->setText(metadata.value("fileSize"));
+    m_imageSizeLabel->setText(metadata.value("imageSize"));
 }

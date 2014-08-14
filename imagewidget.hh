@@ -25,6 +25,8 @@
 #include <QWheelEvent>
 #include <QWidget>
 
+#include "metadata.hh"
+
 class ImageWidget : public QScrollArea
 {
     Q_OBJECT
@@ -40,7 +42,7 @@ public:
     QAction* zoomToFitAction() const;
 
 public slots:
-    void setImage(QMap<QString, QString> imageInfo);
+    void setImage(Metadata metadata);
     void zoomIn();
     void zoomOut();
     void zoomIn(const QPoint &focalPoint);
@@ -71,7 +73,6 @@ private:
     QAction *m_zoomInAction;
     QAction *m_zoomOutAction;
     QAction *m_zoomToFitAction;
-
 };
 
 #endif

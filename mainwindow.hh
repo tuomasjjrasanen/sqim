@@ -29,7 +29,7 @@
 #include <QToolBar>
 #include <QWidget>
 
-#include "imageinfowidget.hh"
+#include "metadatawidget.hh"
 #include "imagewidget.hh"
 #include "thumbnailview.hh"
 
@@ -52,8 +52,8 @@ private slots:
 private:
     QFutureWatcher<QMap<QString, QString> > *m_importer;
     ImageWidget *m_imageWidget;
-    QDockWidget *m_infoDockWidget;
-    ImageInfoWidget *m_infoWidget;
+    QDockWidget *m_metadataDockWidget;
+    MetadataWidget *m_metadataWidget;
     QDockWidget *m_thumbnailDockWidget;
     ThumbnailView *m_thumbnailView;
 

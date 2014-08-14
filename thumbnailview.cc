@@ -75,15 +75,15 @@ void ThumbnailView::showEvent(QShowEvent *event)
     QListView::showEvent(event);
 }
 
-bool ThumbnailView::addThumbnail(QMap<QString, QString> imageInfo)
+bool ThumbnailView::addThumbnail(Metadata metadata)
 {
-    if (m_imageInfoMap.contains(imageInfo.value("filepath")))
+    if (m_metadataMap.contains(metadata.value("filepath")))
         return false;
 
     QList<QStandardItem*> items;
     QStandardItem *item;
 
-    QFileInfo imageFileInfo(imageInfo.value("filepath"));
+    QFileInfo imageFileInfo(metadata.value("filepath"));
     QDir cacheDir(QDir::homePath()
                   + "/.cache/sqim"
                   + imageFileInfo.canonicalFilePath());
@@ -94,28 +94,28 @@ bool ThumbnailView::addThumbnail(QMap<QString, QString> imageInfo)
     items.insert(COL_THUMBNAILFILEPATH, item);
 
     item = new QStandardItem();
-    item->setText(imageInfo.value("filepath"));
+    item->setText(metadata.value("filepath"));
     items.insert(COL_FILEPATH, item);
 
     item = new QStandardItem();
-    item->setText(imageInfo.value("timestamp"));
+    item->setText(metadata.value("timestamp"));
     items.insert(COL_TIMESTAMP, item);
 
     item = new QStandardItem();
-    item->setText(imageInfo.value("modificationTime"));
+    item->setText(metadata.value("modificationTime"));
     items.insert(COL_MTIME, item);
 
     item = new QStandardItem();
-    item->setText(imageInfo.value("fileSize"));
+    item->setText(metadata.value("fileSize"));
     items.insert(COL_FILESIZE, item);
 
     item = new QStandardItem();
-    item->setText(imageInfo.value("imageSize"));
+    item->setText(metadata.value("imageSize"));
     items.insert(COL_IMGSIZE, item);
 
     ((QStandardItemModel *)model())->appendRow(items);
 
-    m_imageInfoMap.insert(imageInfo.value("filepath"), imageInfo);
+    m_metadataMap.insert(metadata.value("filepath"), metadata);
 
     if (((QStandardItemModel *)model())->rowCount() == 1) {
         setCurrentIndex(((QStandardItemModel *)model())->index(0, 0));
@@ -140,9 +140,9 @@ void ThumbnailView::currentChanged(const QModelIndex &current,
     QListView::currentChanged(current, previous);
 
     QStandardItemModel *m = (QStandardItemModel*) model();
-    QMap<QString, QString> imageInfo = m_imageInfoMap.value(
+    Metadata metadata = m_metadataMap.value(
         m->item(current.row(), COL_FILEPATH)->text());
-    emit currentThumbnailChanged(imageInfo);
+    emit currentThumbnailChanged(metadata);
 }
 
 QAction* ThumbnailView::sortAscTimeOrderAction() const

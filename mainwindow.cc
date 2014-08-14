@@ -74,7 +74,7 @@ static QString fileSizeToString(const qint64 bytes)
 
 static bool fillWithMetadata(const QFileInfo metadataFileInfo,
                              const QFileInfo imageFileInfo,
-                             QMap<QString, QString> &imageInfo)
+                             Metadata &metadata)
 {
     if (metadataFileInfo.exists()
         && metadataFileInfo.lastModified() >= imageFileInfo.lastModified()) {
@@ -84,7 +84,7 @@ static bool fillWithMetadata(const QFileInfo metadataFileInfo,
             return false;
         }
         QDataStream in(&metadataFile);
-        in >> imageInfo;
+        in >> metadata;
         if (in.status() != QDataStream::Ok) {
             qWarning() << "failed to read metadata file";
             return false;
@@ -107,9 +107,9 @@ static bool fillWithMetadata(const QFileInfo metadataFileInfo,
 
         const int w = image->pixelWidth();
         const int h = image->pixelHeight();
-        imageInfo.insert("imageSize",
-                         QString("%1 x %2 (%3 megapixels)")
-                         .arg(w).arg(h).arg(w * h / 1000000.0, 0, 'f', 1));
+        metadata.insert("imageSize",
+                        QString("%1 x %2 (%3 megapixels)")
+                        .arg(w).arg(h).arg(w * h / 1000000.0, 0, 'f', 1));
 
         Exiv2::ExifData &exifData = image->exifData();
         if (exifData.empty()) {
@@ -117,20 +117,20 @@ static bool fillWithMetadata(const QFileInfo metadataFileInfo,
             return false;
         }
 
-        imageInfo.insert("timestamp",
-                         QString::fromStdString(
-                             exifData["Exif.Photo.DateTimeOriginal"]
-                             .toString()));
+        metadata.insert("timestamp",
+                        QString::fromStdString(
+                            exifData["Exif.Photo.DateTimeOriginal"]
+                            .toString()));
     } catch (Exiv2::AnyError& e) {
         qWarning() << "failed to retrieve metadata from " 
                    << filepath << ": " << e.what();
     }
 
-    imageInfo.insert("filepath", imageFileInfo.canonicalFilePath());
-    imageInfo.insert("modificationTime",
-                     imageFileInfo.lastModified()
-                     .toString("yyyy-MM-ddThh:mm:ss"));
-    imageInfo.insert("fileSize", fileSizeToString(imageFileInfo.size()));
+    metadata.insert("filepath", imageFileInfo.canonicalFilePath());
+    metadata.insert("modificationTime",
+                    imageFileInfo.lastModified()
+                    .toString("yyyy-MM-ddThh:mm:ss"));
+    metadata.insert("fileSize", fileSizeToString(imageFileInfo.size()));
 
     QFile metadataFile(metadataFileInfo.filePath());
     if (!metadataFile.open(QIODevice::WriteOnly)) {
@@ -138,7 +138,7 @@ static bool fillWithMetadata(const QFileInfo metadataFileInfo,
         return false;
     }
     QDataStream out(&metadataFile);
-    out << imageInfo;
+    out << metadata;
     if (out.status() != QDataStream::Ok) {
         qWarning() << "failed to write to the metadata file";
         return false;
@@ -177,7 +177,7 @@ static bool makeThumbnail(const QFileInfo imageFileInfo,
     return true;
 }
 
-static QMap<QString, QString> import(const QString &filepath)
+static Metadata import(const QString &filepath)
 {
     QFileInfo imageFileInfo(filepath);
     QDir cacheDir(QDir::homePath()
@@ -190,7 +190,7 @@ static QMap<QString, QString> import(const QString &filepath)
         // Ensure the cache directory exists.
         if (!cacheDir.mkpath(".")) {
             qWarning() << "failed to create the cache directory";
-            return QMap<QString, QString>();
+            return Metadata();
         }
         locker.unlock();
     }
@@ -198,25 +198,25 @@ static QMap<QString, QString> import(const QString &filepath)
     QFileInfo thumbnailFileInfo(cacheDir, "thumbnail.png");
     if (!makeThumbnail(imageFileInfo, thumbnailFileInfo)) {
         qWarning() << "failed to make a thumbnail";
-        return QMap<QString, QString>();
+        return Metadata();
     }
 
-    QMap<QString, QString> imageInfo;
+    Metadata metadata;
     QFileInfo metadataFileInfo(cacheDir, "meta.dat");
-    if (!fillWithMetadata(metadataFileInfo, imageFileInfo, imageInfo)) {
+    if (!fillWithMetadata(metadataFileInfo, imageFileInfo, metadata)) {
         qWarning() << "failed to fill metadata";
-        return QMap<QString, QString>();
+        return Metadata();
     }
 
-    return imageInfo;
+    return metadata;
 }
 
 MainWindow::MainWindow(QWidget *const parent)
     :QMainWindow(parent)
-    ,m_importer(new QFutureWatcher<QMap<QString, QString> >(this))
+    ,m_importer(new QFutureWatcher<Metadata>(this))
     ,m_imageWidget(new ImageWidget(this))
-    ,m_infoDockWidget(new QDockWidget("&Image info", this))
-    ,m_infoWidget(new ImageInfoWidget(m_infoDockWidget))
+    ,m_metadataDockWidget(new QDockWidget("&Image info", this))
+    ,m_metadataWidget(new MetadataWidget(m_metadataDockWidget))
     ,m_thumbnailDockWidget(new QDockWidget("&Thumbnails", this))
     ,m_thumbnailView(new ThumbnailView(m_thumbnailDockWidget))
     ,m_openDirAction(new QAction("&Open directory...", this))
@@ -226,15 +226,15 @@ MainWindow::MainWindow(QWidget *const parent)
 {
     m_thumbnailDockWidget->toggleViewAction()->setShortcut(
         QKeySequence(Qt::Key_T));
-    m_infoDockWidget->toggleViewAction()->setShortcut(
+    m_metadataDockWidget->toggleViewAction()->setShortcut(
         QKeySequence(Qt::Key_I));
     m_openDirAction->setShortcut(QKeySequence(Qt::Key_O));
     m_quitAction->setShortcut(QKeySequence(Qt::Key_Q));
 
     setCentralWidget(m_imageWidget);
 
-    m_infoDockWidget->setWidget(m_infoWidget);
-    addDockWidget(Qt::BottomDockWidgetArea, m_infoDockWidget);
+    m_metadataDockWidget->setWidget(m_metadataWidget);
+    addDockWidget(Qt::BottomDockWidgetArea, m_metadataDockWidget);
 
     m_thumbnailDockWidget->setWidget(m_thumbnailView);
     addDockWidget(Qt::LeftDockWidgetArea, m_thumbnailDockWidget);
@@ -259,7 +259,7 @@ MainWindow::MainWindow(QWidget *const parent)
 
     QMenu *windowsMenu = menuBar()->addMenu("&Windows");
     windowsMenu->addAction(m_thumbnailDockWidget->toggleViewAction());
-    windowsMenu->addAction(m_infoDockWidget->toggleViewAction());
+    windowsMenu->addAction(m_metadataDockWidget->toggleViewAction());
 
     QMenu *helpMenu = menuBar()->addMenu("&Help");
     helpMenu->addAction(m_aboutAction);
@@ -277,12 +277,12 @@ MainWindow::MainWindow(QWidget *const parent)
             SLOT(openDir()));
     connect(m_quitAction, SIGNAL(triggered(bool)),
             SLOT(close()));
-    m_infoWidget->connect(m_thumbnailView,
-                          SIGNAL(currentThumbnailChanged(QMap<QString, QString>)),
-                          SLOT(setImageInfo(QMap<QString, QString>)));
+    m_metadataWidget->connect(m_thumbnailView,
+                          SIGNAL(currentThumbnailChanged(Metadata)),
+                          SLOT(setMetadata(Metadata)));
     m_imageWidget->connect(m_thumbnailView,
-                           SIGNAL(currentThumbnailChanged(QMap<QString, QString>)),
-                           SLOT(setImage(QMap<QString, QString>)));
+                           SIGNAL(currentThumbnailChanged(Metadata)),
+                           SLOT(setImage(Metadata)));
     connect(m_aboutAction, SIGNAL(triggered(bool)), SLOT(about()));
 }
 
@@ -336,13 +336,13 @@ void MainWindow::openDir()
 
 void MainWindow::importReadyAt(const int i)
 {
-    const QMap<QString, QString> imageInfo(m_importer->resultAt(i));
+    const Metadata metadata(m_importer->resultAt(i));
 
-    if (imageInfo.empty()) {
+    if (metadata.empty()) {
         return;
     }
 
-    if (m_thumbnailView->addThumbnail(imageInfo)) {
+    if (m_thumbnailView->addThumbnail(metadata)) {
         m_openCount.fetchAndAddOrdered(1);
     }
 }

@@ -1,5 +1,5 @@
 // sqim - simply qute image manager
-// Copyright (C) 2013 Tuomas Räsänen <tuomasjjrasanen@tjjr.fi>
+// Copyright (C) 2014 Tuomas Räsänen <tuomasjjrasanen@tjjr.fi>
 
 // This program is free software: you can redistribute it and/or modify
 // it under the terms of the GNU General Public License as published by
@@ -14,30 +14,13 @@
 // You should have received a copy of the GNU General Public License
 // along with this program. If not, see <http://www.gnu.org/licenses/>.
 
-#ifndef IMAGEINFOWIDGET_HH
-#define IMAGEINFOWIDGET_HH
+#ifndef METADATA_H
+#define METADATA_H
 
-#include <QLabel>
 #include <QMap>
+#include <QObject>
+#include <QString>
 
-class ImageInfoWidget : public QWidget
-{
-    Q_OBJECT
+typedef QMap<QString, QString> Metadata;
 
-public:
-    explicit ImageInfoWidget(QWidget *parent = 0);
-    ~ImageInfoWidget();
-
-public slots:
-    void setImageInfo(QMap<QString, QString> imageInfo);
-
-private:
-    QLabel *m_filepathLabel;
-    QLabel *m_timestampLabel;
-    QLabel *m_modificationTimeLabel;
-    QLabel *m_fileSizeLabel;
-    QLabel *m_imageSizeLabel;
-
-};
-
-#endif
+#endif // METADATA_H
