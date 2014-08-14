@@ -95,6 +95,11 @@ void ImageWidget::adjustScrollBars(const QPoint &focalPoint)
 
 void ImageWidget::zoomToFit()
 {
+    if (!m_imageLabel->pixmap()) {
+        // Image has not been set yet.
+        return;
+    }
+
     QSizeF a(m_imageLabel->pixmap()->size());
     QSizeF b(a);
     b.scale(maximumViewportSize(), Qt::KeepAspectRatio);
@@ -121,6 +126,11 @@ void ImageWidget::zoomTo(const double zoomLevel, const QPoint &focalPoint)
 
 void ImageWidget::rotate(qreal degrees)
 {
+    if (!m_imageLabel->pixmap()) {
+        // Image has not been set yet.
+        return;
+    }
+
     m_imageLabel->setPixmap(m_imageLabel->pixmap()->transformed(
                                 QTransform().rotate(degrees)));
     zoomTo(m_zoomLevel * 1.0);
