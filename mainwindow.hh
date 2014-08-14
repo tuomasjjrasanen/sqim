@@ -59,8 +59,8 @@ private:
     QDockWidget *m_infoDockWidget;
     QDockWidget *m_thumbnailDockWidget;
     QAction *m_quitAction;
-    QAction *m_sortAscTimeOrderAction;;
-    QAction *m_sortDescTimeOrderAction;;
+    QAction *m_sortAscTimeOrderAction;
+    QAction *m_sortDescTimeOrderAction;
     QAction *m_showThumbnailViewAction;
     QAction *m_aboutAction;
     QMenu *m_thumbnailsMenu;

@@ -23,17 +23,17 @@
 
 ImageWidget::ImageWidget(QWidget *parent)
     :QScrollArea(parent)
+    ,m_imageLabel(new QLabel(this))
     ,m_rotateLeftAction(new QAction("Rotate left", this))
     ,m_rotateRightAction(new QAction("Rotate right", this))
     ,m_zoomInAction(new QAction("&Zoom in", this))
     ,m_zoomOutAction(new QAction("&Zoom out", this))
     ,m_zoomToFitAction(new QAction("&Zoom to fit", this))
 {
-    m_imageLabel = new QLabel(this);
     m_imageLabel->setScaledContents(true);
+    setWidget(m_imageLabel);
 
     setBackgroundRole(QPalette::Dark);
-    setWidget(m_imageLabel);
     setAlignment(Qt::AlignHCenter | Qt::AlignVCenter);
 
     m_zoomInAction->setShortcut(QKeySequence(Qt::Key_Plus));
@@ -45,6 +45,14 @@ ImageWidget::ImageWidget(QWidget *parent)
     connect(m_zoomToFitAction, SIGNAL(triggered(bool)), SLOT(zoomToFit()));
     connect(m_rotateLeftAction, SIGNAL(triggered(bool)), SLOT(rotateLeft()));
     connect(m_rotateRightAction, SIGNAL(triggered(bool)), SLOT(rotateRight()));
+
+    // Image operations are disabled by default, because image has not
+    // been set yet.
+    m_zoomInAction->setEnabled(false);
+    m_zoomOutAction->setEnabled(false);
+    m_zoomToFitAction->setEnabled(false);
+    m_rotateLeftAction->setEnabled(false);
+    m_rotateRightAction->setEnabled(false);
 }
 
 ImageWidget::~ImageWidget()
@@ -58,6 +66,11 @@ void ImageWidget::setImage(QMap<QString, QString> imageInfo)
     m_imageLabel->setPixmap(pixmap);
 
     zoomToFit();
+    m_zoomInAction->setEnabled(true);
+    m_zoomOutAction->setEnabled(true);
+    m_zoomToFitAction->setEnabled(true);
+    m_rotateLeftAction->setEnabled(true);
+    m_rotateRightAction->setEnabled(true);
 }
 
 const QPoint ImageWidget::viewportCenter() const {

@@ -101,7 +101,7 @@ void MainWindow::setupStatusBar()
 
 void MainWindow::setupToolBars()
 {
-    m_toolBar = addToolBar("Hep");
+    m_toolBar = addToolBar("Image operations");
     m_toolBar->addAction(m_imageWidget->zoomToFitAction());
     m_toolBar->addAction(m_imageWidget->rotateLeftAction());
     m_toolBar->addAction(m_imageWidget->rotateRightAction());
