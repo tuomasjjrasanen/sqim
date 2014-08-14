@@ -46,7 +46,6 @@ public:
 private slots:
     void openDir();
     void importReadyAt(int i);
-    void importStarted();
     void importFinished();
     void about();
 

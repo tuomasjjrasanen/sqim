@@ -269,8 +269,6 @@ MainWindow::MainWindow(QWidget *const parent)
     toolBar->addAction(m_imageWidget->rotateLeftAction());
     toolBar->addAction(m_imageWidget->rotateRightAction());
 
-    connect(m_importer, SIGNAL(started()),
-            SLOT(importStarted()));
     connect(m_importer, SIGNAL(finished()),
             SLOT(importFinished()));
     connect(m_importer, SIGNAL(resultReadyAt(int)),
@@ -347,11 +345,6 @@ void MainWindow::importReadyAt(const int i)
     if (m_thumbnailView->addThumbnail(imageInfo)) {
         m_openCount.fetchAndAddOrdered(1);
     }
-}
-
-void MainWindow::importStarted()
-{
-    statusBar()->showMessage("Opening files");
 }
 
 void MainWindow::importFinished()
