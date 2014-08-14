@@ -45,13 +45,13 @@ public:
 
 private slots:
     void openDir();
-    void imagePreparedAt(int i);
-    void imagePreparationStarted();
-    void imagePreparationFinished();
+    void importReadyAt(int i);
+    void importStarted();
+    void importFinished();
     void about();
 
 private:
-    QFutureWatcher<QMap<QString, QString> > *m_imagePreparer;
+    QFutureWatcher<QMap<QString, QString> > *m_importer;
     ImageWidget *m_imageWidget;
     QDockWidget *m_infoDockWidget;
     ImageInfoWidget *m_infoWidget;

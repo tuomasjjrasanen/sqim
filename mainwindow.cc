@@ -177,7 +177,7 @@ static bool makeThumbnail(const QFileInfo imageFileInfo,
     return true;
 }
 
-static QMap<QString, QString> prepareImage(const QString &filepath)
+static QMap<QString, QString> import(const QString &filepath)
 {
     QFileInfo imageFileInfo(filepath);
     QDir cacheDir(QDir::homePath()
@@ -213,7 +213,7 @@ static QMap<QString, QString> prepareImage(const QString &filepath)
 
 MainWindow::MainWindow(QWidget *const parent)
     :QMainWindow(parent)
-    ,m_imagePreparer(new QFutureWatcher<QMap<QString, QString> >(this))
+    ,m_importer(new QFutureWatcher<QMap<QString, QString> >(this))
     ,m_imageWidget(new ImageWidget(this))
     ,m_infoDockWidget(new QDockWidget("&Image info", this))
     ,m_infoWidget(new ImageInfoWidget(m_infoDockWidget))
@@ -269,12 +269,12 @@ MainWindow::MainWindow(QWidget *const parent)
     toolBar->addAction(m_imageWidget->rotateLeftAction());
     toolBar->addAction(m_imageWidget->rotateRightAction());
 
-    connect(m_imagePreparer, SIGNAL(started()),
-            SLOT(imagePreparationStarted()));
-    connect(m_imagePreparer, SIGNAL(finished()),
-            SLOT(imagePreparationFinished()));
-    connect(m_imagePreparer, SIGNAL(resultReadyAt(int)),
-            SLOT(imagePreparedAt(int)));
+    connect(m_importer, SIGNAL(started()),
+            SLOT(importStarted()));
+    connect(m_importer, SIGNAL(finished()),
+            SLOT(importFinished()));
+    connect(m_importer, SIGNAL(resultReadyAt(int)),
+            SLOT(importReadyAt(int)));
     connect(m_openDirAction, SIGNAL(triggered(bool)),
             SLOT(openDir()));
     connect(m_quitAction, SIGNAL(triggered(bool)),
@@ -290,8 +290,8 @@ MainWindow::MainWindow(QWidget *const parent)
 
 MainWindow::~MainWindow()
 {
-    m_imagePreparer->cancel();
-    m_imagePreparer->waitForFinished();
+    m_importer->cancel();
+    m_importer->waitForFinished();
 }
 
 void MainWindow::about()
@@ -319,7 +319,7 @@ void MainWindow::openDir(QString dir, bool recursive)
     const QStringList filePaths(findFiles(dir, recursive));
     m_openDirAction->setEnabled(false);
     m_openCount = 0;
-    m_imagePreparer->setFuture(QtConcurrent::mapped(filePaths, prepareImage));
+    m_importer->setFuture(QtConcurrent::mapped(filePaths, import));
 }
 
 void MainWindow::openDir(QString dir)
@@ -336,9 +336,9 @@ void MainWindow::openDir()
     openDir(dir);
 }
 
-void MainWindow::imagePreparedAt(const int i)
+void MainWindow::importReadyAt(const int i)
 {
-    const QMap<QString, QString> imageInfo(m_imagePreparer->resultAt(i));
+    const QMap<QString, QString> imageInfo(m_importer->resultAt(i));
 
     if (imageInfo.empty()) {
         return;
@@ -349,16 +349,16 @@ void MainWindow::imagePreparedAt(const int i)
     }
 }
 
-void MainWindow::imagePreparationStarted()
+void MainWindow::importStarted()
 {
     statusBar()->showMessage("Opening files");
 }
 
-void MainWindow::imagePreparationFinished()
+void MainWindow::importFinished()
 {
     QString msg = QString("Opened %1/%2 images")
         .arg(m_openCount)
-        .arg(m_imagePreparer->progressMaximum());
+        .arg(m_importer->progressMaximum());
     statusBar()->showMessage(msg);
     m_openDirAction->setEnabled(true);
 }
