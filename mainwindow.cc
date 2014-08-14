@@ -221,15 +221,9 @@ MainWindow::MainWindow(QWidget *const parent)
     ,m_thumbnailView(new ThumbnailView(m_thumbnailDockWidget))
     ,m_openDirAction(new QAction("&Open directory...", this))
     ,m_quitAction(new QAction("&Quit", this))
-    ,m_sortAscTimeOrderAction(new QAction("&Ascending time order", this))
-    ,m_sortDescTimeOrderAction(new QAction("&Descending time order", this))
     ,m_aboutAction(new QAction("&About", this))
     ,m_openCount()
 {
-    m_sortAscTimeOrderAction->setShortcut(
-        QKeySequence(Qt::Key_Less, Qt::Key_T));
-    m_sortDescTimeOrderAction->setShortcut(
-        QKeySequence(Qt::Key_Greater, Qt::Key_T));
     m_thumbnailDockWidget->toggleViewAction()->setShortcut(
         QKeySequence(Qt::Key_T));
     m_infoDockWidget->toggleViewAction()->setShortcut(
@@ -255,8 +249,8 @@ MainWindow::MainWindow(QWidget *const parent)
     fileMenu->addSeparator();
 
     QMenu *thumbnailsMenu = menuBar()->addMenu("&Thumbnails");
-    thumbnailsMenu->addAction(m_sortAscTimeOrderAction);
-    thumbnailsMenu->addAction(m_sortDescTimeOrderAction);
+    thumbnailsMenu->addAction(m_thumbnailView->sortAscTimeOrderAction());
+    thumbnailsMenu->addAction(m_thumbnailView->sortDescTimeOrderAction());
 
     QMenu *imageMenu = menuBar()->addMenu("&Image");
     imageMenu->addAction(m_imageWidget->zoomInAction());
@@ -285,18 +279,6 @@ MainWindow::MainWindow(QWidget *const parent)
             SLOT(openDir()));
     connect(m_quitAction, SIGNAL(triggered(bool)),
             SLOT(close()));
-    m_sortAscTimeOrderAction->connect(m_thumbnailDockWidget->toggleViewAction(),
-                                      SIGNAL(triggered(bool)),
-                                      SLOT(setEnabled(bool)));
-    m_sortDescTimeOrderAction->connect(m_thumbnailDockWidget->toggleViewAction(),
-                                       SIGNAL(triggered(bool)),
-                                       SLOT(setEnabled(bool)));
-    m_thumbnailView->connect(m_sortAscTimeOrderAction,
-                             SIGNAL(triggered(bool)),
-                             SLOT(sortAscTimeOrder()));
-    m_thumbnailView->connect(m_sortDescTimeOrderAction,
-                             SIGNAL(triggered(bool)),
-                             SLOT(sortDescTimeOrder()));
     m_infoWidget->connect(m_thumbnailView,
                           SIGNAL(currentThumbnailChanged(QMap<QString, QString>)),
                           SLOT(setImageInfo(QMap<QString, QString>)));

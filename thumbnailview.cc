@@ -32,6 +32,8 @@ enum {
 
 ThumbnailView::ThumbnailView(QWidget *parent) :
     QListView(parent)
+    ,m_sortAscTimeOrderAction(new QAction("&Ascending time order", this))
+    ,m_sortDescTimeOrderAction(new QAction("&Descending time order", this))
 {
     setViewMode(QListView::IconMode);
     setMovement(QListView::Static);
@@ -43,10 +45,34 @@ ThumbnailView::ThumbnailView(QWidget *parent) :
     setUniformItemSizes(true);
 
     setModel(new QStandardItemModel(this));
+
+    m_sortAscTimeOrderAction->setShortcut(
+        QKeySequence(Qt::Key_Less, Qt::Key_T));
+    m_sortDescTimeOrderAction->setShortcut(
+        QKeySequence(Qt::Key_Greater, Qt::Key_T));
+
+    connect(m_sortAscTimeOrderAction, SIGNAL(triggered(bool)),
+            SLOT(sortAscTimeOrder()));
+    connect(m_sortDescTimeOrderAction, SIGNAL(triggered(bool)),
+            SLOT(sortDescTimeOrder()));
 }
 
 ThumbnailView::~ThumbnailView()
 {
+}
+
+void ThumbnailView::hideEvent(QHideEvent *event)
+{
+    m_sortAscTimeOrderAction->setEnabled(false);
+    m_sortDescTimeOrderAction->setEnabled(false);
+    QListView::hideEvent(event);
+}
+
+void ThumbnailView::showEvent(QShowEvent *event)
+{
+    m_sortAscTimeOrderAction->setEnabled(true);
+    m_sortDescTimeOrderAction->setEnabled(true);
+    QListView::showEvent(event);
 }
 
 bool ThumbnailView::addThumbnail(QMap<QString, QString> imageInfo)
@@ -117,4 +143,14 @@ void ThumbnailView::currentChanged(const QModelIndex &current,
     QMap<QString, QString> imageInfo = m_imageInfoMap.value(
         m->item(current.row(), COL_FILEPATH)->text());
     emit currentThumbnailChanged(imageInfo);
+}
+
+QAction* ThumbnailView::sortAscTimeOrderAction() const
+{
+    return m_sortAscTimeOrderAction;
+}
+
+QAction* ThumbnailView::sortDescTimeOrderAction() const
+{
+    return m_sortDescTimeOrderAction;
 }

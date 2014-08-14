@@ -17,6 +17,7 @@
 #ifndef THUMBNAILVIEW_H
 #define THUMBNAILVIEW_H
 
+#include <QAction>
 #include <QListView>
 #include <QHash>
 #include <QMap>
@@ -33,6 +34,8 @@ public:
     ~ThumbnailView();
 
     bool addThumbnail(QMap<QString, QString> imageinfo);
+    QAction* sortAscTimeOrderAction() const;
+    QAction* sortDescTimeOrderAction() const;
 
 signals:
     void currentThumbnailChanged(QMap<QString, QString> imageInfo);
@@ -43,9 +46,14 @@ public slots:
 
 protected:
     virtual void currentChanged(const QModelIndex &current, const QModelIndex &previous);
+    virtual void hideEvent(QHideEvent *event);
+    virtual void showEvent(QShowEvent *event);
 
 private:
     QHash<QString, QMap<QString, QString> > m_imageInfoMap;
+
+    QAction *m_sortAscTimeOrderAction;
+    QAction *m_sortDescTimeOrderAction;
 
 };
 

@@ -60,8 +60,6 @@ private:
 
     QAction *m_openDirAction;
     QAction *m_quitAction;
-    QAction *m_sortAscTimeOrderAction;
-    QAction *m_sortDescTimeOrderAction;
     QAction *m_aboutAction;
 
     QAtomicInt m_openCount;
