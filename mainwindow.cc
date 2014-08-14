@@ -52,124 +52,6 @@ static QStringList findFiles(QString dir, bool recursive)
     return retval;
 }
 
-void MainWindow::about()
-{
-    static QString aboutText = QString::fromUtf8(
-        "<h1>Simply Qute Image Manager</h1>"
-        "<p>Copyright © 2013 <a href=\"http://tjjr.fi\">Tuomas Räsänen</a></p>"
-        "<p>This program is free software: you can redistribute it and/or modify "
-        "it under the terms of the GNU General Public License as published by "
-        "the Free Software Foundation, either version 3 of the License, or (at "
-        "your option) any later version.</p>"
-        "<p>This program is distributed in the hope that it will be useful, but "
-        "WITHOUT ANY WARRANTY; without even the implied warranty of "
-        "MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.</p>"
-        "<p>See the <a href=\"https://www.gnu.org/licenses/gpl-3.0.html\">GNU "
-        "General Public License</a> for more details.</p>");
-    QMessageBox::about(this, "About SQIM", aboutText);
-}
-
-MainWindow::MainWindow(QWidget *const parent)
-    :QMainWindow(parent)
-    ,m_imagePreparer(new QFutureWatcher<QMap<QString, QString> >(this))
-    ,m_imageWidget(new ImageWidget(this))
-    ,m_infoDockWidget(new QDockWidget("&Image info", this))
-    ,m_infoWidget(new ImageInfoWidget(m_infoDockWidget))
-    ,m_thumbnailDockWidget(new QDockWidget("&Thumbnails", this))
-    ,m_thumbnailView(new ThumbnailView(m_thumbnailDockWidget))
-    ,m_openDirAction(new QAction("&Open directory...", this))
-    ,m_quitAction(new QAction("&Quit", this))
-    ,m_sortAscTimeOrderAction(new QAction("&Ascending time order", this))
-    ,m_sortDescTimeOrderAction(new QAction("&Descending time order", this))
-    ,m_aboutAction(new QAction("&About", this))
-    ,m_openCount()
-{
-    m_sortAscTimeOrderAction->setShortcut(
-        QKeySequence(Qt::Key_Less, Qt::Key_T));
-    m_sortDescTimeOrderAction->setShortcut(
-        QKeySequence(Qt::Key_Greater, Qt::Key_T));
-    m_thumbnailDockWidget->toggleViewAction()->setShortcut(
-        QKeySequence(Qt::Key_T));
-    m_infoDockWidget->toggleViewAction()->setShortcut(
-        QKeySequence(Qt::Key_I));
-    m_openDirAction->setShortcut(QKeySequence(Qt::Key_O));
-    m_quitAction->setShortcut(QKeySequence(Qt::Key_Q));
-
-    setCentralWidget(m_imageWidget);
-
-    m_infoDockWidget->setWidget(m_infoWidget);
-    addDockWidget(Qt::BottomDockWidgetArea, m_infoDockWidget);
-
-    m_thumbnailDockWidget->setWidget(m_thumbnailView);
-    addDockWidget(Qt::LeftDockWidgetArea, m_thumbnailDockWidget);
-
-    setStatusBar(new QStatusBar());
-
-    setMenuBar(new QMenuBar());
-
-    QMenu *fileMenu = menuBar()->addMenu("&File");
-    fileMenu->addAction(m_openDirAction);
-    fileMenu->addAction(m_quitAction);
-    fileMenu->addSeparator();
-
-    QMenu *thumbnailsMenu = menuBar()->addMenu("&Thumbnails");
-    thumbnailsMenu->addAction(m_sortAscTimeOrderAction);
-    thumbnailsMenu->addAction(m_sortDescTimeOrderAction);
-
-    QMenu *imageMenu = menuBar()->addMenu("&Image");
-    imageMenu->addAction(m_imageWidget->zoomInAction());
-    imageMenu->addAction(m_imageWidget->zoomOutAction());
-    imageMenu->addAction(m_imageWidget->zoomToFitAction());
-
-    QMenu *windowsMenu = menuBar()->addMenu("&Windows");
-    windowsMenu->addAction(m_thumbnailDockWidget->toggleViewAction());
-    windowsMenu->addAction(m_infoDockWidget->toggleViewAction());
-
-    QMenu *helpMenu = menuBar()->addMenu("&Help");
-    helpMenu->addAction(m_aboutAction);
-
-    QToolBar *toolBar = addToolBar("Image operations");
-    toolBar->addAction(m_imageWidget->zoomToFitAction());
-    toolBar->addAction(m_imageWidget->rotateLeftAction());
-    toolBar->addAction(m_imageWidget->rotateRightAction());
-
-    connect(m_imagePreparer, SIGNAL(started()),
-            SLOT(imagePreparationStarted()));
-    connect(m_imagePreparer, SIGNAL(finished()),
-            SLOT(imagePreparationFinished()));
-    connect(m_imagePreparer, SIGNAL(resultReadyAt(int)),
-            SLOT(imagePreparedAt(int)));
-    connect(m_openDirAction, SIGNAL(triggered(bool)),
-            SLOT(openDir()));
-    connect(m_quitAction, SIGNAL(triggered(bool)),
-            SLOT(close()));
-    m_sortAscTimeOrderAction->connect(m_thumbnailDockWidget->toggleViewAction(),
-                                      SIGNAL(triggered(bool)),
-                                      SLOT(setEnabled(bool)));
-    m_sortDescTimeOrderAction->connect(m_thumbnailDockWidget->toggleViewAction(),
-                                       SIGNAL(triggered(bool)),
-                                       SLOT(setEnabled(bool)));
-    m_thumbnailView->connect(m_sortAscTimeOrderAction,
-                             SIGNAL(triggered(bool)),
-                             SLOT(sortAscTimeOrder()));
-    m_thumbnailView->connect(m_sortDescTimeOrderAction,
-                             SIGNAL(triggered(bool)),
-                             SLOT(sortDescTimeOrder()));
-    m_infoWidget->connect(m_thumbnailView,
-                          SIGNAL(currentThumbnailChanged(QMap<QString, QString>)),
-                          SLOT(setImageInfo(QMap<QString, QString>)));
-    m_imageWidget->connect(m_thumbnailView,
-                           SIGNAL(currentThumbnailChanged(QMap<QString, QString>)),
-                           SLOT(setImage(QMap<QString, QString>)));
-    connect(m_aboutAction, SIGNAL(triggered(bool)), SLOT(about()));
-}
-
-MainWindow::~MainWindow()
-{
-    m_imagePreparer->cancel();
-    m_imagePreparer->waitForFinished();
-}
-
 static QString fileSizeToString(const qint64 bytes)
 {
     static qreal KiB = 1024;
@@ -327,6 +209,124 @@ static QMap<QString, QString> prepareImage(const QString &filepath)
     }
 
     return imageInfo;
+}
+
+MainWindow::MainWindow(QWidget *const parent)
+    :QMainWindow(parent)
+    ,m_imagePreparer(new QFutureWatcher<QMap<QString, QString> >(this))
+    ,m_imageWidget(new ImageWidget(this))
+    ,m_infoDockWidget(new QDockWidget("&Image info", this))
+    ,m_infoWidget(new ImageInfoWidget(m_infoDockWidget))
+    ,m_thumbnailDockWidget(new QDockWidget("&Thumbnails", this))
+    ,m_thumbnailView(new ThumbnailView(m_thumbnailDockWidget))
+    ,m_openDirAction(new QAction("&Open directory...", this))
+    ,m_quitAction(new QAction("&Quit", this))
+    ,m_sortAscTimeOrderAction(new QAction("&Ascending time order", this))
+    ,m_sortDescTimeOrderAction(new QAction("&Descending time order", this))
+    ,m_aboutAction(new QAction("&About", this))
+    ,m_openCount()
+{
+    m_sortAscTimeOrderAction->setShortcut(
+        QKeySequence(Qt::Key_Less, Qt::Key_T));
+    m_sortDescTimeOrderAction->setShortcut(
+        QKeySequence(Qt::Key_Greater, Qt::Key_T));
+    m_thumbnailDockWidget->toggleViewAction()->setShortcut(
+        QKeySequence(Qt::Key_T));
+    m_infoDockWidget->toggleViewAction()->setShortcut(
+        QKeySequence(Qt::Key_I));
+    m_openDirAction->setShortcut(QKeySequence(Qt::Key_O));
+    m_quitAction->setShortcut(QKeySequence(Qt::Key_Q));
+
+    setCentralWidget(m_imageWidget);
+
+    m_infoDockWidget->setWidget(m_infoWidget);
+    addDockWidget(Qt::BottomDockWidgetArea, m_infoDockWidget);
+
+    m_thumbnailDockWidget->setWidget(m_thumbnailView);
+    addDockWidget(Qt::LeftDockWidgetArea, m_thumbnailDockWidget);
+
+    setStatusBar(new QStatusBar());
+
+    setMenuBar(new QMenuBar());
+
+    QMenu *fileMenu = menuBar()->addMenu("&File");
+    fileMenu->addAction(m_openDirAction);
+    fileMenu->addAction(m_quitAction);
+    fileMenu->addSeparator();
+
+    QMenu *thumbnailsMenu = menuBar()->addMenu("&Thumbnails");
+    thumbnailsMenu->addAction(m_sortAscTimeOrderAction);
+    thumbnailsMenu->addAction(m_sortDescTimeOrderAction);
+
+    QMenu *imageMenu = menuBar()->addMenu("&Image");
+    imageMenu->addAction(m_imageWidget->zoomInAction());
+    imageMenu->addAction(m_imageWidget->zoomOutAction());
+    imageMenu->addAction(m_imageWidget->zoomToFitAction());
+
+    QMenu *windowsMenu = menuBar()->addMenu("&Windows");
+    windowsMenu->addAction(m_thumbnailDockWidget->toggleViewAction());
+    windowsMenu->addAction(m_infoDockWidget->toggleViewAction());
+
+    QMenu *helpMenu = menuBar()->addMenu("&Help");
+    helpMenu->addAction(m_aboutAction);
+
+    QToolBar *toolBar = addToolBar("Image operations");
+    toolBar->addAction(m_imageWidget->zoomToFitAction());
+    toolBar->addAction(m_imageWidget->rotateLeftAction());
+    toolBar->addAction(m_imageWidget->rotateRightAction());
+
+    connect(m_imagePreparer, SIGNAL(started()),
+            SLOT(imagePreparationStarted()));
+    connect(m_imagePreparer, SIGNAL(finished()),
+            SLOT(imagePreparationFinished()));
+    connect(m_imagePreparer, SIGNAL(resultReadyAt(int)),
+            SLOT(imagePreparedAt(int)));
+    connect(m_openDirAction, SIGNAL(triggered(bool)),
+            SLOT(openDir()));
+    connect(m_quitAction, SIGNAL(triggered(bool)),
+            SLOT(close()));
+    m_sortAscTimeOrderAction->connect(m_thumbnailDockWidget->toggleViewAction(),
+                                      SIGNAL(triggered(bool)),
+                                      SLOT(setEnabled(bool)));
+    m_sortDescTimeOrderAction->connect(m_thumbnailDockWidget->toggleViewAction(),
+                                       SIGNAL(triggered(bool)),
+                                       SLOT(setEnabled(bool)));
+    m_thumbnailView->connect(m_sortAscTimeOrderAction,
+                             SIGNAL(triggered(bool)),
+                             SLOT(sortAscTimeOrder()));
+    m_thumbnailView->connect(m_sortDescTimeOrderAction,
+                             SIGNAL(triggered(bool)),
+                             SLOT(sortDescTimeOrder()));
+    m_infoWidget->connect(m_thumbnailView,
+                          SIGNAL(currentThumbnailChanged(QMap<QString, QString>)),
+                          SLOT(setImageInfo(QMap<QString, QString>)));
+    m_imageWidget->connect(m_thumbnailView,
+                           SIGNAL(currentThumbnailChanged(QMap<QString, QString>)),
+                           SLOT(setImage(QMap<QString, QString>)));
+    connect(m_aboutAction, SIGNAL(triggered(bool)), SLOT(about()));
+}
+
+MainWindow::~MainWindow()
+{
+    m_imagePreparer->cancel();
+    m_imagePreparer->waitForFinished();
+}
+
+void MainWindow::about()
+{
+    static QString aboutText = QString::fromUtf8(
+        "<h1>Simply Qute Image Manager</h1>"
+        "<p>Copyright © 2013 <a href=\"http://tjjr.fi\">Tuomas Räsänen</a></p>"
+        "<p>This program is free software: you can redistribute it and/or modify "
+        "it under the terms of the GNU General Public License as published by "
+        "the Free Software Foundation, either version 3 of the License, or (at "
+        "your option) any later version.</p>"
+        "<p>This program is distributed in the hope that it will be useful, but "
+        "WITHOUT ANY WARRANTY; without even the implied warranty of "
+        "MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.</p>"
+        "<p>See the <a href=\"https://www.gnu.org/licenses/gpl-3.0.html\">GNU "
+        "General Public License</a> for more details.</p>");
+    QMessageBox::about(this, "About SQIM", aboutText);
 }
 
 void MainWindow::openDir(QString dir, bool recursive)
