@@ -213,3 +213,23 @@ QAction* ImageWidget::zoomToFitAction() const
 {
     return m_zoomToFitAction;
 }
+
+void ImageWidget::hideEvent(QHideEvent *event)
+{
+    m_rotateLeftAction->setEnabled(false);
+    m_rotateRightAction->setEnabled(false);
+    m_zoomInAction->setEnabled(false);
+    m_zoomOutAction->setEnabled(false);
+    m_zoomToFitAction->setEnabled(false);
+    QScrollArea::hideEvent(event);
+}
+
+void ImageWidget::showEvent(QShowEvent *event)
+{
+    m_rotateLeftAction->setEnabled(m_imageLabel->pixmap());
+    m_rotateRightAction->setEnabled(m_imageLabel->pixmap());
+    m_zoomInAction->setEnabled(m_imageLabel->pixmap());
+    m_zoomOutAction->setEnabled(m_imageLabel->pixmap());
+    m_zoomToFitAction->setEnabled(m_imageLabel->pixmap());
+    QScrollArea::showEvent(event);
+}

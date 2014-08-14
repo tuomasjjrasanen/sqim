@@ -54,7 +54,9 @@ public slots:
     void rotateLeft();
 
 protected:
-    void wheelEvent(QWheelEvent *event);
+    virtual void wheelEvent(QWheelEvent *event);
+    virtual void hideEvent(QHideEvent *event);
+    virtual void showEvent(QShowEvent *event);
 
 private:
     void adjustScrollBars(const QPoint &focalPoint);
