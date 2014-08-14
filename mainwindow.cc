@@ -69,106 +69,80 @@ void MainWindow::about()
     QMessageBox::about(this, "About SQIM", aboutText);
 }
 
-void MainWindow::setupCentralWidget()
+MainWindow::MainWindow(QWidget *const parent)
+    :QMainWindow(parent)
+    ,m_imagePreparer(new QFutureWatcher<QMap<QString, QString> >(this))
+    ,m_imageWidget(new ImageWidget(this))
+    ,m_infoDockWidget(new QDockWidget("&Image info", this))
+    ,m_infoWidget(new ImageInfoWidget(m_infoDockWidget))
+    ,m_thumbnailDockWidget(new QDockWidget("&Thumbnails", this))
+    ,m_thumbnailView(new ThumbnailView(m_thumbnailDockWidget))
+    ,m_openDirAction(new QAction("&Open directory...", this))
+    ,m_quitAction(new QAction("&Quit", this))
+    ,m_sortAscTimeOrderAction(new QAction("&Ascending time order", this))
+    ,m_sortDescTimeOrderAction(new QAction("&Descending time order", this))
+    ,m_aboutAction(new QAction("&About", this))
+    ,m_openCount()
 {
-    m_imageWidget = new ImageWidget(this);
+    m_sortAscTimeOrderAction->setShortcut(
+        QKeySequence(Qt::Key_Less, Qt::Key_T));
+    m_sortDescTimeOrderAction->setShortcut(
+        QKeySequence(Qt::Key_Greater, Qt::Key_T));
+    m_thumbnailDockWidget->toggleViewAction()->setShortcut(
+        QKeySequence(Qt::Key_T));
+    m_infoDockWidget->toggleViewAction()->setShortcut(
+        QKeySequence(Qt::Key_I));
+    m_openDirAction->setShortcut(QKeySequence(Qt::Key_O));
+    m_quitAction->setShortcut(QKeySequence(Qt::Key_Q));
 
     setCentralWidget(m_imageWidget);
-}
 
-void MainWindow::setupDockWidgets()
-{
-    m_infoDockWidget = new QDockWidget("&Image info", this);
-    m_infoWidget = new ImageInfoWidget(m_infoDockWidget);
     m_infoDockWidget->setWidget(m_infoWidget);
     addDockWidget(Qt::BottomDockWidgetArea, m_infoDockWidget);
 
-    m_thumbnailDockWidget = new QDockWidget("&Thumbnails", this);
-    m_thumbnailView = new ThumbnailView(m_thumbnailDockWidget);
     m_thumbnailDockWidget->setWidget(m_thumbnailView);
     addDockWidget(Qt::LeftDockWidgetArea, m_thumbnailDockWidget);
-}
 
-void MainWindow::setupStatusBar()
-{
-    QStatusBar *statusBar = new QStatusBar(this);
+    setStatusBar(new QStatusBar());
 
-    setStatusBar(statusBar);
-}
+    setMenuBar(new QMenuBar());
 
-void MainWindow::setupToolBars()
-{
-    m_toolBar = addToolBar("Image operations");
-    m_toolBar->addAction(m_imageWidget->zoomToFitAction());
-    m_toolBar->addAction(m_imageWidget->rotateLeftAction());
-    m_toolBar->addAction(m_imageWidget->rotateRightAction());
-}
-
-void MainWindow::setupMenuBar()
-{
-    QMenuBar *menuBar = new QMenuBar(this);
-
-    QMenu *fileMenu = new QMenu("&File", menuBar);
-    m_openDirAction = fileMenu->addAction("&Open directory...");
-    m_openDirAction->setShortcut(QKeySequence(Qt::Key_O));
+    QMenu *fileMenu = menuBar()->addMenu("&File");
+    fileMenu->addAction(m_openDirAction);
+    fileMenu->addAction(m_quitAction);
     fileMenu->addSeparator();
-    m_quitAction = fileMenu->addAction("&Quit");
-    m_quitAction->setShortcut(QKeySequence(Qt::Key_Q));
-    menuBar->addMenu(fileMenu);
 
-    m_thumbnailsMenu = new QMenu("&Thumbnails", menuBar);
-    m_sortAscTimeOrderAction = m_thumbnailsMenu->addAction(
-        "&Ascending time order");
-    m_sortAscTimeOrderAction->setShortcut(
-        QKeySequence(Qt::Key_Less, Qt::Key_T));
-    m_sortDescTimeOrderAction = m_thumbnailsMenu->addAction(
-        "&Descending time order");
-    m_sortDescTimeOrderAction->setShortcut(
-        QKeySequence(Qt::Key_Greater, Qt::Key_T));
-    menuBar->addMenu(m_thumbnailsMenu);
+    QMenu *thumbnailsMenu = menuBar()->addMenu("&Thumbnails");
+    thumbnailsMenu->addAction(m_sortAscTimeOrderAction);
+    thumbnailsMenu->addAction(m_sortDescTimeOrderAction);
 
-    QMenu *imageMenu = new QMenu("&Image", menuBar);
+    QMenu *imageMenu = menuBar()->addMenu("&Image");
     imageMenu->addAction(m_imageWidget->zoomInAction());
     imageMenu->addAction(m_imageWidget->zoomOutAction());
     imageMenu->addAction(m_imageWidget->zoomToFitAction());
-    menuBar->addMenu(imageMenu);
 
-    QMenu *windowsMenu = new QMenu("&Windows", menuBar);
+    QMenu *windowsMenu = menuBar()->addMenu("&Windows");
     windowsMenu->addAction(m_thumbnailDockWidget->toggleViewAction());
-    m_thumbnailDockWidget->toggleViewAction()->setShortcut(
-        QKeySequence(Qt::Key_T));
     windowsMenu->addAction(m_infoDockWidget->toggleViewAction());
-    m_infoDockWidget->toggleViewAction()->setShortcut(
-        QKeySequence(Qt::Key_I));
-    menuBar->addMenu(windowsMenu);
 
-    QMenu *helpMenu = new QMenu("&Help", menuBar);
-    m_aboutAction = helpMenu->addAction("&About");
-    menuBar->addMenu(helpMenu);
+    QMenu *helpMenu = menuBar()->addMenu("&Help");
+    helpMenu->addAction(m_aboutAction);
 
-    setMenuBar(menuBar);
-}
+    QToolBar *toolBar = addToolBar("Image operations");
+    toolBar->addAction(m_imageWidget->zoomToFitAction());
+    toolBar->addAction(m_imageWidget->rotateLeftAction());
+    toolBar->addAction(m_imageWidget->rotateRightAction());
 
-void MainWindow::connectSignals()
-{
-    connect(m_imagePreparer,
-            SIGNAL(started()),
+    connect(m_imagePreparer, SIGNAL(started()),
             SLOT(imagePreparationStarted()));
-    connect(m_imagePreparer,
-            SIGNAL(finished()),
+    connect(m_imagePreparer, SIGNAL(finished()),
             SLOT(imagePreparationFinished()));
-    connect(m_imagePreparer,
-            SIGNAL(resultReadyAt(int)),
+    connect(m_imagePreparer, SIGNAL(resultReadyAt(int)),
             SLOT(imagePreparedAt(int)));
-    connect(m_openDirAction,
-            SIGNAL(triggered(bool)),
+    connect(m_openDirAction, SIGNAL(triggered(bool)),
             SLOT(openDir()));
-    connect(m_quitAction,
-            SIGNAL(triggered(bool)),
+    connect(m_quitAction, SIGNAL(triggered(bool)),
             SLOT(close()));
-    m_thumbnailsMenu->connect(m_thumbnailDockWidget->toggleViewAction(),
-                              SIGNAL(triggered(bool)),
-                              SLOT(setEnabled(bool)));
     m_sortAscTimeOrderAction->connect(m_thumbnailDockWidget->toggleViewAction(),
                                       SIGNAL(triggered(bool)),
                                       SLOT(setEnabled(bool)));
@@ -187,23 +161,7 @@ void MainWindow::connectSignals()
     m_imageWidget->connect(m_thumbnailView,
                            SIGNAL(currentThumbnailChanged(QMap<QString, QString>)),
                            SLOT(setImage(QMap<QString, QString>)));
-    connect(m_aboutAction,
-            SIGNAL(triggered(bool)),
-            SLOT(about()));
-}
-
-MainWindow::MainWindow(QWidget *const parent)
-    : QMainWindow(parent)
-{
-
-    m_imagePreparer = new QFutureWatcher<QMap<QString, QString> >(this);
-
-    setupCentralWidget();
-    setupDockWidgets();
-    setupStatusBar();
-    setupMenuBar();
-    setupToolBars();
-    connectSignals();
+    connect(m_aboutAction, SIGNAL(triggered(bool)), SLOT(about()));
 }
 
 MainWindow::~MainWindow()

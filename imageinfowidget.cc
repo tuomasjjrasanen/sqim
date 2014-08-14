@@ -20,13 +20,12 @@
 
 ImageInfoWidget::ImageInfoWidget(QWidget *parent)
     :QWidget(parent)
+    ,m_filepathLabel(new QLabel(this))
+    ,m_timestampLabel(new QLabel(this))
+    ,m_modificationTimeLabel(new QLabel(this))
+    ,m_fileSizeLabel(new QLabel(this))
+    ,m_imageSizeLabel(new QLabel(this))
 {
-    m_filepathLabel = new QLabel();
-    m_timestampLabel = new QLabel();
-    m_modificationTimeLabel = new QLabel();
-    m_fileSizeLabel = new QLabel();
-    m_imageSizeLabel = new QLabel();
-
     m_filepathLabel->setTextInteractionFlags(Qt::TextBrowserInteraction);
     m_timestampLabel->setTextInteractionFlags(Qt::TextBrowserInteraction);
     m_modificationTimeLabel->setTextInteractionFlags(Qt::TextBrowserInteraction);

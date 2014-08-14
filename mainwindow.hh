@@ -52,27 +52,19 @@ private slots:
 
 private:
     QFutureWatcher<QMap<QString, QString> > *m_imagePreparer;
-    ThumbnailView *m_thumbnailView;
-    QAction *m_openDirAction;
-    ImageInfoWidget *m_infoWidget;
     ImageWidget *m_imageWidget;
     QDockWidget *m_infoDockWidget;
+    ImageInfoWidget *m_infoWidget;
     QDockWidget *m_thumbnailDockWidget;
+    ThumbnailView *m_thumbnailView;
+
+    QAction *m_openDirAction;
     QAction *m_quitAction;
     QAction *m_sortAscTimeOrderAction;
     QAction *m_sortDescTimeOrderAction;
-    QAction *m_showThumbnailViewAction;
     QAction *m_aboutAction;
-    QMenu *m_thumbnailsMenu;
-    QToolBar *m_toolBar;
-    QAtomicInt m_openCount;
 
-    void setupDockWidgets();
-    void setupCentralWidget();
-    void setupStatusBar();
-    void setupToolBars();
-    void setupMenuBar();
-    void connectSignals();
+    QAtomicInt m_openCount;
 };
 
 #endif // MAINWINDOW_H
