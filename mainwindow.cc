@@ -217,9 +217,9 @@ MainWindow::~MainWindow()
 
 static QString fileSizeToString(const qint64 bytes)
 {
-    static double KiB = 1024;
-    static double MiB = KiB * KiB;
-    static double GiB = MiB * KiB;
+    static qreal KiB = 1024;
+    static qreal MiB = KiB * KiB;
+    static qreal GiB = MiB * KiB;
     if (bytes > GiB) {
         return QString::number(bytes / GiB, 'f', 1)
             + " GiB (" + QString::number(bytes) + " B)";

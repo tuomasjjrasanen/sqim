@@ -97,12 +97,12 @@ void ImageWidget::zoomOut(const QPoint &focalPoint)
     zoomBy(0.8, focalPoint);
 }
 
-void ImageWidget::zoomBy(const double zoomFactor)
+void ImageWidget::zoomBy(const qreal zoomFactor)
 {
     zoomTo(m_zoomLevel * zoomFactor);
 }
 
-void ImageWidget::zoomBy(const double zoomFactor, const QPoint &focalPoint)
+void ImageWidget::zoomBy(const qreal zoomFactor, const QPoint &focalPoint)
 {
     zoomTo(m_zoomLevel * zoomFactor, focalPoint);
 }
@@ -112,8 +112,8 @@ void ImageWidget::adjustScrollBars(const QPoint &focalPoint)
     const QSizeF viewportSizeF(viewport()->size());
     const QPointF focalPointF(focalPoint);
     
-    const double horizontalFactor = focalPointF.x() / viewportSizeF.width();
-    const double verticalFactor = focalPointF.y() / viewportSizeF.height();
+    const qreal horizontalFactor = focalPointF.x() / viewportSizeF.width();
+    const qreal verticalFactor = focalPointF.y() / viewportSizeF.height();
 
     horizontalScrollBar()->setValue(int(horizontalFactor
                                         * horizontalScrollBar()->maximum()));
@@ -134,12 +134,12 @@ void ImageWidget::zoomToFit()
     zoomTo(qMin(1.0, qMin(b.width() / a.width(), b.height() / a.height())));
 }
 
-void ImageWidget::zoomTo(const double zoomLevel)
+void ImageWidget::zoomTo(const qreal zoomLevel)
 {
     zoomTo(zoomLevel, viewportCenter());
 }
 
-void ImageWidget::zoomTo(const double zoomLevel, const QPoint &focalPoint)
+void ImageWidget::zoomTo(const qreal zoomLevel, const QPoint &focalPoint)
 {
     if (!m_imageLabel->pixmap()) {
         // Image has not been set yet.

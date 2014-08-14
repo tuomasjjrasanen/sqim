@@ -45,11 +45,11 @@ public slots:
     void zoomOut();
     void zoomIn(const QPoint &focalPoint);
     void zoomOut(const QPoint &focalPoint);
-    void zoomBy(double zoomFactor);
-    void zoomBy(double zoomFactor, const QPoint &focalPoint);
+    void zoomBy(qreal zoomFactor);
+    void zoomBy(qreal zoomFactor, const QPoint &focalPoint);
     void zoomToFit();
-    void zoomTo(double zoomLevel);
-    void zoomTo(double zoomLevel, const QPoint &focalPoint);
+    void zoomTo(qreal zoomLevel);
+    void zoomTo(qreal zoomLevel, const QPoint &focalPoint);
     void rotateRight();
     void rotateLeft();
 
@@ -62,7 +62,7 @@ private:
     void rotate(qreal degrees);
 
     QLabel *m_imageLabel;
-    double m_zoomLevel;
+    qreal m_zoomLevel;
 
     QAction *m_rotateLeftAction;
     QAction *m_rotateRightAction;
