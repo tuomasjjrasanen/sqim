@@ -50,7 +50,7 @@ private slots:
     void about();
 
 private:
-    QFutureWatcher<Metadata> *m_importer;
+    QFutureWatcher<QString> *m_importer;
     ImageWidget *m_imageWidget;
     QDockWidget *m_metadataDockWidget;
     MetadataWidget *m_metadataWidget;

@@ -19,7 +19,7 @@
 #include <QPixmap>
 
 #include "thumbnailview.hh"
-
+#include "common.hh"
 enum {
     COL_THUMBNAILFILEPATH,
     COL_FILEPATH,
@@ -75,26 +75,24 @@ void ThumbnailView::showEvent(QShowEvent *event)
     QListView::showEvent(event);
 }
 
-bool ThumbnailView::addThumbnail(Metadata metadata)
+bool ThumbnailView::addThumbnail(const QString& filePath)
 {
-    if (m_metadataMap.contains(metadata.value("filepath")))
+    Metadata metadata;
+
+    readMetadata(filePath, metadata);
+
+    if (m_metadataMap.contains(filePath))
         return false;
 
     QList<QStandardItem*> items;
     QStandardItem *item;
 
-    QFileInfo imageFileInfo(metadata.value("filepath"));
-    QDir cacheDir(QDir::homePath()
-                  + "/.cache/sqim"
-                  + imageFileInfo.canonicalFilePath());
-    QFileInfo thumbnailFileInfo(cacheDir, "thumbnail.png");
-
     item = new QStandardItem();
-    item->setIcon(QIcon(thumbnailFileInfo.filePath()));
+    item->setIcon(QIcon(cacheDir(filePath).filePath("thumbnail.png")));
     items.insert(COL_THUMBNAILFILEPATH, item);
 
     item = new QStandardItem();
-    item->setText(metadata.value("filepath"));
+    item->setText(filePath);
     items.insert(COL_FILEPATH, item);
 
     item = new QStandardItem();
@@ -115,7 +113,7 @@ bool ThumbnailView::addThumbnail(Metadata metadata)
 
     ((QStandardItemModel *)model())->appendRow(items);
 
-    m_metadataMap.insert(metadata.value("filepath"), metadata);
+    m_metadataMap.insert(filePath, metadata);
 
     if (((QStandardItemModel *)model())->rowCount() == 1) {
         setCurrentIndex(((QStandardItemModel *)model())->index(0, 0));
@@ -140,9 +138,8 @@ void ThumbnailView::currentChanged(const QModelIndex &current,
     QListView::currentChanged(current, previous);
 
     QStandardItemModel *m = (QStandardItemModel*) model();
-    Metadata metadata = m_metadataMap.value(
-        m->item(current.row(), COL_FILEPATH)->text());
-    emit currentThumbnailChanged(metadata);
+    QString filePath = m->item(current.row(), COL_FILEPATH)->text();
+    emit currentThumbnailChanged(filePath);
 }
 
 QAction* ThumbnailView::sortAscTimeOrderAction() const

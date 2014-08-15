@@ -14,33 +14,32 @@
 // You should have received a copy of the GNU General Public License
 // along with this program. If not, see <http://www.gnu.org/licenses/>.
 
-#ifndef METADATAWIDGET_HH
-#define METADATAWIDGET_HH
+#include <QDebug>
+#include <QMutex>
+#include <QMutexLocker>
 
-#include <QLabel>
-#include <QMap>
+#include "common.hh"
 
-#include "metadata.hh"
-
-class MetadataWidget : public QWidget
+QDir cacheDir(const QString& filePath)
 {
-    Q_OBJECT
+    return QDir(QDir::homePath()
+                + "/.cache/sqim"
+                + filePath);
+}
 
-public:
-    explicit MetadataWidget(QWidget *parent = 0);
-    ~MetadataWidget();
+bool makeCacheDir(const QString& filePath)
+{
+    QDir d = cacheDir(filePath);
 
-public slots:
-    bool openMetadata(const QString& filePath);
-    void setMetadata(Metadata metadata);
-
-private:
-    QLabel *m_filepathLabel;
-    QLabel *m_timestampLabel;
-    QLabel *m_modificationTimeLabel;
-    QLabel *m_fileSizeLabel;
-    QLabel *m_imageSizeLabel;
-
-};
-
-#endif
+    if (!d.exists()) {
+        static QMutex mutex;
+        QMutexLocker locker(&mutex);
+        // Ensure the cache directory exists.
+        if (!d.mkpath(".")) {
+            qWarning() << "failed to create the cache directory";
+            return false;
+        }
+        locker.unlock();
+    }
+    return true;
+}

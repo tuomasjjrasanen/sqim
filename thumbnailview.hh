@@ -33,12 +33,12 @@ public:
     explicit ThumbnailView(QWidget *parent = 0);
     ~ThumbnailView();
 
-    bool addThumbnail(Metadata metadata);
+    bool addThumbnail(const QString& filePath);
     QAction* sortAscTimeOrderAction() const;
     QAction* sortDescTimeOrderAction() const;
 
 signals:
-    void currentThumbnailChanged(Metadata metadata);
+    void currentThumbnailChanged(QString filePath);
 
 public slots:
     void sortAscTimeOrder();

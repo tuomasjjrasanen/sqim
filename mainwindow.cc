@@ -23,6 +23,7 @@
 #include <exiv2/exiv2.hpp>
 
 #include "mainwindow.hh"
+#include "common.hh"
 
 static QStringList findFiles(QString dir, bool recursive)
 {
@@ -74,35 +75,19 @@ static QString fileSizeToString(const qint64 bytes)
     return QString::number(bytes) + " B";
 }
 
-static bool fillWithMetadata(const QFileInfo metadataFileInfo,
-                             const QFileInfo imageFileInfo,
-                             Metadata &metadata)
+static bool cacheMetadata(const QString& filePath)
 {
-    if (metadataFileInfo.exists()
-        && metadataFileInfo.lastModified() >= imageFileInfo.lastModified()) {
-        QFile metadataFile(metadataFileInfo.filePath());
-        if (!metadataFile.open(QIODevice::ReadOnly)) {
-            qWarning() << "failed to open metadata file for reading";
-            return false;
-        }
-        QDataStream in(&metadataFile);
-        in >> metadata;
-        if (in.status() != QDataStream::Ok) {
-            qWarning() << "failed to read metadata file";
-            return false;
-        }
-        return true;
-    }
-
-    QString filepath = imageFileInfo.filePath();
+    QFileInfo imageFileInfo(filePath);
+    QFileInfo metadataFileInfo(cacheDir(filePath), "meta.dat");
+    Metadata metadata;
 
     static QMutex mutex;
     QMutexLocker locker(&mutex);
     try {
         Exiv2::Image::AutoPtr image = Exiv2::ImageFactory::open(
-            filepath.toStdString());
+            filePath.toStdString());
         if (image.get() == 0) {
-            qWarning() << filepath << " is not recognized as a valid image file";
+            qWarning() << filePath << " is not recognized as a valid image file";
             return false;
         }
         image->readMetadata();
@@ -115,7 +100,7 @@ static bool fillWithMetadata(const QFileInfo metadataFileInfo,
 
         Exiv2::ExifData &exifData = image->exifData();
         if (exifData.empty()) {
-            qWarning() << filepath << " does not have EXIF data";
+            qWarning() << filePath << " does not have EXIF data";
             return false;
         }
 
@@ -125,10 +110,10 @@ static bool fillWithMetadata(const QFileInfo metadataFileInfo,
                             .toString()));
     } catch (Exiv2::AnyError& e) {
         qWarning() << "failed to retrieve metadata from " 
-                   << filepath << ": " << e.what();
+                   << filePath << ": " << e.what();
     }
 
-    metadata.insert("filepath", imageFileInfo.canonicalFilePath());
+    metadata.insert("filepath", filePath);
     metadata.insert("modificationTime",
                     imageFileInfo.lastModified()
                     .toString("yyyy-MM-ddThh:mm:ss"));
@@ -149,24 +134,26 @@ static bool fillWithMetadata(const QFileInfo metadataFileInfo,
     return true;
 }
 
-static bool makeThumbnail(const QFileInfo imageFileInfo,
-                          const QFileInfo thumbnailFileInfo)
+static bool makeThumbnail(const QString& filePath)
 {
+    QFileInfo imageFileInfo(filePath);
+    QFileInfo thumbnailFileInfo(cacheDir(filePath), "thumbnail.png");
+
     if (thumbnailFileInfo.exists()
         && thumbnailFileInfo.lastModified() >= imageFileInfo.lastModified()) {
         return true;
     }
 
-    QImage image(imageFileInfo.filePath());
+    QImage image(filePath);
     if (!image.format()) {
-        qWarning() << imageFileInfo.filePath() << " has unknown image format";
+        qWarning() << filePath << " has unknown image format";
         return false;
     }
 
     QImage thumbnail = image.scaled(50, 50, Qt::KeepAspectRatio);
     if (thumbnail.isNull()) {
         qWarning() << "failed to create a thumbnail image from "
-                   << imageFileInfo.filePath();
+                   << filePath;
         return false;
     }
 
@@ -179,43 +166,25 @@ static bool makeThumbnail(const QFileInfo imageFileInfo,
     return true;
 }
 
-static Metadata import(const QString &filepath)
+static QString import(const QString& filePath)
 {
-    QFileInfo imageFileInfo(filepath);
-    QDir cacheDir(QDir::homePath()
-                  + "/.cache/sqim"
-                  + imageFileInfo.canonicalFilePath());
+    makeCacheDir(filePath);
 
-    if (!cacheDir.exists()) {
-        static QMutex mutex;
-        QMutexLocker locker(&mutex);
-        // Ensure the cache directory exists.
-        if (!cacheDir.mkpath(".")) {
-            qWarning() << "failed to create the cache directory";
-            return Metadata();
-        }
-        locker.unlock();
-    }
-
-    QFileInfo thumbnailFileInfo(cacheDir, "thumbnail.png");
-    if (!makeThumbnail(imageFileInfo, thumbnailFileInfo)) {
+    if (!makeThumbnail(filePath)) {
         qWarning() << "failed to make a thumbnail";
-        return Metadata();
+        return "";
     }
 
-    Metadata metadata;
-    QFileInfo metadataFileInfo(cacheDir, "meta.dat");
-    if (!fillWithMetadata(metadataFileInfo, imageFileInfo, metadata)) {
-        qWarning() << "failed to fill metadata";
-        return Metadata();
+    if (!cacheMetadata(filePath)) {
+        qWarning() << "failed to cache a metadata";
     }
 
-    return metadata;
+    return filePath;
 }
 
 MainWindow::MainWindow(QWidget *const parent)
     :QMainWindow(parent)
-    ,m_importer(new QFutureWatcher<Metadata>(this))
+    ,m_importer(new QFutureWatcher<QString>(this))
     ,m_imageWidget(new ImageWidget(this))
     ,m_metadataDockWidget(new QDockWidget("&Image info", this))
     ,m_metadataWidget(new MetadataWidget(m_metadataDockWidget))
@@ -280,11 +249,11 @@ MainWindow::MainWindow(QWidget *const parent)
     connect(m_quitAction, SIGNAL(triggered(bool)),
             SLOT(close()));
     m_metadataWidget->connect(m_thumbnailView,
-                          SIGNAL(currentThumbnailChanged(Metadata)),
-                          SLOT(setMetadata(Metadata)));
+                          SIGNAL(currentThumbnailChanged(QString)),
+                          SLOT(openMetadata(QString)));
     m_imageWidget->connect(m_thumbnailView,
-                           SIGNAL(currentThumbnailChanged(Metadata)),
-                           SLOT(setImage(Metadata)));
+                           SIGNAL(currentThumbnailChanged(QString)),
+                           SLOT(setImage(QString)));
     connect(m_aboutAction, SIGNAL(triggered(bool)), SLOT(about()));
 }
 
@@ -338,7 +307,7 @@ void MainWindow::openDir()
 
 void MainWindow::importReadyAt(const int i)
 {
-    if (m_importer->resultAt(i).empty()) {
+    if (m_importer->resultAt(i).isEmpty()) {
         return;
     }
 

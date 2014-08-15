@@ -45,6 +45,20 @@ MetadataWidget::~MetadataWidget()
 {
 }
 
+bool MetadataWidget::openMetadata(const QString& filePath)
+{
+    m_filepathLabel->clear();
+    m_timestampLabel->clear();
+    m_modificationTimeLabel->clear();
+    m_fileSizeLabel->clear();
+    m_imageSizeLabel->clear();
+    Metadata metadata;
+    if (!readMetadata(filePath, metadata))
+        return false;
+    setMetadata(metadata);
+    return true;
+}
+
 void MetadataWidget::setMetadata(Metadata metadata)
 {
     m_filepathLabel->setText(metadata.value("filepath"));

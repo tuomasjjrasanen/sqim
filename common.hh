@@ -14,33 +14,12 @@
 // You should have received a copy of the GNU General Public License
 // along with this program. If not, see <http://www.gnu.org/licenses/>.
 
-#ifndef METADATAWIDGET_HH
-#define METADATAWIDGET_HH
+#ifndef COMMON_H
+#define COMMON_H
 
-#include <QLabel>
-#include <QMap>
+#include <QDir>
 
-#include "metadata.hh"
+QDir cacheDir(const QString& filePath);
+bool makeCacheDir(const QString& filePath);
 
-class MetadataWidget : public QWidget
-{
-    Q_OBJECT
-
-public:
-    explicit MetadataWidget(QWidget *parent = 0);
-    ~MetadataWidget();
-
-public slots:
-    bool openMetadata(const QString& filePath);
-    void setMetadata(Metadata metadata);
-
-private:
-    QLabel *m_filepathLabel;
-    QLabel *m_timestampLabel;
-    QLabel *m_modificationTimeLabel;
-    QLabel *m_fileSizeLabel;
-    QLabel *m_imageSizeLabel;
-
-};
-
-#endif
+#endif // COMMON_H
