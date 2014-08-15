@@ -47,16 +47,13 @@ MetadataWidget::~MetadataWidget()
 
 bool MetadataWidget::openMetadata(const QString& filePath)
 {
-    m_filepathLabel->clear();
-    m_timestampLabel->clear();
-    m_modificationTimeLabel->clear();
-    m_fileSizeLabel->clear();
-    m_imageSizeLabel->clear();
     Metadata metadata;
-    if (!readMetadata(filePath, metadata))
-        return false;
+    // Reading metadata can fail partially or completely, but we don't
+    // actually care. We try to display everything we can. In the worst
+    // case, the metadata object is just empty.
+    bool result = readMetadata(filePath, metadata);
     setMetadata(metadata);
-    return true;
+    return result;
 }
 
 void MetadataWidget::setMetadata(Metadata metadata)
