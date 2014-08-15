@@ -24,5 +24,6 @@
 typedef QMap<QString, QString> Metadata;
 
 bool readMetadata(const QString& filePath, Metadata& metadata);
+bool parseMetadata(const QString& filePath);
 
 #endif // METADATA_H

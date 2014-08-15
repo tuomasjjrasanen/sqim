@@ -20,8 +20,6 @@
 #include <QProcess>
 #include <QtCore>
 
-#include <exiv2/exiv2.hpp>
-
 #include "mainwindow.hh"
 #include "common.hh"
 
@@ -53,85 +51,6 @@ static QStringList findFiles(QString dir, bool recursive)
     }
 
     return retval;
-}
-
-static QString fileSizeToString(const qint64 bytes)
-{
-    static qreal KiB = 1024;
-    static qreal MiB = KiB * KiB;
-    static qreal GiB = MiB * KiB;
-    if (bytes > GiB) {
-        return QString::number(bytes / GiB, 'f', 1)
-            + " GiB (" + QString::number(bytes) + " B)";
-    }
-    if (bytes > MiB) {
-        return QString::number(bytes / MiB, 'f', 1)
-            + " MiB (" + QString::number(bytes) + " B)";
-    }
-    if (bytes > KiB) {
-        return QString::number(bytes / KiB, 'f', 1)
-            + " KiB (" + QString::number(bytes) + " B)";
-    }
-    return QString::number(bytes) + " B";
-}
-
-static bool cacheMetadata(const QString& filePath)
-{
-    QFileInfo imageFileInfo(filePath);
-    QFileInfo metadataFileInfo(cacheDir(filePath), "meta.dat");
-    Metadata metadata;
-
-    static QMutex mutex;
-    QMutexLocker locker(&mutex);
-    try {
-        Exiv2::Image::AutoPtr image = Exiv2::ImageFactory::open(
-            filePath.toStdString());
-        if (image.get() == 0) {
-            qWarning() << filePath << " is not recognized as a valid image file";
-            return false;
-        }
-        image->readMetadata();
-
-        const int w = image->pixelWidth();
-        const int h = image->pixelHeight();
-        metadata.insert("imageSize",
-                        QString("%1 x %2 (%3 megapixels)")
-                        .arg(w).arg(h).arg(w * h / 1000000.0, 0, 'f', 1));
-
-        Exiv2::ExifData &exifData = image->exifData();
-        if (exifData.empty()) {
-            qWarning() << filePath << " does not have EXIF data";
-            return false;
-        }
-
-        metadata.insert("timestamp",
-                        QString::fromStdString(
-                            exifData["Exif.Photo.DateTimeOriginal"]
-                            .toString()));
-    } catch (Exiv2::AnyError& e) {
-        qWarning() << "failed to retrieve metadata from " 
-                   << filePath << ": " << e.what();
-    }
-
-    metadata.insert("filepath", filePath);
-    metadata.insert("modificationTime",
-                    imageFileInfo.lastModified()
-                    .toString("yyyy-MM-ddThh:mm:ss"));
-    metadata.insert("fileSize", fileSizeToString(imageFileInfo.size()));
-
-    QFile metadataFile(metadataFileInfo.filePath());
-    if (!metadataFile.open(QIODevice::WriteOnly)) {
-        qWarning() << "failed to open metadata file for writing";
-        return false;
-    }
-    QDataStream out(&metadataFile);
-    out << metadata;
-    if (out.status() != QDataStream::Ok) {
-        qWarning() << "failed to write to the metadata file";
-        return false;
-    }
-
-    return true;
 }
 
 static bool makeThumbnail(const QString& filePath)
@@ -175,8 +94,8 @@ static QString import(const QString& filePath)
         return "";
     }
 
-    if (!cacheMetadata(filePath)) {
-        qWarning() << "failed to cache a metadata";
+    if (!parseMetadata(filePath)) {
+        qWarning() << "failed to parse metadata";
     }
 
     return filePath;
