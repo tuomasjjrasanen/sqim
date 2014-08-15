@@ -104,30 +104,30 @@ static QString import(const QString& filePath)
 MainWindow::MainWindow(QWidget *const parent)
     :QMainWindow(parent)
     ,m_importer(new QFutureWatcher<QString>(this))
-    ,m_imageWidget(new ImageWidget(this))
-    ,m_metadataDockWidget(new QDockWidget("&Image info", this))
+    ,m_metadataDockWidget(new QDockWidget("&Metadata", this))
     ,m_metadataWidget(new MetadataWidget(m_metadataDockWidget))
-    ,m_thumbnailDockWidget(new QDockWidget("&Thumbnails", this))
-    ,m_thumbnailView(new ThumbnailView(m_thumbnailDockWidget))
+    ,m_imageDockWidget(new QDockWidget("&Image", this))
+    ,m_imageWidget(new ImageWidget(m_imageDockWidget))
+    ,m_thumbnailView(new ThumbnailView(this))
     ,m_openDirAction(new QAction("&Open directory...", this))
     ,m_quitAction(new QAction("&Quit", this))
     ,m_aboutAction(new QAction("&About", this))
     ,m_openCount()
 {
-    m_thumbnailDockWidget->toggleViewAction()->setShortcut(
-        QKeySequence(Qt::Key_T));
-    m_metadataDockWidget->toggleViewAction()->setShortcut(
+    m_imageDockWidget->toggleViewAction()->setShortcut(
         QKeySequence(Qt::Key_I));
+    m_metadataDockWidget->toggleViewAction()->setShortcut(
+        QKeySequence(Qt::Key_M));
     m_openDirAction->setShortcut(QKeySequence(Qt::Key_O));
     m_quitAction->setShortcut(QKeySequence(Qt::Key_Q));
 
-    setCentralWidget(m_imageWidget);
+    setCentralWidget(m_thumbnailView);
 
     m_metadataDockWidget->setWidget(m_metadataWidget);
     addDockWidget(Qt::BottomDockWidgetArea, m_metadataDockWidget);
 
-    m_thumbnailDockWidget->setWidget(m_thumbnailView);
-    addDockWidget(Qt::LeftDockWidgetArea, m_thumbnailDockWidget);
+    m_imageDockWidget->setWidget(m_imageWidget);
+    addDockWidget(Qt::LeftDockWidgetArea, m_imageDockWidget);
 
     setStatusBar(new QStatusBar());
 
@@ -148,7 +148,7 @@ MainWindow::MainWindow(QWidget *const parent)
     imageMenu->addAction(m_imageWidget->zoomToFitAction());
 
     QMenu *windowsMenu = menuBar()->addMenu("&Windows");
-    windowsMenu->addAction(m_thumbnailDockWidget->toggleViewAction());
+    windowsMenu->addAction(m_imageDockWidget->toggleViewAction());
     windowsMenu->addAction(m_metadataDockWidget->toggleViewAction());
 
     QMenu *helpMenu = menuBar()->addMenu("&Help");

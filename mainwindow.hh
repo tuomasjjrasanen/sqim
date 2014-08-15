@@ -51,10 +51,10 @@ private slots:
 
 private:
     QFutureWatcher<QString> *m_importer;
-    ImageWidget *m_imageWidget;
     QDockWidget *m_metadataDockWidget;
     MetadataWidget *m_metadataWidget;
-    QDockWidget *m_thumbnailDockWidget;
+    QDockWidget *m_imageDockWidget;
+    ImageWidget *m_imageWidget;
     ThumbnailView *m_thumbnailView;
 
     QAction *m_openDirAction;
