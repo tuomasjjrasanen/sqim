@@ -336,13 +336,11 @@ void MainWindow::openDir()
 
 void MainWindow::importReadyAt(const int i)
 {
-    const Metadata metadata(m_importer->resultAt(i));
-
-    if (metadata.empty()) {
+    if (m_importer->resultAt(i).empty()) {
         return;
     }
 
-    if (m_thumbnailView->addThumbnail(metadata)) {
+    if (m_thumbnailView->addThumbnail(m_importer->resultAt(i))) {
         m_openCount.fetchAndAddOrdered(1);
     }
 }
