@@ -46,7 +46,9 @@ static QStringList findFiles(QString dir, bool recursive)
     foreach (QByteArray line, lines) {
         if (line.isEmpty())
             continue;
-        retval.append(QString(line));
+        QString filePath(line);
+        QFileInfo fileInfo(filePath);
+        retval.append(fileInfo.canonicalFilePath());
     }
 
     return retval;
