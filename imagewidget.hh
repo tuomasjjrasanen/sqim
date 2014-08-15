@@ -39,6 +39,8 @@ public:
     QAction* zoomOutAction() const;
     QAction* zoomToFitAction() const;
 
+    virtual QSize sizeHint() const;
+
 public slots:
     void setImage(const QString& filePath);
     void zoomIn();

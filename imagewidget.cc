@@ -233,3 +233,8 @@ void ImageWidget::showEvent(QShowEvent *event)
     m_zoomToFitAction->setEnabled(m_imageLabel->pixmap());
     QScrollArea::showEvent(event);
 }
+
+QSize ImageWidget::sizeHint() const
+{
+    return QSize(480, 360);
+}
