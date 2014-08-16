@@ -47,6 +47,15 @@ ImageWidget::ImageWidget(QWidget *parent)
 
     // Image operations are disabled by default, because image has not
     // been set yet.
+    disableActions();
+}
+
+ImageWidget::~ImageWidget()
+{
+}
+
+void ImageWidget::disableActions()
+{
     m_zoomInAction->setEnabled(false);
     m_zoomOutAction->setEnabled(false);
     m_zoomToFitAction->setEnabled(false);
@@ -54,8 +63,15 @@ ImageWidget::ImageWidget(QWidget *parent)
     m_rotateRightAction->setEnabled(false);
 }
 
-ImageWidget::~ImageWidget()
+void ImageWidget::enableActions()
 {
+    // Actions are enabled only if an image is exists. Actions are not
+    // meaningful without an image.
+    m_rotateLeftAction->setEnabled(m_imageLabel->pixmap());
+    m_rotateRightAction->setEnabled(m_imageLabel->pixmap());
+    m_zoomInAction->setEnabled(m_imageLabel->pixmap());
+    m_zoomOutAction->setEnabled(m_imageLabel->pixmap());
+    m_zoomToFitAction->setEnabled(m_imageLabel->pixmap());
 }
 
 void ImageWidget::setImage(const QString& filePath)
@@ -65,11 +81,7 @@ void ImageWidget::setImage(const QString& filePath)
     m_imageLabel->setPixmap(pixmap);
 
     zoomToFit();
-    m_rotateLeftAction->setEnabled(m_imageLabel->pixmap());
-    m_rotateRightAction->setEnabled(m_imageLabel->pixmap());
-    m_zoomInAction->setEnabled(m_imageLabel->pixmap());
-    m_zoomOutAction->setEnabled(m_imageLabel->pixmap());
-    m_zoomToFitAction->setEnabled(m_imageLabel->pixmap());
+    enableActions();
 }
 
 const QPoint ImageWidget::viewportCenter() const {
@@ -216,21 +228,13 @@ QAction* ImageWidget::zoomToFitAction() const
 
 void ImageWidget::hideEvent(QHideEvent *event)
 {
-    m_rotateLeftAction->setEnabled(false);
-    m_rotateRightAction->setEnabled(false);
-    m_zoomInAction->setEnabled(false);
-    m_zoomOutAction->setEnabled(false);
-    m_zoomToFitAction->setEnabled(false);
+    disableActions();
     QScrollArea::hideEvent(event);
 }
 
 void ImageWidget::showEvent(QShowEvent *event)
 {
-    m_rotateLeftAction->setEnabled(m_imageLabel->pixmap());
-    m_rotateRightAction->setEnabled(m_imageLabel->pixmap());
-    m_zoomInAction->setEnabled(m_imageLabel->pixmap());
-    m_zoomOutAction->setEnabled(m_imageLabel->pixmap());
-    m_zoomToFitAction->setEnabled(m_imageLabel->pixmap());
+    enableActions();
     QScrollArea::showEvent(event);
 }
 

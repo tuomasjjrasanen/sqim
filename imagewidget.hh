@@ -73,6 +73,9 @@ private:
     QAction *m_zoomInAction;
     QAction *m_zoomOutAction;
     QAction *m_zoomToFitAction;
+
+    void disableActions();
+    void enableActions();
 };
 
 #endif
