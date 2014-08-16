@@ -237,9 +237,7 @@ void MainWindow::importReadyAt(const int i)
 
 void MainWindow::importFinished()
 {
-    QString msg = QString("Opened %1/%2 images")
-        .arg(m_openCount)
-        .arg(m_importer->progressMaximum());
+    QString msg = QString("Opened %1 images").arg(m_openCount);
     statusBar()->showMessage(msg);
     m_openDirAction->setEnabled(true);
 }
