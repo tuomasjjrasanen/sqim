@@ -65,11 +65,11 @@ void ImageWidget::setImage(const QString& filePath)
     m_imageLabel->setPixmap(pixmap);
 
     zoomToFit();
-    m_zoomInAction->setEnabled(true);
-    m_zoomOutAction->setEnabled(true);
-    m_zoomToFitAction->setEnabled(true);
-    m_rotateLeftAction->setEnabled(true);
-    m_rotateRightAction->setEnabled(true);
+    m_rotateLeftAction->setEnabled(m_imageLabel->pixmap());
+    m_rotateRightAction->setEnabled(m_imageLabel->pixmap());
+    m_zoomInAction->setEnabled(m_imageLabel->pixmap());
+    m_zoomOutAction->setEnabled(m_imageLabel->pixmap());
+    m_zoomToFitAction->setEnabled(m_imageLabel->pixmap());
 }
 
 const QPoint ImageWidget::viewportCenter() const {
