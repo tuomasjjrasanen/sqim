@@ -17,6 +17,7 @@
 #include <QDataStream>
 #include <QFileDialog>
 #include <QMessageBox>
+#include <QPainter>
 #include <QProcess>
 #include <QtCore>
 
@@ -69,7 +70,14 @@ static bool makeThumbnail(const QString& filePath)
         return false;
     }
 
-    QImage thumbnail = image.scaled(50, 50, Qt::KeepAspectRatio);
+    QImage thumbnail(50, 50, QImage::Format_ARGB32);
+    thumbnail.fill(Qt::transparent);
+
+    QPainter thumbnailPainter(&thumbnail);
+    QImage smallImage(image.scaled(50, 50, Qt::KeepAspectRatio));
+    thumbnailPainter.drawImage(QPoint((50 - smallImage.width()) / 2,
+                                      (50 - smallImage.height()) / 2),
+                               smallImage);
     if (thumbnail.isNull()) {
         qWarning() << "failed to create a thumbnail image from "
                    << filePath;
