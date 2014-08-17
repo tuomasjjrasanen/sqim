@@ -21,7 +21,7 @@
 #include "thumbnailview.hh"
 #include "common.hh"
 enum {
-    COL_THUMBNAILFILEPATH,
+    COL_THUMBNAIL,
     COL_FILEPATH,
     COL_TIMESTAMP,
     COL_MTIME,
@@ -89,7 +89,7 @@ bool ThumbnailView::addThumbnail(const QString& filePath)
 
     item = new QStandardItem();
     item->setIcon(QIcon(cacheDir(filePath).filePath("thumbnail.png")));
-    items.insert(COL_THUMBNAILFILEPATH, item);
+    items.insert(COL_THUMBNAIL, item);
 
     item = new QStandardItem();
     item->setText(filePath);
