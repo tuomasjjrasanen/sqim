@@ -77,12 +77,12 @@ void ThumbnailView::showEvent(QShowEvent *event)
 
 bool ThumbnailView::addThumbnail(const QString& filePath)
 {
+    if (m_imageFilePaths.contains(filePath))
+        return false;
+
     Metadata metadata;
 
     readMetadata(filePath, metadata);
-
-    if (m_imageFilePaths.contains(filePath))
-        return false;
 
     QList<QStandardItem*> items;
     QStandardItem *item;
