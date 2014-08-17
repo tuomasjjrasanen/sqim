@@ -14,12 +14,12 @@
 // You should have received a copy of the GNU General Public License
 // along with this program. If not, see <http://www.gnu.org/licenses/>.
 
-#ifndef COMMON_H
-#define COMMON_H
+#ifndef COMMON_HH
+#define COMMON_HH
 
 #include <QDir>
 
 QDir cacheDir(const QString& filePath);
 bool makeCacheDir(const QString& filePath);
 
-#endif // COMMON_H
+#endif // COMMON_HH

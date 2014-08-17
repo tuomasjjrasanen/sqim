@@ -14,8 +14,8 @@
 // You should have received a copy of the GNU General Public License
 // along with this program. If not, see <http://www.gnu.org/licenses/>.
 
-#ifndef MAINWINDOW_H
-#define MAINWINDOW_H
+#ifndef MAINWINDOW_HH
+#define MAINWINDOW_HH
 
 #include <QDockWidget>
 #include <QFutureWatcher>
@@ -59,4 +59,4 @@ private:
     QAtomicInt m_openCount;
 };
 
-#endif // MAINWINDOW_H
+#endif // MAINWINDOW_HH

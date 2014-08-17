@@ -14,8 +14,8 @@
 // You should have received a copy of the GNU General Public License
 // along with this program. If not, see <http://www.gnu.org/licenses/>.
 
-#ifndef THUMBNAILVIEW_H
-#define THUMBNAILVIEW_H
+#ifndef THUMBNAILVIEW_HH
+#define THUMBNAILVIEW_HH
 
 #include <QAction>
 #include <QListView>
@@ -54,4 +54,4 @@ private:
 
 };
 
-#endif // THUMBNAILVIEW_H
+#endif // THUMBNAILVIEW_HH

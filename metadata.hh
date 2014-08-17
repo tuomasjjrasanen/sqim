@@ -14,8 +14,8 @@
 // You should have received a copy of the GNU General Public License
 // along with this program. If not, see <http://www.gnu.org/licenses/>.
 
-#ifndef METADATA_H
-#define METADATA_H
+#ifndef METADATA_HH
+#define METADATA_HH
 
 #include <QMap>
 
@@ -24,4 +24,4 @@ typedef QMap<QString, QString> Metadata;
 bool readMetadata(const QString& filePath, Metadata& metadata);
 bool parseMetadata(const QString& filePath);
 
-#endif // METADATA_H
+#endif // METADATA_HH

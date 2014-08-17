@@ -75,4 +75,4 @@ private:
     void enableActions();
 };
 
-#endif
+#endif // IMAGEWIDGET_HH
