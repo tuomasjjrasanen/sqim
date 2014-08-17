@@ -81,7 +81,7 @@ bool ThumbnailView::addThumbnail(const QString& filePath)
 
     readMetadata(filePath, metadata);
 
-    if (m_metadataMap.contains(filePath))
+    if (m_imageFilePaths.contains(filePath))
         return false;
 
     QList<QStandardItem*> items;
@@ -113,7 +113,7 @@ bool ThumbnailView::addThumbnail(const QString& filePath)
 
     ((QStandardItemModel *)model())->appendRow(items);
 
-    m_metadataMap.insert(filePath, metadata);
+    m_imageFilePaths << filePath;
 
     if (((QStandardItemModel *)model())->rowCount() == 1) {
         setCurrentIndex(((QStandardItemModel *)model())->index(0, 0));

@@ -19,8 +19,7 @@
 
 #include <QAction>
 #include <QListView>
-#include <QHash>
-#include <QMap>
+#include <QSet>
 #include <QStandardItemModel>
 
 #include "metadatawidget.hh"
@@ -50,7 +49,7 @@ protected:
     virtual void showEvent(QShowEvent *event);
 
 private:
-    QHash<QString, Metadata> m_metadataMap;
+    QSet<QString> m_imageFilePaths;
 
     QAction *m_sortAscTimeOrderAction;
     QAction *m_sortDescTimeOrderAction;
