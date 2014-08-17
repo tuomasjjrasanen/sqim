@@ -42,7 +42,8 @@ public slots:
     void sortDescTimeOrder();
 
 protected:
-    virtual void currentChanged(const QModelIndex &current, const QModelIndex &previous);
+    virtual void currentChanged(const QModelIndex &current,
+                                const QModelIndex &previous);
     virtual void hideEvent(QHideEvent *event);
     virtual void showEvent(QShowEvent *event);
 
