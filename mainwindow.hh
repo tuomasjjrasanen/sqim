@@ -17,20 +17,15 @@
 #ifndef MAINWINDOW_H
 #define MAINWINDOW_H
 
-#include <QAction>
 #include <QDockWidget>
 #include <QFutureWatcher>
 #include <QMainWindow>
-#include <QMap>
 #include <QMenuBar>
 #include <QStatusBar>
-#include <QStringList>
-#include <QStringList>
 #include <QToolBar>
-#include <QWidget>
 
-#include "metadatawidget.hh"
 #include "imagewidget.hh"
+#include "metadatawidget.hh"
 #include "thumbnailview.hh"
 
 class MainWindow : public QMainWindow

@@ -18,7 +18,6 @@
 #define METADATAWIDGET_HH
 
 #include <QLabel>
-#include <QMap>
 
 #include "metadata.hh"
 

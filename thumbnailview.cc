@@ -18,8 +18,10 @@
 #include <QFileInfo>
 #include <QPixmap>
 
-#include "thumbnailview.hh"
+#include "metadata.hh"
 #include "common.hh"
+#include "thumbnailview.hh"
+
 enum {
     COL_THUMBNAIL,
     COL_FILEPATH,

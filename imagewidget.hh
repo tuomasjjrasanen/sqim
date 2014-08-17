@@ -19,11 +19,8 @@
 
 #include <QAction>
 #include <QLabel>
-#include <QMap>
 #include <QScrollArea>
-#include <QString>
 #include <QWheelEvent>
-#include <QWidget>
 
 class ImageWidget : public QScrollArea
 {

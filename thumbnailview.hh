@@ -22,8 +22,6 @@
 #include <QSet>
 #include <QStandardItemModel>
 
-#include "metadatawidget.hh"
-
 class ThumbnailView : public QListView
 {
     Q_OBJECT

@@ -14,18 +14,14 @@
 // You should have received a copy of the GNU General Public License
 // along with this program. If not, see <http://www.gnu.org/licenses/>.
 
-#include <QDataStream>
 #include <QDateTime>
-#include <QDir>
-#include <QFileInfo>
 #include <QDebug>
-#include <QMutex>
 #include <QMutexLocker>
 
 #include <exiv2/exiv2.hpp>
 
-#include "metadata.hh"
 #include "common.hh"
+#include "metadata.hh"
 
 static QString fileSizeToString(const qint64 bytes)
 {

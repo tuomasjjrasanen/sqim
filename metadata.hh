@@ -18,8 +18,6 @@
 #define METADATA_H
 
 #include <QMap>
-#include <QObject>
-#include <QString>
 
 typedef QMap<QString, QString> Metadata;
 
