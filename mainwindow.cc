@@ -1,4 +1,4 @@
-// sqim - simply qute image manager
+// SQIM - Simply Qt Image Manager
 // Copyright (C) 2013 Tuomas Räsänen <tuomasjjrasanen@tjjr.fi>
 
 // This program is free software: you can redistribute it and/or modify
@@ -181,7 +181,7 @@ MainWindow::~MainWindow()
 void MainWindow::about()
 {
     static QString aboutText = QString::fromUtf8(
-        "<h1>Simply Qute Image Manager</h1>"
+        "<h1>Simply Qt Image Manager</h1>"
         "<p>Copyright © 2013 <a href=\"http://tjjr.fi\">Tuomas Räsänen</a></p>"
         "<p>This program is free software: you can redistribute it and/or modify "
         "it under the terms of the GNU General Public License as published by "

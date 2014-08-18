@@ -1,4 +1,4 @@
-// sqim - simply qute image manager
+// SQIM - Simply Qt Image Manager
 // Copyright (C) 2014 Tuomas Räsänen <tuomasjjrasanen@tjjr.fi>
 
 // This program is free software: you can redistribute it and/or modify

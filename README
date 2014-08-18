@@ -1,8 +1,8 @@
 ======
- Sqim
+ SQIM
 ======
 
-Simply qute image manager.
+Simply Qt Image Manager.
 
 Author: Tuomas Räsänen <tuomasjjrasanen@tjjr.fi>
 
@@ -16,7 +16,7 @@ How to install
 How to copy
 ===========
 
-Sqim is free (libre) software and licensed under the terms of GNU Public
+SQIM is free (libre) software and licensed under the terms of GNU Public
 License version 3 or later. In short, it means that you are free to
 copy, modify and redistribute this software as long as you place the
 derivative work under a compatible license. See COPYING for details.
