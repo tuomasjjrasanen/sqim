@@ -37,6 +37,12 @@ ImageArea::ImageArea(QWidget *parent)
     m_zoomOutAction->setShortcut(QKeySequence(Qt::Key_Minus));
     m_zoomToFitAction->setShortcut(QKeySequence(Qt::Key_Equal));
 
+    addAction(m_zoomInAction);
+    addAction(m_zoomOutAction);
+    addAction(m_zoomToFitAction);
+    addAction(m_rotateLeftAction);
+    addAction(m_rotateRightAction);
+
     connect(m_zoomInAction, SIGNAL(triggered(bool)), SLOT(zoomIn()));
     connect(m_zoomOutAction, SIGNAL(triggered(bool)), SLOT(zoomOut()));
     connect(m_zoomToFitAction, SIGNAL(triggered(bool)), SLOT(zoomToFit()));
@@ -197,31 +203,6 @@ void ImageArea::wheelEvent(QWheelEvent *event)
         return;
     }
     QScrollArea::wheelEvent(event);
-}
-
-QAction* ImageArea::rotateLeftAction() const
-{
-    return m_rotateLeftAction;
-}
-
-QAction* ImageArea::rotateRightAction() const
-{
-    return m_rotateRightAction;
-}
-
-QAction* ImageArea::zoomInAction() const
-{
-    return m_zoomInAction;
-}
-
-QAction* ImageArea::zoomOutAction() const
-{
-    return m_zoomOutAction;
-}
-
-QAction* ImageArea::zoomToFitAction() const
-{
-    return m_zoomToFitAction;
 }
 
 void ImageArea::hideEvent(QHideEvent *event)

@@ -30,12 +30,6 @@ public:
     explicit ImageArea(QWidget *parent = 0);
     ~ImageArea();
 
-    QAction* rotateLeftAction() const;
-    QAction* rotateRightAction() const;
-    QAction* zoomInAction() const;
-    QAction* zoomOutAction() const;
-    QAction* zoomToFitAction() const;
-
     virtual QSize sizeHint() const;
 
 public slots:

@@ -28,9 +28,9 @@ ImageWidget::ImageWidget(QWidget* parent)
     layout->addWidget(m_imageArea);
     setLayout(layout);
 
-    m_toolBar->addAction(m_imageArea->zoomToFitAction());
-    m_toolBar->addAction(m_imageArea->rotateLeftAction());
-    m_toolBar->addAction(m_imageArea->rotateRightAction());
+    foreach (QAction* action, m_imageArea->actions()) {
+        m_toolBar->addAction(action);
+    }
 }
 
 ImageWidget::~ImageWidget()

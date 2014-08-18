@@ -147,13 +147,3 @@ void ThumbnailView::currentChanged(const QModelIndex &current,
     QString filePath = m->item(current.row(), COL_FILEPATH)->text();
     emit currentThumbnailChanged(filePath);
 }
-
-QAction* ThumbnailView::sortAscTimeOrderAction() const
-{
-    return m_sortAscTimeOrderAction;
-}
-
-QAction* ThumbnailView::sortDescTimeOrderAction() const
-{
-    return m_sortDescTimeOrderAction;
-}

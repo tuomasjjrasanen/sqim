@@ -28,8 +28,9 @@ ThumbnailWidget::ThumbnailWidget(QWidget* parent)
     layout->addWidget(m_thumbnailView);
     setLayout(layout);
 
-    m_toolBar->addAction(m_thumbnailView->sortAscTimeOrderAction());
-    m_toolBar->addAction(m_thumbnailView->sortDescTimeOrderAction());
+    foreach (QAction* action, m_thumbnailView->actions()) {
+        m_toolBar->addAction(action);
+    }
 
     connect(m_thumbnailView, SIGNAL(currentThumbnailChanged(QString)),
             SIGNAL(currentThumbnailChanged(QString)));

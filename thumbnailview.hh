@@ -31,8 +31,6 @@ public:
     ~ThumbnailView();
 
     bool addThumbnail(const QString& filePath);
-    QAction* sortAscTimeOrderAction() const;
-    QAction* sortDescTimeOrderAction() const;
 
 signals:
     void currentThumbnailChanged(QString filePath);
