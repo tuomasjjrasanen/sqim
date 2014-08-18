@@ -118,7 +118,7 @@ MainWindow::MainWindow(QWidget *const parent)
     ,m_metadataWidget(new MetadataWidget(m_metadataDockWidget))
     ,m_imageDockWidget(new QDockWidget("&Image", this))
     ,m_imageWidget(new ImageWidget(m_imageDockWidget))
-    ,m_thumbnailView(new ThumbnailView(this))
+    ,m_thumbnailWidget(new ThumbnailWidget(this))
     ,m_openDirAction(new QAction("&Open directory...", this))
     ,m_quitAction(new QAction("&Quit", this))
     ,m_aboutAction(new QAction("&About", this))
@@ -131,7 +131,7 @@ MainWindow::MainWindow(QWidget *const parent)
     m_openDirAction->setShortcut(QKeySequence(Qt::Key_O));
     m_quitAction->setShortcut(QKeySequence(Qt::Key_Q));
 
-    setCentralWidget(m_thumbnailView);
+    setCentralWidget(m_thumbnailWidget);
 
     m_metadataDockWidget->setWidget(m_metadataWidget);
     addDockWidget(Qt::BottomDockWidgetArea, m_metadataDockWidget);
@@ -148,10 +148,6 @@ MainWindow::MainWindow(QWidget *const parent)
     fileMenu->addAction(m_quitAction);
     fileMenu->addSeparator();
 
-    QMenu *thumbnailsMenu = menuBar()->addMenu("&Thumbnails");
-    thumbnailsMenu->addAction(m_thumbnailView->sortAscTimeOrderAction());
-    thumbnailsMenu->addAction(m_thumbnailView->sortDescTimeOrderAction());
-
     QMenu *windowsMenu = menuBar()->addMenu("&Windows");
     windowsMenu->addAction(m_imageDockWidget->toggleViewAction());
     windowsMenu->addAction(m_metadataDockWidget->toggleViewAction());
@@ -167,10 +163,10 @@ MainWindow::MainWindow(QWidget *const parent)
             SLOT(openDir()));
     connect(m_quitAction, SIGNAL(triggered(bool)),
             SLOT(close()));
-    m_metadataWidget->connect(m_thumbnailView,
+    m_metadataWidget->connect(m_thumbnailWidget,
                           SIGNAL(currentThumbnailChanged(QString)),
                           SLOT(openMetadata(QString)));
-    m_imageWidget->connect(m_thumbnailView,
+    m_imageWidget->connect(m_thumbnailWidget,
                            SIGNAL(currentThumbnailChanged(QString)),
                            SLOT(setImage(QString)));
     connect(m_aboutAction, SIGNAL(triggered(bool)), SLOT(about()));
@@ -230,7 +226,7 @@ void MainWindow::importReadyAt(const int i)
         return;
     }
 
-    if (m_thumbnailView->addThumbnail(m_importer->resultAt(i))) {
+    if (m_thumbnailWidget->addThumbnail(m_importer->resultAt(i))) {
         m_openCount.fetchAndAddOrdered(1);
     }
 }

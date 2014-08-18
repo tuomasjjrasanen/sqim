@@ -11,6 +11,7 @@ QMAKE_STRIP =
 
 SOURCES +=\
     thumbnailview.cc \
+    thumbnailwidget.cc \
     main.cc \
     mainwindow.cc \
     metadatawidget.cc \
@@ -21,6 +22,7 @@ SOURCES +=\
 
 HEADERS  += \
     thumbnailview.hh \
+    thumbnailwidget.hh \
     mainwindow.hh \
     metadatawidget.hh \
     imagearea.hh \

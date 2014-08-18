@@ -26,7 +26,7 @@
 
 #include "imagewidget.hh"
 #include "metadatawidget.hh"
-#include "thumbnailview.hh"
+#include "thumbnailwidget.hh"
 
 class MainWindow : public QMainWindow
 {
@@ -50,7 +50,7 @@ private:
     MetadataWidget *m_metadataWidget;
     QDockWidget *m_imageDockWidget;
     ImageWidget *m_imageWidget;
-    ThumbnailView *m_thumbnailView;
+    ThumbnailWidget *m_thumbnailWidget;
 
     QAction *m_openDirAction;
     QAction *m_quitAction;
