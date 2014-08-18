@@ -22,6 +22,7 @@
 #include <QtCore>
 
 #include "mainwindow.hh"
+#include "metadata.hh"
 #include "common.hh"
 
 static QStringList findFiles(QString dir, bool recursive)
@@ -102,7 +103,8 @@ static QString import(const QString& filePath)
         return "";
     }
 
-    if (!parseMetadata(filePath)) {
+    Metadata metadata;
+    if (!readMetadata(filePath, metadata)) {
         qWarning() << "failed to parse metadata";
     }
 

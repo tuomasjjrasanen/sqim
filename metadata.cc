@@ -81,7 +81,7 @@ static bool parseExivMetadata(const QString& filePath,
     return true;
 }
 
-bool parseMetadata(const QString& filePath)
+static bool parseMetadata(const QString& filePath)
 {
     QFileInfo imageFileInfo(filePath);
     QFileInfo metadataFileInfo(cacheDir(filePath), "meta.dat");
@@ -118,20 +118,23 @@ bool readMetadata(const QString& filePath, Metadata& metadata)
                   + imageFileInfo.canonicalFilePath());
     QFileInfo metadataFileInfo(cacheDir, "meta.dat");
 
-    if (metadataFileInfo.exists()
-        && metadataFileInfo.lastModified() >= imageFileInfo.lastModified()) {
-        QFile metadataFile(metadataFileInfo.filePath());
-        if (!metadataFile.open(QIODevice::ReadOnly)) {
-            qWarning() << "failed to open metadata file for reading";
-            return false;
-        }
-        QDataStream in(&metadataFile);
-        in >> metadata;
-        if (in.status() != QDataStream::Ok) {
-            qWarning() << "failed to read metadata file";
-            return false;
-        }
-        return true;
+    if (!metadataFileInfo.exists()
+        || metadataFileInfo.lastModified() < imageFileInfo.lastModified()) {
+        parseMetadata(filePath);
     }
-    return false;
+
+    QFile metadataFile(metadataFileInfo.filePath());
+    if (!metadataFile.open(QIODevice::ReadOnly)) {
+        qWarning() << "failed to open metadata file for reading";
+        return false;
+    }
+
+    QDataStream in(&metadataFile);
+    in >> metadata;
+    if (in.status() != QDataStream::Ok) {
+        qWarning() << "failed to read metadata file";
+        return false;
+    }
+
+    return true;
 }
