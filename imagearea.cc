@@ -51,15 +51,6 @@ ImageArea::ImageArea(QWidget *parent)
 
     // Image operations are disabled by default, because image has not
     // been set yet.
-    disableActions();
-}
-
-ImageArea::~ImageArea()
-{
-}
-
-void ImageArea::disableActions()
-{
     m_zoomInAction->setEnabled(false);
     m_zoomOutAction->setEnabled(false);
     m_zoomToFitAction->setEnabled(false);
@@ -67,15 +58,8 @@ void ImageArea::disableActions()
     m_rotateRightAction->setEnabled(false);
 }
 
-void ImageArea::enableActions()
+ImageArea::~ImageArea()
 {
-    // Actions are enabled only if an image is exists. Actions are not
-    // meaningful without an image.
-    m_rotateLeftAction->setEnabled(m_imageLabel->pixmap());
-    m_rotateRightAction->setEnabled(m_imageLabel->pixmap());
-    m_zoomInAction->setEnabled(m_imageLabel->pixmap());
-    m_zoomOutAction->setEnabled(m_imageLabel->pixmap());
-    m_zoomToFitAction->setEnabled(m_imageLabel->pixmap());
 }
 
 void ImageArea::setImage(const QString& filePath)
@@ -85,7 +69,14 @@ void ImageArea::setImage(const QString& filePath)
     m_imageLabel->setPixmap(pixmap);
 
     zoomToFit();
-    enableActions();
+
+    // Actions are enabled only if an image is exists. Actions are not
+    // meaningful without an image.
+    m_rotateLeftAction->setEnabled(m_imageLabel->pixmap());
+    m_rotateRightAction->setEnabled(m_imageLabel->pixmap());
+    m_zoomInAction->setEnabled(m_imageLabel->pixmap());
+    m_zoomOutAction->setEnabled(m_imageLabel->pixmap());
+    m_zoomToFitAction->setEnabled(m_imageLabel->pixmap());
 }
 
 const QPoint ImageArea::viewportCenter() const {
@@ -203,18 +194,6 @@ void ImageArea::wheelEvent(QWheelEvent *event)
         return;
     }
     QScrollArea::wheelEvent(event);
-}
-
-void ImageArea::hideEvent(QHideEvent *event)
-{
-    disableActions();
-    QScrollArea::hideEvent(event);
-}
-
-void ImageArea::showEvent(QShowEvent *event)
-{
-    enableActions();
-    QScrollArea::showEvent(event);
 }
 
 QSize ImageArea::sizeHint() const

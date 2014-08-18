@@ -48,8 +48,6 @@ public slots:
 
 protected:
     virtual void wheelEvent(QWheelEvent *event);
-    virtual void hideEvent(QHideEvent *event);
-    virtual void showEvent(QShowEvent *event);
 
 private:
     void adjustScrollBars(const QPoint &focalPoint);
@@ -64,9 +62,6 @@ private:
     QAction *m_zoomInAction;
     QAction *m_zoomOutAction;
     QAction *m_zoomToFitAction;
-
-    void disableActions();
-    void enableActions();
 };
 
 #endif // IMAGEAREA_HH
