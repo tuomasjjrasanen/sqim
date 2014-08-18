@@ -29,6 +29,7 @@ ImageArea::ImageArea(QWidget *parent)
 {
     m_imageLabel->setScaledContents(true);
     setWidget(m_imageLabel);
+    setContextMenuPolicy(Qt::ActionsContextMenu);
 
     setBackgroundRole(QPalette::Dark);
     setAlignment(Qt::AlignHCenter | Qt::AlignVCenter);
