@@ -45,6 +45,7 @@ ThumbnailView::ThumbnailView(QWidget *parent) :
     setIconSize(QSize(50, 50));
     setStyleSheet("background: grey;");
     setUniformItemSizes(true);
+    setContextMenuPolicy(Qt::ActionsContextMenu);
 
     setModel(new QStandardItemModel(this));
 
@@ -52,6 +53,9 @@ ThumbnailView::ThumbnailView(QWidget *parent) :
         QKeySequence(Qt::Key_Less, Qt::Key_T));
     m_sortDescTimeOrderAction->setShortcut(
         QKeySequence(Qt::Key_Greater, Qt::Key_T));
+
+    addAction(m_sortAscTimeOrderAction);
+    addAction(m_sortDescTimeOrderAction);
 
     connect(m_sortAscTimeOrderAction, SIGNAL(triggered(bool)),
             SLOT(sortAscTimeOrder()));
