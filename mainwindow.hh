@@ -24,7 +24,7 @@
 #include <QStatusBar>
 #include <QToolBar>
 
-#include "imagewidget.hh"
+#include "imagearea.hh"
 #include "metadatawidget.hh"
 #include "thumbnailview.hh"
 
@@ -49,7 +49,7 @@ private:
     QDockWidget *m_metadataDockWidget;
     MetadataWidget *m_metadataWidget;
     QDockWidget *m_imageDockWidget;
-    ImageWidget *m_imageWidget;
+    ImageArea *m_imageArea;
     ThumbnailView *m_thumbnailView;
 
     QAction *m_openDirAction;

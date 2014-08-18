@@ -14,21 +14,21 @@
 // You should have received a copy of the GNU General Public License
 // along with this program. If not, see <http://www.gnu.org/licenses/>.
 
-#ifndef IMAGEWIDGET_HH
-#define IMAGEWIDGET_HH
+#ifndef IMAGEAREA_HH
+#define IMAGEAREA_HH
 
 #include <QAction>
 #include <QLabel>
 #include <QScrollArea>
 #include <QWheelEvent>
 
-class ImageWidget : public QScrollArea
+class ImageArea : public QScrollArea
 {
     Q_OBJECT
 
 public:
-    explicit ImageWidget(QWidget *parent = 0);
-    ~ImageWidget();
+    explicit ImageArea(QWidget *parent = 0);
+    ~ImageArea();
 
     QAction* rotateLeftAction() const;
     QAction* rotateRightAction() const;
@@ -75,4 +75,4 @@ private:
     void enableActions();
 };
 
-#endif // IMAGEWIDGET_HH
+#endif // IMAGEAREA_HH

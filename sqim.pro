@@ -14,7 +14,7 @@ SOURCES +=\
     main.cc \
     mainwindow.cc \
     metadatawidget.cc \
-    imagewidget.cc \
+    imagearea.cc \
     metadata.cc \
     common.cc
 
@@ -22,7 +22,7 @@ HEADERS  += \
     thumbnailview.hh \
     mainwindow.hh \
     metadatawidget.hh \
-    imagewidget.hh \
+    imagearea.hh \
     metadata.hh \
     common.hh
 

@@ -117,7 +117,7 @@ MainWindow::MainWindow(QWidget *const parent)
     ,m_metadataDockWidget(new QDockWidget("&Metadata", this))
     ,m_metadataWidget(new MetadataWidget(m_metadataDockWidget))
     ,m_imageDockWidget(new QDockWidget("&Image", this))
-    ,m_imageWidget(new ImageWidget(m_imageDockWidget))
+    ,m_imageArea(new ImageArea(m_imageDockWidget))
     ,m_thumbnailView(new ThumbnailView(this))
     ,m_openDirAction(new QAction("&Open directory...", this))
     ,m_quitAction(new QAction("&Quit", this))
@@ -136,7 +136,7 @@ MainWindow::MainWindow(QWidget *const parent)
     m_metadataDockWidget->setWidget(m_metadataWidget);
     addDockWidget(Qt::BottomDockWidgetArea, m_metadataDockWidget);
 
-    m_imageDockWidget->setWidget(m_imageWidget);
+    m_imageDockWidget->setWidget(m_imageArea);
     addDockWidget(Qt::LeftDockWidgetArea, m_imageDockWidget);
 
     setStatusBar(new QStatusBar());
@@ -153,9 +153,9 @@ MainWindow::MainWindow(QWidget *const parent)
     thumbnailsMenu->addAction(m_thumbnailView->sortDescTimeOrderAction());
 
     QMenu *imageMenu = menuBar()->addMenu("&Image");
-    imageMenu->addAction(m_imageWidget->zoomInAction());
-    imageMenu->addAction(m_imageWidget->zoomOutAction());
-    imageMenu->addAction(m_imageWidget->zoomToFitAction());
+    imageMenu->addAction(m_imageArea->zoomInAction());
+    imageMenu->addAction(m_imageArea->zoomOutAction());
+    imageMenu->addAction(m_imageArea->zoomToFitAction());
 
     QMenu *windowsMenu = menuBar()->addMenu("&Windows");
     windowsMenu->addAction(m_imageDockWidget->toggleViewAction());
@@ -165,9 +165,9 @@ MainWindow::MainWindow(QWidget *const parent)
     helpMenu->addAction(m_aboutAction);
 
     QToolBar *toolBar = addToolBar("Image operations");
-    toolBar->addAction(m_imageWidget->zoomToFitAction());
-    toolBar->addAction(m_imageWidget->rotateLeftAction());
-    toolBar->addAction(m_imageWidget->rotateRightAction());
+    toolBar->addAction(m_imageArea->zoomToFitAction());
+    toolBar->addAction(m_imageArea->rotateLeftAction());
+    toolBar->addAction(m_imageArea->rotateRightAction());
 
     connect(m_importer, SIGNAL(finished()),
             SLOT(importFinished()));
@@ -180,9 +180,9 @@ MainWindow::MainWindow(QWidget *const parent)
     m_metadataWidget->connect(m_thumbnailView,
                           SIGNAL(currentThumbnailChanged(QString)),
                           SLOT(openMetadata(QString)));
-    m_imageWidget->connect(m_thumbnailView,
-                           SIGNAL(currentThumbnailChanged(QString)),
-                           SLOT(setImage(QString)));
+    m_imageArea->connect(m_thumbnailView,
+                         SIGNAL(currentThumbnailChanged(QString)),
+                         SLOT(setImage(QString)));
     connect(m_aboutAction, SIGNAL(triggered(bool)), SLOT(about()));
 }
 
