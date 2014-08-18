@@ -15,6 +15,7 @@ SOURCES +=\
     mainwindow.cc \
     metadatawidget.cc \
     imagearea.cc \
+    imagewidget.cc \
     metadata.cc \
     common.cc
 
@@ -23,6 +24,7 @@ HEADERS  += \
     mainwindow.hh \
     metadatawidget.hh \
     imagearea.hh \
+    imagewidget.hh \
     metadata.hh \
     common.hh
 
