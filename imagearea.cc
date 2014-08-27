@@ -21,11 +21,16 @@
 ImageArea::ImageArea(QWidget *parent)
     :QScrollArea(parent)
     ,m_imageLabel(new QLabel(this))
-    ,m_rotateLeftAction(new QAction("Rotate left", this))
-    ,m_rotateRightAction(new QAction("Rotate right", this))
-    ,m_zoomInAction(new QAction("&Zoom in", this))
-    ,m_zoomOutAction(new QAction("&Zoom out", this))
-    ,m_zoomToFitAction(new QAction("&Zoom to fit", this))
+    ,m_rotateLeftAction(new QAction(QIcon(":/icons/rotate_left.png"),
+                                    "Rotate left", this))
+    ,m_rotateRightAction(new QAction(QIcon(":/icons/rotate_right.png"),
+                                     "Rotate right", this))
+    ,m_zoomInAction(new QAction(QIcon(":/icons/zoom_in.png"),
+                                "&Zoom in", this))
+    ,m_zoomOutAction(new QAction(QIcon(":/icons/zoom_out.png"),
+                                 "&Zoom out", this))
+    ,m_zoomToFitAction(new QAction(QIcon(":/icons/zoom_to_fit.png"),
+                                   "&Zoom to fit", this))
 {
     m_imageLabel->setScaledContents(true);
     setWidget(m_imageLabel);

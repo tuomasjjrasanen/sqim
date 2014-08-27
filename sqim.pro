@@ -45,3 +45,5 @@ sqim.files = sqim
 INSTALLS += sqim
 
 LIBS += -lexiv2
+
+RESOURCES += icons.qrc

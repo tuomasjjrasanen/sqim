@@ -34,8 +34,10 @@ enum {
 
 ThumbnailView::ThumbnailView(QWidget *parent) :
     QListView(parent)
-    ,m_sortAscTimeOrderAction(new QAction("&Ascending time order", this))
-    ,m_sortDescTimeOrderAction(new QAction("&Descending time order", this))
+    ,m_sortAscTimeOrderAction(new QAction(QIcon(":/icons/sort_asc_date.png"),
+                                          "&Ascending time order", this))
+    ,m_sortDescTimeOrderAction(new QAction(QIcon(":/icons/sort_desc_date.png"),
+                                           "&Descending time order", this))
 {
     setViewMode(QListView::IconMode);
     setMovement(QListView::Static);
