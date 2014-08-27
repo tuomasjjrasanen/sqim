@@ -41,6 +41,8 @@ ImageArea::ImageArea(QWidget *parent)
     setStyleSheet("QScrollArea, QLabel {background-color: grey}");
     setAlignment(Qt::AlignHCenter | Qt::AlignVCenter);
 
+    m_rotateLeftAction->setShortcut(QKeySequence(Qt::Key_R, Qt::Key_Left));
+    m_rotateRightAction->setShortcut(QKeySequence(Qt::Key_R, Qt::Key_Right));
     m_zoomInAction->setShortcut(QKeySequence(Qt::Key_Plus));
     m_zoomOutAction->setShortcut(QKeySequence(Qt::Key_Minus));
     m_zoomToFitAction->setShortcut(QKeySequence(Qt::Key_Equal));
