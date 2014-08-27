@@ -41,6 +41,7 @@ public slots:
     void zoomBy(qreal zoomFactor);
     void zoomBy(qreal zoomFactor, const QPoint &focalPoint);
     void zoomToFit();
+    void zoomTo100();
     void zoomTo(qreal zoomLevel);
     void zoomTo(qreal zoomLevel, const QPoint &focalPoint);
     void rotateRight();
@@ -62,6 +63,7 @@ private:
     QAction *m_zoomInAction;
     QAction *m_zoomOutAction;
     QAction *m_zoomToFitAction;
+    QAction *m_zoomTo100Action;
 };
 
 #endif // IMAGEAREA_HH

@@ -31,6 +31,8 @@ ImageArea::ImageArea(QWidget *parent)
                                  "&Zoom out", this))
     ,m_zoomToFitAction(new QAction(QIcon(":/icons/zoom_to_fit.png"),
                                    "&Zoom to fit", this))
+    ,m_zoomTo100Action(new QAction(QIcon(":/icons/zoom_to_100.png"),
+                                    "&Zoom to 100%", this))
 {
     m_imageLabel->setScaledContents(true);
     setWidget(m_imageLabel);
@@ -46,12 +48,14 @@ ImageArea::ImageArea(QWidget *parent)
     addAction(m_zoomInAction);
     addAction(m_zoomOutAction);
     addAction(m_zoomToFitAction);
+    addAction(m_zoomTo100Action);
     addAction(m_rotateLeftAction);
     addAction(m_rotateRightAction);
 
     connect(m_zoomInAction, SIGNAL(triggered(bool)), SLOT(zoomIn()));
     connect(m_zoomOutAction, SIGNAL(triggered(bool)), SLOT(zoomOut()));
     connect(m_zoomToFitAction, SIGNAL(triggered(bool)), SLOT(zoomToFit()));
+    connect(m_zoomTo100Action, SIGNAL(triggered(bool)), SLOT(zoomTo100()));
     connect(m_rotateLeftAction, SIGNAL(triggered(bool)), SLOT(rotateLeft()));
     connect(m_rotateRightAction, SIGNAL(triggered(bool)), SLOT(rotateRight()));
 
@@ -60,6 +64,7 @@ ImageArea::ImageArea(QWidget *parent)
     m_zoomInAction->setEnabled(false);
     m_zoomOutAction->setEnabled(false);
     m_zoomToFitAction->setEnabled(false);
+    m_zoomTo100Action->setEnabled(false);
     m_rotateLeftAction->setEnabled(false);
     m_rotateRightAction->setEnabled(false);
 }
@@ -83,6 +88,7 @@ void ImageArea::setImage(const QString& filePath)
     m_zoomInAction->setEnabled(m_imageLabel->pixmap());
     m_zoomOutAction->setEnabled(m_imageLabel->pixmap());
     m_zoomToFitAction->setEnabled(m_imageLabel->pixmap());
+    m_zoomTo100Action->setEnabled(m_imageLabel->pixmap());
 }
 
 const QPoint ImageArea::viewportCenter() const {
@@ -144,6 +150,11 @@ void ImageArea::zoomToFit()
     QSizeF b(a);
     b.scale(maximumViewportSize(), Qt::KeepAspectRatio);
     zoomTo(qMin(1.0, qMin(b.width() / a.width(), b.height() / a.height())));
+}
+
+void ImageArea::zoomTo100()
+{
+    zoomTo(1.0);
 }
 
 void ImageArea::zoomTo(const qreal zoomLevel)
