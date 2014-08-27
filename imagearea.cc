@@ -77,9 +77,19 @@ ImageArea::~ImageArea()
 
 void ImageArea::setImage(const QString& filePath)
 {
+    m_selectedImageFilePath = filePath;
+
+    if (!isVisible())
+        return;
+
+    if (!m_loadedImageFilePath.compare(filePath))
+        return;
+
     QImage image(filePath);
     QPixmap pixmap(QPixmap::fromImage(image));
     m_imageLabel->setPixmap(pixmap);
+
+    m_loadedImageFilePath = filePath;
 
     zoomToFit();
 
@@ -197,6 +207,12 @@ void ImageArea::rotateLeft()
 void ImageArea::rotateRight()
 {
     rotate(90);
+}
+
+void ImageArea::showEvent(QShowEvent *event)
+{
+    QScrollArea::showEvent(event);
+    setImage(m_selectedImageFilePath);
 }
 
 void ImageArea::wheelEvent(QWheelEvent *event)
