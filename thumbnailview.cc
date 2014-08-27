@@ -41,7 +41,7 @@ ThumbnailView::ThumbnailView(QWidget *parent) :
 {
     setViewMode(QListView::IconMode);
     setMovement(QListView::Static);
-    setSelectionMode(QListView::SingleSelection);
+    setSelectionMode(QListView::ExtendedSelection);
     setEditTriggers(QAbstractItemView::NoEditTriggers);
     setResizeMode(QListView::Adjust);
     setIconSize(QSize(50, 50));
