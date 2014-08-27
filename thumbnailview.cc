@@ -43,7 +43,7 @@ ThumbnailView::ThumbnailView(QWidget *parent) :
     setEditTriggers(QAbstractItemView::NoEditTriggers);
     setResizeMode(QListView::Adjust);
     setIconSize(QSize(50, 50));
-    setStyleSheet("background: grey;");
+    setStyleSheet("QListView {background-color: grey}");
     setUniformItemSizes(true);
     setContextMenuPolicy(Qt::ActionsContextMenu);
 

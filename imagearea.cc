@@ -31,7 +31,7 @@ ImageArea::ImageArea(QWidget *parent)
     setWidget(m_imageLabel);
     setContextMenuPolicy(Qt::ActionsContextMenu);
 
-    setBackgroundRole(QPalette::Dark);
+    setStyleSheet("QScrollArea, QLabel {background-color: grey}");
     setAlignment(Qt::AlignHCenter | Qt::AlignVCenter);
 
     m_zoomInAction->setShortcut(QKeySequence(Qt::Key_Plus));
