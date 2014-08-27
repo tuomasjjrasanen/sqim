@@ -34,6 +34,7 @@ public:
 
 signals:
     void currentThumbnailChanged(QString filePath);
+    void currentThumbnailActivated(QString filePath);
 
 public slots:
     void sortAscTimeOrder();
@@ -44,6 +45,9 @@ protected:
                                 const QModelIndex &previous);
     virtual void hideEvent(QHideEvent *event);
     virtual void showEvent(QShowEvent *event);
+
+private slots:
+    void emitCurrentThumbnailActivated(const QModelIndex &current);
 
 private:
     QSet<QString> m_imageFilePaths;

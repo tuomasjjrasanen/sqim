@@ -170,6 +170,9 @@ MainWindow::MainWindow(QWidget *const parent)
     m_imageWidget->connect(m_thumbnailWidget,
                            SIGNAL(currentThumbnailChanged(QString)),
                            SLOT(setImage(QString)));
+    m_imageDockWidget->connect(m_thumbnailWidget,
+                               SIGNAL(currentThumbnailActivated(QString)),
+                               SLOT(show()));
     connect(m_aboutAction, SIGNAL(triggered(bool)), SLOT(about()));
 }
 

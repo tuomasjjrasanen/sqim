@@ -34,6 +34,8 @@ ThumbnailWidget::ThumbnailWidget(QWidget* parent)
 
     connect(m_thumbnailView, SIGNAL(currentThumbnailChanged(QString)),
             SIGNAL(currentThumbnailChanged(QString)));
+    connect(m_thumbnailView, SIGNAL(currentThumbnailActivated(QString)),
+            SIGNAL(currentThumbnailActivated(QString)));
 }
 
 ThumbnailWidget::~ThumbnailWidget()

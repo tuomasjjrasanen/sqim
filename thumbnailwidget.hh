@@ -34,6 +34,7 @@ public slots:
 
 signals:
     void currentThumbnailChanged(QString filePath);
+    void currentThumbnailActivated(QString filePath);
 
 private:
     ThumbnailView* m_thumbnailView;

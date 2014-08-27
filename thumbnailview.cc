@@ -63,6 +63,8 @@ ThumbnailView::ThumbnailView(QWidget *parent) :
             SLOT(sortAscTimeOrder()));
     connect(m_sortDescTimeOrderAction, SIGNAL(triggered(bool)),
             SLOT(sortDescTimeOrder()));
+    connect(this, SIGNAL(activated(const QModelIndex&)),
+            this, SLOT(emitCurrentThumbnailActivated(const QModelIndex&)));
 }
 
 ThumbnailView::~ThumbnailView()
@@ -138,6 +140,13 @@ void ThumbnailView::sortAscTimeOrder()
 void ThumbnailView::sortDescTimeOrder()
 {
     model()->sort(COL_TIMESTAMP, Qt::DescendingOrder);
+}
+
+void ThumbnailView::emitCurrentThumbnailActivated(const QModelIndex &current)
+{
+    QStandardItemModel *m = (QStandardItemModel*) model();
+    QString filePath = m->item(current.row(), COL_FILEPATH)->text();
+    emit currentThumbnailActivated(filePath);
 }
 
 void ThumbnailView::currentChanged(const QModelIndex &current,
