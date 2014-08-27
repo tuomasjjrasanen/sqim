@@ -34,8 +34,8 @@ MetadataWidget::MetadataWidget(QWidget *parent)
 
     QFormLayout *layout = new QFormLayout(this);
     layout->addRow("Filepath", m_filepathLabel);
-    layout->addRow("Timestamp", m_timestampLabel);
-    layout->addRow("Last modified", m_modificationTimeLabel);
+    layout->addRow("Exposure time", m_timestampLabel);
+    layout->addRow("Last modification time", m_modificationTimeLabel);
     layout->addRow("File size", m_fileSizeLabel);
     layout->addRow("Image size", m_imageSizeLabel);
     setLayout(layout);
