@@ -65,6 +65,9 @@ ThumbnailView::ThumbnailView(QWidget *parent) :
             SLOT(sortDescTimeOrder()));
     connect(this, SIGNAL(activated(const QModelIndex&)),
             this, SLOT(emitCurrentThumbnailActivated(const QModelIndex&)));
+
+    m_sortAscTimeOrderAction->setEnabled(false);
+    m_sortDescTimeOrderAction->setEnabled(false);
 }
 
 ThumbnailView::~ThumbnailView()
@@ -80,8 +83,8 @@ void ThumbnailView::hideEvent(QHideEvent *event)
 
 void ThumbnailView::showEvent(QShowEvent *event)
 {
-    m_sortAscTimeOrderAction->setEnabled(true);
-    m_sortDescTimeOrderAction->setEnabled(true);
+    m_sortAscTimeOrderAction->setEnabled(!m_imageFilePaths.isEmpty());
+    m_sortDescTimeOrderAction->setEnabled(!m_imageFilePaths.isEmpty());
     QListView::showEvent(event);
 }
 
@@ -124,6 +127,9 @@ bool ThumbnailView::addThumbnail(const QString& filePath)
     ((QStandardItemModel *)model())->appendRow(items);
 
     m_imageFilePaths << filePath;
+
+    m_sortAscTimeOrderAction->setEnabled(true);
+    m_sortDescTimeOrderAction->setEnabled(true);
 
     if (((QStandardItemModel *)model())->rowCount() == 1) {
         setCurrentIndex(((QStandardItemModel *)model())->index(0, 0));
