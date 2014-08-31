@@ -16,6 +16,7 @@
 
 #include <QVBoxLayout>
 
+#include "thumbnaildelegate.hh"
 #include "thumbnailwidget.hh"
 
 ThumbnailWidget::ThumbnailWidget(QWidget* parent)
@@ -31,6 +32,9 @@ ThumbnailWidget::ThumbnailWidget(QWidget* parent)
     foreach (QAction* action, m_thumbnailView->actions()) {
         m_toolBar->addAction(action);
     }
+
+    m_thumbnailView->setItemDelegate(
+        new ThumbnailDelegate(m_thumbnailView, this));
 
     connect(m_thumbnailView, SIGNAL(currentThumbnailChanged(QString)),
             SIGNAL(currentThumbnailChanged(QString)));

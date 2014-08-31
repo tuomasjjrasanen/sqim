@@ -18,7 +18,8 @@ SOURCES +=\
     imagearea.cc \
     imagewidget.cc \
     metadata.cc \
-    common.cc
+    common.cc \
+    thumbnaildelegate.cc
 
 HEADERS  += \
     thumbnailview.hh \
@@ -28,7 +29,8 @@ HEADERS  += \
     imagearea.hh \
     imagewidget.hh \
     metadata.hh \
-    common.hh
+    common.hh \
+    thumbnaildelegate.hh
 
 FORMS    +=
 
