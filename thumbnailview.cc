@@ -18,8 +18,8 @@
 #include <QFileInfo>
 #include <QPixmap>
 
-#include "metadata.hh"
 #include "common.hh"
+#include "metadata.hh"
 #include "thumbnailview.hh"
 
 enum {

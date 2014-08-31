@@ -21,9 +21,9 @@
 #include <QProcess>
 #include <QtCore>
 
+#include "common.hh"
 #include "mainwindow.hh"
 #include "metadata.hh"
-#include "common.hh"
 
 static QStringList findFiles(QString dir, bool recursive)
 {
