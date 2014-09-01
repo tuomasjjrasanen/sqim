@@ -18,6 +18,7 @@
 #define IMAGEAREA_HH
 
 #include <QAction>
+#include <QImageReader>
 #include <QLabel>
 #include <QScrollArea>
 #include <QWheelEvent>
@@ -68,6 +69,10 @@ private:
 
     QString m_loadedImageFilePath;
     QString m_selectedImageFilePath;
+
+    QImageReader m_imageReader;
+    QSize m_originalImageSize;
+
 };
 
 #endif // IMAGEAREA_HH

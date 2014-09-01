@@ -14,6 +14,7 @@
 // You should have received a copy of the GNU General Public License
 // along with this program. If not, see <http://www.gnu.org/licenses/>.
 
+#include <QPixmapCache>
 #include <QScrollBar>
 
 #include "imagearea.hh"
@@ -85,8 +86,15 @@ void ImageArea::setImage(const QString& filePath)
     if (!m_loadedImageFilePath.compare(filePath))
         return;
 
-    QImage image(filePath);
-    QPixmap pixmap(QPixmap::fromImage(image));
+    m_imageReader.setFileName(filePath);
+    m_originalImageSize = m_imageReader.size();
+    m_imageReader.setScaledSize(m_imageReader.size() * 0.2);
+
+    QPixmap pixmap;
+    if (!QPixmapCache::find(filePath, &pixmap)) {
+        pixmap = QPixmap::fromImageReader(&m_imageReader);
+        QPixmapCache::insert(filePath, pixmap);
+    }
     m_imageLabel->setPixmap(pixmap);
 
     m_loadedImageFilePath = filePath;
@@ -183,6 +191,23 @@ void ImageArea::zoomTo(const qreal zoomLevel, const QPoint &focalPoint)
 
     m_zoomLevel = qMax(0.1, qMin(3.0, zoomLevel));
     m_imageLabel->resize(m_zoomLevel * m_imageLabel->pixmap()->size());
+
+    QSize currentSize(m_imageLabel->size());
+    QSize pixmapSize(m_imageLabel->pixmap()->size());
+
+    // If the current zoom exceeds the loaded pixmap, load the original
+    // full size image first and then zoom. This needs to be done,
+    // because initial images are down-scaled versions to make the UI
+    // snappier. Here we load the full size image Just-In-Time.
+    if (currentSize.width() > pixmapSize.width() ||
+        currentSize.height() > pixmapSize.height()) {
+        if (m_originalImageSize != pixmapSize) {
+            QPixmap pixmap(m_imageReader.fileName());
+            m_imageLabel->setPixmap(pixmap);
+            zoomTo(currentSize.width() / qreal(pixmap.size().width()),
+                   focalPoint);
+        }
+    }
 
     adjustScrollBars(focalPoint);
 }
