@@ -20,20 +20,20 @@
 
 MetadataWidget::MetadataWidget(QWidget *parent)
     :QWidget(parent)
-    ,m_filepathLabel(new QLabel(this))
+    ,m_filePathLabel(new QLabel(this))
     ,m_timestampLabel(new QLabel(this))
     ,m_modificationTimeLabel(new QLabel(this))
     ,m_fileSizeLabel(new QLabel(this))
     ,m_imageSizeLabel(new QLabel(this))
 {
-    m_filepathLabel->setTextInteractionFlags(Qt::TextBrowserInteraction);
+    m_filePathLabel->setTextInteractionFlags(Qt::TextBrowserInteraction);
     m_timestampLabel->setTextInteractionFlags(Qt::TextBrowserInteraction);
     m_modificationTimeLabel->setTextInteractionFlags(Qt::TextBrowserInteraction);
     m_fileSizeLabel->setTextInteractionFlags(Qt::TextBrowserInteraction);
     m_imageSizeLabel->setTextInteractionFlags(Qt::TextBrowserInteraction);
 
     QFormLayout *layout = new QFormLayout(this);
-    layout->addRow("Filepath", m_filepathLabel);
+    layout->addRow("Filepath", m_filePathLabel);
     layout->addRow("Exposure time", m_timestampLabel);
     layout->addRow("Last modification time", m_modificationTimeLabel);
     layout->addRow("File size", m_fileSizeLabel);
@@ -58,7 +58,7 @@ bool MetadataWidget::openMetadata(const QString& filePath)
 
 void MetadataWidget::setMetadata(Metadata metadata)
 {
-    m_filepathLabel->setText(metadata.value("filepath"));
+    m_filePathLabel->setText(metadata.value("filePath"));
     m_timestampLabel->setText(metadata.value("timestamp"));
     m_modificationTimeLabel->setText(metadata.value("modificationTime"));
     m_fileSizeLabel->setText(metadata.value("fileSize"));

@@ -131,7 +131,7 @@ bool parseMetadata(const QString& imageFilePath, Metadata& metadata)
         return true;
     }
 
-    metadata.insert("filepath", imageFilePath);
+    metadata.insert("filePath", imageFilePath);
     metadata.insert("modificationTime",
                     imageFileInfo.lastModified()
                     .toString("yyyy-MM-ddThh:mm:ss"));

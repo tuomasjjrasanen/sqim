@@ -34,7 +34,7 @@ public slots:
     void setMetadata(Metadata metadata);
 
 private:
-    QLabel *m_filepathLabel;
+    QLabel *m_filePathLabel;
     QLabel *m_timestampLabel;
     QLabel *m_modificationTimeLabel;
     QLabel *m_fileSizeLabel;
