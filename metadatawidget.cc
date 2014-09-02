@@ -48,10 +48,10 @@ MetadataWidget::~MetadataWidget()
 bool MetadataWidget::openMetadata(const QString& filePath)
 {
     Metadata metadata;
-    // Reading metadata can fail partially or completely, but we don't
+    // Parsing metadata can fail partially or completely, but we don't
     // actually care. We try to display everything we can. In the worst
     // case, the metadata object is just empty.
-    bool result = readMetadata(filePath, metadata);
+    bool result = parseMetadata(filePath, metadata);
     setMetadata(metadata);
     return result;
 }

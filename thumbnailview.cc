@@ -95,7 +95,7 @@ bool ThumbnailView::addThumbnail(const QString& filePath)
 
     Metadata metadata;
 
-    readMetadata(filePath, metadata);
+    parseMetadata(filePath, metadata);
 
     QList<QStandardItem*> items;
     QStandardItem *item;

@@ -43,8 +43,7 @@ static QString fileSizeToString(const qint64 bytes)
     return QString::number(bytes) + " B";
 }
 
-static bool parseExivMetadata(const QString& filePath,
-                              Metadata& metadata)
+static bool parseExif(const QString& filePath, Metadata& metadata)
 {
     static QMutex mutex;
     QMutexLocker locker(&mutex);
@@ -74,32 +73,22 @@ static bool parseExivMetadata(const QString& filePath,
                             exifData["Exif.Photo.DateTimeOriginal"]
                             .toString()));
     } catch (Exiv2::AnyError& e) {
-        qWarning() << "failed to retrieve metadata from " 
+        qWarning() << "failed to retrieve metadata from "
                    << filePath << ": " << e.what();
         return false;
     }
     return true;
 }
 
-static bool parseMetadata(const QString& filePath)
+static bool writeMetadata(const QString& metadataFilePath,
+                          const Metadata& metadata)
 {
-    QFileInfo imageFileInfo(filePath);
-    QFileInfo metadataFileInfo(cacheDir(filePath), "meta.dat");
-    Metadata metadata;
-
-    bool result = parseExivMetadata(filePath, metadata);
-
-    metadata.insert("filepath", filePath);
-    metadata.insert("modificationTime",
-                    imageFileInfo.lastModified()
-                    .toString("yyyy-MM-ddThh:mm:ss"));
-    metadata.insert("fileSize", fileSizeToString(imageFileInfo.size()));
-
-    QFile metadataFile(metadataFileInfo.filePath());
+    QFile metadataFile(metadataFilePath);
     if (!metadataFile.open(QIODevice::WriteOnly)) {
         qWarning() << "failed to open metadata file for writing";
         return false;
     }
+
     QDataStream out(&metadataFile);
     out << metadata;
     if (out.status() != QDataStream::Ok) {
@@ -107,23 +96,12 @@ static bool parseMetadata(const QString& filePath)
         return false;
     }
 
-    return result;
+    return true;
 }
 
-bool readMetadata(const QString& filePath, Metadata& metadata)
+static bool readMetadata(const QString& metadataFilePath, Metadata& metadata)
 {
-    QFileInfo imageFileInfo(filePath);
-    QDir cacheDir(QDir::homePath()
-                  + "/.cache/sqim"
-                  + imageFileInfo.canonicalFilePath());
-    QFileInfo metadataFileInfo(cacheDir, "meta.dat");
-
-    if (!metadataFileInfo.exists()
-        || metadataFileInfo.lastModified() < imageFileInfo.lastModified()) {
-        parseMetadata(filePath);
-    }
-
-    QFile metadataFile(metadataFileInfo.filePath());
+    QFile metadataFile(metadataFilePath);
     if (!metadataFile.open(QIODevice::ReadOnly)) {
         qWarning() << "failed to open metadata file for reading";
         return false;
@@ -133,6 +111,39 @@ bool readMetadata(const QString& filePath, Metadata& metadata)
     in >> metadata;
     if (in.status() != QDataStream::Ok) {
         qWarning() << "failed to read metadata file";
+        return false;
+    }
+
+    return true;
+}
+
+bool parseMetadata(const QString& imageFilePath, Metadata& metadata)
+{
+    QFileInfo imageFileInfo(imageFilePath);
+    QFileInfo metadataFileInfo(cacheDir(imageFilePath), "meta.dat");
+
+    if (metadataFileInfo.exists()
+        && metadataFileInfo.lastModified() >= imageFileInfo.lastModified()) {
+        if (!readMetadata(metadataFileInfo.filePath(), metadata)) {
+            qCritical() << "failed to read cached metadata";
+            return false;
+        }
+        return true;
+    }
+
+    metadata.insert("filepath", imageFilePath);
+    metadata.insert("modificationTime",
+                    imageFileInfo.lastModified()
+                    .toString("yyyy-MM-ddThh:mm:ss"));
+    metadata.insert("fileSize", fileSizeToString(imageFileInfo.size()));
+
+    if (!parseExif(imageFilePath, metadata)) {
+        qCritical() << "failed to parse Exif metadata";
+        return false;
+    }
+
+    if (!writeMetadata(metadataFileInfo.filePath(), metadata)) {
+        qCritical() << "failed to write cached metadata";
         return false;
     }
 

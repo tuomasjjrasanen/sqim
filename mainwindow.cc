@@ -104,7 +104,7 @@ static QString import(const QString& filePath)
     }
 
     Metadata metadata;
-    if (!readMetadata(filePath, metadata)) {
+    if (!parseMetadata(filePath, metadata)) {
         qWarning() << "failed to parse metadata";
     }
 
