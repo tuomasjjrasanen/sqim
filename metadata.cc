@@ -108,11 +108,10 @@ bool parseMetadata(const QString& imageFilePath, Metadata& metadata)
 
     if (metadataFileInfo.exists()
         && metadataFileInfo.lastModified() >= imageFileInfo.lastModified()) {
-        if (!readMetadata(metadataFileInfo.filePath(), metadata)) {
-            qCritical() << "failed to read cached metadata";
-            return false;
+        if (readMetadata(metadataFileInfo.filePath(), metadata)) {
+            return true;
         }
-        return true;
+        qWarning() << "failed to read cached metadata";
     }
 
     metadata.insert("filePath", QVariant(imageFilePath));
