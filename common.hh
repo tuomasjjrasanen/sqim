@@ -18,8 +18,11 @@
 #define COMMON_HH
 
 #include <QDir>
+#include <QSize>
 
 QDir cacheDir(const QString& filePath);
 bool makeCacheDir(const QString& filePath);
+QString fileSizeToString(const qint64 bytes);
+QString imageSizeToString(const QSize& size);
 
 #endif // COMMON_HH

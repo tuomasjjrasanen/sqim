@@ -14,8 +14,10 @@
 // You should have received a copy of the GNU General Public License
 // along with this program. If not, see <http://www.gnu.org/licenses/>.
 
+#include <QDateTime>
 #include <QFormLayout>
 
+#include "common.hh"
 #include "metadatawidget.hh"
 
 MetadataWidget::MetadataWidget(QWidget *parent)
@@ -58,9 +60,13 @@ bool MetadataWidget::openMetadata(const QString& filePath)
 
 void MetadataWidget::setMetadata(Metadata metadata)
 {
-    m_filePathLabel->setText(metadata.value("filePath"));
-    m_timestampLabel->setText(metadata.value("timestamp"));
-    m_modificationTimeLabel->setText(metadata.value("modificationTime"));
-    m_fileSizeLabel->setText(metadata.value("fileSize"));
-    m_imageSizeLabel->setText(metadata.value("imageSize"));
+    m_filePathLabel->setText(metadata.value("filePath").toString());
+    m_timestampLabel->setText(
+        metadata.value("timestamp").toDateTime().toString());
+    m_modificationTimeLabel->setText(
+        metadata.value("modificationTime").toDateTime().toString());
+    m_fileSizeLabel->setText(
+        fileSizeToString(metadata.value("fileSize").toULongLong()));
+    m_imageSizeLabel->setText(
+        imageSizeToString(metadata.value("imageSize").toSize()));
 }

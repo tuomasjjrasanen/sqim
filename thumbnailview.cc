@@ -14,6 +14,8 @@
 // You should have received a copy of the GNU General Public License
 // along with this program. If not, see <http://www.gnu.org/licenses/>.
 
+#include <QDateTime>
+#include <QSize>
 #include <QDir>
 #include <QFileInfo>
 #include <QPixmap>
@@ -109,19 +111,19 @@ bool ThumbnailView::addThumbnail(const QString& filePath)
     items.insert(COL_FILEPATH, item);
 
     item = new QStandardItem();
-    item->setText(metadata.value("timestamp"));
+    item->setText(metadata.value("timestamp").toDateTime().toString());
     items.insert(COL_TIMESTAMP, item);
 
     item = new QStandardItem();
-    item->setText(metadata.value("modificationTime"));
+    item->setText(metadata.value("modificationTime").toDateTime().toString());
     items.insert(COL_MTIME, item);
 
     item = new QStandardItem();
-    item->setText(metadata.value("fileSize"));
+    item->setText(fileSizeToString(metadata.value("fileSize").toULongLong()));
     items.insert(COL_FILESIZE, item);
 
     item = new QStandardItem();
-    item->setText(metadata.value("imageSize"));
+    item->setText(imageSizeToString(metadata.value("imageSize").toSize()));
     items.insert(COL_IMGSIZE, item);
 
     ((QStandardItemModel *)model())->appendRow(items);

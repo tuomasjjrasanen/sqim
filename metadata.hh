@@ -19,7 +19,7 @@
 
 #include <QMap>
 
-typedef QMap<QString, QString> Metadata;
+typedef QMap<QString, QVariant> Metadata;
 
 bool parseMetadata(const QString& filePath, Metadata& metadata);
 

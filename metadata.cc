@@ -17,31 +17,13 @@
 #include <QDateTime>
 #include <QDebug>
 #include <QMutexLocker>
+#include <QVariant>
+#include <QSize>
 
 #include <exiv2/exiv2.hpp>
 
 #include "common.hh"
 #include "metadata.hh"
-
-static QString fileSizeToString(const qint64 bytes)
-{
-    static qreal KiB = 1024;
-    static qreal MiB = KiB * KiB;
-    static qreal GiB = MiB * KiB;
-    if (bytes > GiB) {
-        return QString::number(bytes / GiB, 'f', 1)
-            + " GiB (" + QString::number(bytes) + " B)";
-    }
-    if (bytes > MiB) {
-        return QString::number(bytes / MiB, 'f', 1)
-            + " MiB (" + QString::number(bytes) + " B)";
-    }
-    if (bytes > KiB) {
-        return QString::number(bytes / KiB, 'f', 1)
-            + " KiB (" + QString::number(bytes) + " B)";
-    }
-    return QString::number(bytes) + " B";
-}
 
 static bool parseExif(const QString& filePath, Metadata& metadata)
 {
@@ -58,9 +40,7 @@ static bool parseExif(const QString& filePath, Metadata& metadata)
 
         const int w = image->pixelWidth();
         const int h = image->pixelHeight();
-        metadata.insert("imageSize",
-                        QString("%1 x %2 (%3 megapixels)")
-                        .arg(w).arg(h).arg(w * h / 1000000.0, 0, 'f', 1));
+        metadata.insert("imageSize", QVariant(QSize(w, h)));
 
         Exiv2::ExifData &exifData = image->exifData();
         if (exifData.empty()) {
@@ -68,10 +48,14 @@ static bool parseExif(const QString& filePath, Metadata& metadata)
             return false;
         }
 
-        metadata.insert("timestamp",
-                        QString::fromStdString(
-                            exifData["Exif.Photo.DateTimeOriginal"]
-                            .toString()));
+        QString dateTimeString = QString::fromStdString(
+            exifData["Exif.Image.DateTime"]
+            .toString());
+        dateTimeString.truncate(19);
+        qWarning() << dateTimeString;
+        QDateTime dateTime = QDateTime::fromString(dateTimeString,
+                                                   "yyyy:MM:dd HH:mm:ss");
+        metadata.insert("timestamp", QVariant(dateTime));
     } catch (Exiv2::AnyError& e) {
         qWarning() << "failed to retrieve metadata from "
                    << filePath << ": " << e.what();
@@ -131,11 +115,9 @@ bool parseMetadata(const QString& imageFilePath, Metadata& metadata)
         return true;
     }
 
-    metadata.insert("filePath", imageFilePath);
-    metadata.insert("modificationTime",
-                    imageFileInfo.lastModified()
-                    .toString("yyyy-MM-ddThh:mm:ss"));
-    metadata.insert("fileSize", fileSizeToString(imageFileInfo.size()));
+    metadata.insert("filePath", QVariant(imageFilePath));
+    metadata.insert("modificationTime", QVariant(imageFileInfo.lastModified()));
+    metadata.insert("fileSize", QVariant(imageFileInfo.size()));
 
     if (!parseExif(imageFilePath, metadata)) {
         qCritical() << "failed to parse Exif metadata";

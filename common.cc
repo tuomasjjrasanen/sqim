@@ -43,3 +43,32 @@ bool makeCacheDir(const QString& filePath)
     }
     return true;
 }
+
+QString fileSizeToString(const qint64 bytes)
+{
+    static qreal KiB = 1024;
+    static qreal MiB = KiB * KiB;
+    static qreal GiB = MiB * KiB;
+    if (bytes > GiB) {
+        return QString::number(bytes / GiB, 'f', 1)
+            + " GiB (" + QString::number(bytes) + " B)";
+    }
+    if (bytes > MiB) {
+        return QString::number(bytes / MiB, 'f', 1)
+            + " MiB (" + QString::number(bytes) + " B)";
+    }
+    if (bytes > KiB) {
+        return QString::number(bytes / KiB, 'f', 1)
+            + " KiB (" + QString::number(bytes) + " B)";
+    }
+    return QString::number(bytes) + " B";
+}
+
+QString imageSizeToString(const QSize& size)
+{
+    const int w = size.width();
+    const int h = size.height();
+
+    return QString("%1 x %2 (%3 megapixels)")
+        .arg(w).arg(h).arg(w * h / 1000000.0, 0, 'f', 1);
+}
