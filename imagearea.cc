@@ -94,7 +94,8 @@ void ImageArea::setImage(Metadata metadata)
 
     QPixmap pixmap;
     if (!QPixmapCache::find(filePath, &pixmap)) {
-        pixmap = QPixmap::fromImageReader(&m_imageReader);
+        pixmap = QPixmap::fromImageReader(&m_imageReader)
+            .transformed(exifOrientation(metadata));
         QPixmapCache::insert(filePath, pixmap);
     }
     m_imageLabel->setPixmap(pixmap);
@@ -205,7 +206,8 @@ void ImageArea::zoomTo(const qreal zoomLevel, const QPoint &focalPoint)
         currentSize.height() > pixmapSize.height()) {
         if (m_originalImageSize != pixmapSize) {
             QPixmap pixmap(m_imageReader.fileName());
-            m_imageLabel->setPixmap(pixmap);
+            m_imageLabel->setPixmap(pixmap.transformed(
+                                        exifOrientation(m_loadedImageMetadata)));
             zoomTo(currentSize.width() / qreal(pixmap.size().width()),
                    focalPoint);
         }
