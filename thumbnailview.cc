@@ -90,12 +90,12 @@ void ThumbnailView::showEvent(QShowEvent *event)
     QListView::showEvent(event);
 }
 
-bool ThumbnailView::addThumbnail(const QString& filePath)
+bool ThumbnailView::addThumbnail(const Metadata metadata)
 {
+    QString filePath = metadata.value("filePath").toString();
+
     if (m_imageFilePaths.contains(filePath))
         return false;
-
-    Metadata metadata = getMetadata(filePath);
 
     QList<QStandardItem*> items;
     QStandardItem *item;
@@ -106,6 +106,7 @@ bool ThumbnailView::addThumbnail(const QString& filePath)
 
     item = new QStandardItem();
     item->setText(filePath);
+    item->setData(metadata);
     items.insert(COL_FILEPATH, item);
 
     item = new QStandardItem();
@@ -151,8 +152,8 @@ void ThumbnailView::sortDescTimeOrder()
 void ThumbnailView::emitCurrentThumbnailActivated(const QModelIndex &current)
 {
     QStandardItemModel *m = (QStandardItemModel*) model();
-    QString filePath = m->item(current.row(), COL_FILEPATH)->text();
-    emit currentThumbnailActivated(filePath);
+    QVariant data = m->item(current.row(), COL_FILEPATH)->data();
+    emit currentThumbnailActivated(data.toHash());
 }
 
 void ThumbnailView::currentChanged(const QModelIndex &current,
@@ -161,6 +162,6 @@ void ThumbnailView::currentChanged(const QModelIndex &current,
     QListView::currentChanged(current, previous);
 
     QStandardItemModel *m = (QStandardItemModel*) model();
-    QString filePath = m->item(current.row(), COL_FILEPATH)->text();
-    emit currentThumbnailChanged(filePath);
+    QVariant data = m->item(current.row(), COL_FILEPATH)->data();
+    emit currentThumbnailChanged(data.toHash());
 }

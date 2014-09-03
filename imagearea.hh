@@ -23,6 +23,8 @@
 #include <QScrollArea>
 #include <QWheelEvent>
 
+#include "metadata.hh"
+
 class ImageArea : public QScrollArea
 {
     Q_OBJECT
@@ -34,7 +36,7 @@ public:
     virtual QSize sizeHint() const;
 
 public slots:
-    void setImage(const QString& filePath);
+    void setImage(Metadata metadata);
     void zoomIn();
     void zoomOut();
     void zoomIn(const QPoint &focalPoint);
@@ -67,8 +69,8 @@ private:
     QAction *m_zoomToFitAction;
     QAction *m_zoomTo100Action;
 
-    QString m_loadedImageFilePath;
-    QString m_selectedImageFilePath;
+    Metadata m_loadedImageMetadata;
+    Metadata m_selectedImageMetadata;
 
     QImageReader m_imageReader;
     QSize m_originalImageSize;

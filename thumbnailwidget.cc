@@ -36,17 +36,17 @@ ThumbnailWidget::ThumbnailWidget(QWidget* parent)
     m_thumbnailView->setItemDelegate(
         new ThumbnailDelegate(m_thumbnailView, this));
 
-    connect(m_thumbnailView, SIGNAL(currentThumbnailChanged(QString)),
-            SIGNAL(currentThumbnailChanged(QString)));
-    connect(m_thumbnailView, SIGNAL(currentThumbnailActivated(QString)),
-            SIGNAL(currentThumbnailActivated(QString)));
+    connect(m_thumbnailView, SIGNAL(currentThumbnailChanged(Metadata)),
+            SIGNAL(currentThumbnailChanged(Metadata)));
+    connect(m_thumbnailView, SIGNAL(currentThumbnailActivated(Metadata)),
+            SIGNAL(currentThumbnailActivated(Metadata)));
 }
 
 ThumbnailWidget::~ThumbnailWidget()
 {
 }
 
-bool ThumbnailWidget::addThumbnail(const QString& filePath)
+bool ThumbnailWidget::addThumbnail(const Metadata metadata)
 {
-    return m_thumbnailView->addThumbnail(filePath);
+    return m_thumbnailView->addThumbnail(metadata);
 }

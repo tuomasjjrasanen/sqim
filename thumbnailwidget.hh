@@ -30,11 +30,11 @@ public:
     ~ThumbnailWidget();
 
 public slots:
-    bool addThumbnail(const QString& filePath);
+    bool addThumbnail(const Metadata metadata);
 
 signals:
-    void currentThumbnailChanged(QString filePath);
-    void currentThumbnailActivated(QString filePath);
+    void currentThumbnailChanged(Metadata metadata);
+    void currentThumbnailActivated(Metadata metadata);
 
 private:
     ThumbnailView* m_thumbnailView;

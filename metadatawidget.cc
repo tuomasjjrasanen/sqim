@@ -47,15 +47,6 @@ MetadataWidget::~MetadataWidget()
 {
 }
 
-bool MetadataWidget::openMetadata(const QString& filePath)
-{
-    Metadata metadata = getMetadata(filePath);
-    if (metadata.isEmpty())
-        return false;
-    setMetadata(metadata);
-    return true;
-}
-
 void MetadataWidget::setMetadata(Metadata metadata)
 {
     m_filePathLabel->setText(metadata.value("filePath").toString());

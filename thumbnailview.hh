@@ -22,6 +22,8 @@
 #include <QSet>
 #include <QStandardItemModel>
 
+#include "metadata.hh"
+
 class ThumbnailView : public QListView
 {
     Q_OBJECT
@@ -30,11 +32,11 @@ public:
     explicit ThumbnailView(QWidget *parent = 0);
     ~ThumbnailView();
 
-    bool addThumbnail(const QString& filePath);
+    bool addThumbnail(const Metadata metadata);
 
 signals:
-    void currentThumbnailChanged(QString filePath);
-    void currentThumbnailActivated(QString filePath);
+    void currentThumbnailChanged(Metadata metadata);
+    void currentThumbnailActivated(Metadata metadata);
 
 public slots:
     void sortAscTimeOrder();

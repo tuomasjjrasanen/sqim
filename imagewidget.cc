@@ -37,7 +37,7 @@ ImageWidget::~ImageWidget()
 {
 }
 
-void ImageWidget::setImage(const QString& filePath)
+void ImageWidget::setImage(Metadata metadata)
 {
-    m_imageArea->setImage(filePath);
+    m_imageArea->setImage(metadata);
 }

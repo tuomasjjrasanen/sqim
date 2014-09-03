@@ -76,14 +76,16 @@ ImageArea::~ImageArea()
 {
 }
 
-void ImageArea::setImage(const QString& filePath)
+void ImageArea::setImage(Metadata metadata)
 {
-    m_selectedImageFilePath = filePath;
+    QString filePath = metadata.value("filePath").toString();
+
+    m_selectedImageMetadata = metadata;
 
     if (!isVisible())
         return;
 
-    if (!m_loadedImageFilePath.compare(filePath))
+    if (m_loadedImageMetadata == metadata)
         return;
 
     m_imageReader.setFileName(filePath);
@@ -97,7 +99,7 @@ void ImageArea::setImage(const QString& filePath)
     }
     m_imageLabel->setPixmap(pixmap);
 
-    m_loadedImageFilePath = filePath;
+    m_loadedImageMetadata = metadata;
 
     zoomToFit();
 
@@ -237,7 +239,7 @@ void ImageArea::rotateRight()
 void ImageArea::showEvent(QShowEvent *event)
 {
     QScrollArea::showEvent(event);
-    setImage(m_selectedImageFilePath);
+    setImage(m_selectedImageMetadata);
 }
 
 void ImageArea::wheelEvent(QWheelEvent *event)

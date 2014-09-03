@@ -31,7 +31,6 @@ public:
     ~MetadataWidget();
 
 public slots:
-    bool openMetadata(const QString& filePath);
     void setMetadata(Metadata metadata);
 
 private:

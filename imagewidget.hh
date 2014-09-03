@@ -30,7 +30,7 @@ public:
     ~ImageWidget();
 
 public slots:
-    void setImage(const QString& filePath);
+    void setImage(Metadata metadata);
 
 private:
     ImageArea* m_imageArea;

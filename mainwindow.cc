@@ -96,7 +96,7 @@ static bool makeThumbnail(const QString& filePath, Metadata& metadata)
     return true;
 }
 
-static QString import(const QString& filePath)
+static Metadata import(const QString& filePath)
 {
     makeCacheDir(filePath);
 
@@ -107,15 +107,16 @@ static QString import(const QString& filePath)
 
     if (!makeThumbnail(filePath, metadata)) {
         qWarning() << "failed to make a thumbnail";
-        return "";
+        metadata.clear();
+        return metadata;
     }
 
-    return filePath;
+    return metadata;
 }
 
 MainWindow::MainWindow(QWidget *const parent)
     :QMainWindow(parent)
-    ,m_importer(new QFutureWatcher<QString>(this))
+    ,m_importer(new QFutureWatcher<Metadata>(this))
     ,m_metadataDockWidget(new QDockWidget("&Metadata", this))
     ,m_metadataWidget(new MetadataWidget(m_metadataDockWidget))
     ,m_imageDockWidget(new QDockWidget("&Image", this))
@@ -167,13 +168,13 @@ MainWindow::MainWindow(QWidget *const parent)
     connect(m_quitAction, SIGNAL(triggered(bool)),
             SLOT(close()));
     m_metadataWidget->connect(m_thumbnailWidget,
-                          SIGNAL(currentThumbnailChanged(QString)),
-                          SLOT(openMetadata(QString)));
+                          SIGNAL(currentThumbnailChanged(Metadata)),
+                          SLOT(setMetadata(Metadata)));
     m_imageWidget->connect(m_thumbnailWidget,
-                           SIGNAL(currentThumbnailChanged(QString)),
-                           SLOT(setImage(QString)));
+                           SIGNAL(currentThumbnailChanged(Metadata)),
+                           SLOT(setImage(Metadata)));
     m_imageDockWidget->connect(m_thumbnailWidget,
-                               SIGNAL(currentThumbnailActivated(QString)),
+                               SIGNAL(currentThumbnailActivated(Metadata)),
                                SLOT(show()));
     connect(m_aboutAction, SIGNAL(triggered(bool)), SLOT(about()));
 }
