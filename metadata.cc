@@ -58,6 +58,9 @@ static bool parseExif(const QString& filePath, Metadata& metadata)
         QDateTime dateTime = QDateTime::fromString(dateTimeString,
                                                    "yyyy:MM:dd HH:mm:ss");
         metadata.insert("timestamp", QVariant(dateTime));
+        qlonglong orientation = qlonglong(
+            exifData["Exif.Image.Orientation"].toLong());
+        metadata.insert("orientation", QVariant(orientation));
     } catch (Exiv2::AnyError& e) {
         qWarning() << "failed to retrieve metadata from "
                    << filePath << ": " << e.what();
