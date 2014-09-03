@@ -95,9 +95,7 @@ bool ThumbnailView::addThumbnail(const QString& filePath)
     if (m_imageFilePaths.contains(filePath))
         return false;
 
-    Metadata metadata;
-
-    parseMetadata(filePath, metadata);
+    Metadata metadata = getMetadata(filePath);
 
     QList<QStandardItem*> items;
     QStandardItem *item;

@@ -49,13 +49,11 @@ MetadataWidget::~MetadataWidget()
 
 bool MetadataWidget::openMetadata(const QString& filePath)
 {
-    Metadata metadata;
-    // Parsing metadata can fail partially or completely, but we don't
-    // actually care. We try to display everything we can. In the worst
-    // case, the metadata object is just empty.
-    bool result = parseMetadata(filePath, metadata);
+    Metadata metadata = getMetadata(filePath);
+    if (metadata.isEmpty())
+        return false;
     setMetadata(metadata);
-    return result;
+    return true;
 }
 
 void MetadataWidget::setMetadata(Metadata metadata)

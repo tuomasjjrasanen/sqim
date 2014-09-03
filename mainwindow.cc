@@ -100,8 +100,8 @@ static QString import(const QString& filePath)
 {
     makeCacheDir(filePath);
 
-    Metadata metadata;
-    if (!parseMetadata(filePath, metadata)) {
+    Metadata metadata = getMetadata(filePath);
+    if (metadata.isEmpty()) {
         qWarning() << "failed to parse metadata";
     }
 

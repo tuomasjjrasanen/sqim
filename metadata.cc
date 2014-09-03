@@ -106,8 +106,10 @@ static bool readMetadata(const QString& metadataFilePath, Metadata& metadata)
     return true;
 }
 
-bool parseMetadata(const QString& imageFilePath, Metadata& metadata)
+Metadata getMetadata(const QString& imageFilePath)
 {
+    Metadata metadata;
+
     QFileInfo imageFileInfo(imageFilePath);
     QFileInfo metadataFileInfo(cacheDir(imageFilePath), "meta.dat");
 
@@ -116,9 +118,10 @@ bool parseMetadata(const QString& imageFilePath, Metadata& metadata)
         if (readMetadata(metadataFileInfo.filePath(), metadata)
             && metadata.contains("_version")
             && metadata.value("_version").toInt() == METADATA_VERSION) {
-            return true;
+            return metadata;
         }
         qWarning() << "failed to read cached metadata";
+        metadata.clear();
     }
 
     metadata.insert("_version", QVariant(METADATA_VERSION));
@@ -128,15 +131,17 @@ bool parseMetadata(const QString& imageFilePath, Metadata& metadata)
 
     if (!parseExif(imageFilePath, metadata)) {
         qCritical() << "failed to parse Exif metadata";
-        return false;
+        metadata.clear();
+        return metadata;
     }
 
     if (!writeMetadata(metadataFileInfo.filePath(), metadata)) {
         qCritical() << "failed to write cached metadata";
-        return false;
+        metadata.clear();
+        return metadata;
     }
 
-    return true;
+    return metadata;
 }
 
 QTransform exifOrientation(const Metadata& metadata)
