@@ -18,9 +18,11 @@
 #define METADATA_HH
 
 #include <QMap>
+#include <QTransform>
 
 typedef QMap<QString, QVariant> Metadata;
 
 bool parseMetadata(const QString& filePath, Metadata& metadata);
+QTransform exifOrientation(const Metadata& metadata);
 
 #endif // METADATA_HH

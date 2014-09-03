@@ -138,3 +138,22 @@ bool parseMetadata(const QString& imageFilePath, Metadata& metadata)
 
     return true;
 }
+
+QTransform exifOrientation(const Metadata& metadata)
+{
+    static const QTransform transforms[] = {
+        QTransform(),
+        QTransform(),
+        QTransform().rotate(180),
+        QTransform(),
+        QTransform(),
+        QTransform().rotate(90),
+        QTransform(),
+        QTransform().rotate(-90)
+    };
+
+    if (metadata.contains("orientation"))
+        return transforms[metadata.value("orientation").toInt() - 1];
+
+    return QTransform();
+}

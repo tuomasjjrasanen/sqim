@@ -55,7 +55,7 @@ static QStringList findFiles(QString dir, bool recursive)
     return retval;
 }
 
-static bool makeThumbnail(const QString& filePath)
+static bool makeThumbnail(const QString& filePath, Metadata& metadata)
 {
     QFileInfo imageFileInfo(filePath);
     QFileInfo thumbnailFileInfo(cacheDir(filePath), "thumbnail.png");
@@ -85,7 +85,9 @@ static bool makeThumbnail(const QString& filePath)
         return false;
     }
 
-    if (!thumbnail.save(thumbnailFileInfo.filePath())) {
+    if (!thumbnail
+        .transformed(exifOrientation(metadata))
+        .save(thumbnailFileInfo.filePath())) {
         qWarning() << "failed to save the thumbnail image to "
                    << thumbnailFileInfo.filePath();
         return false;
@@ -98,14 +100,14 @@ static QString import(const QString& filePath)
 {
     makeCacheDir(filePath);
 
-    if (!makeThumbnail(filePath)) {
-        qWarning() << "failed to make a thumbnail";
-        return "";
-    }
-
     Metadata metadata;
     if (!parseMetadata(filePath, metadata)) {
         qWarning() << "failed to parse metadata";
+    }
+
+    if (!makeThumbnail(filePath, metadata)) {
+        qWarning() << "failed to make a thumbnail";
+        return "";
     }
 
     return filePath;
