@@ -17,10 +17,10 @@
 #ifndef METADATA_HH
 #define METADATA_HH
 
-#include <QMap>
+#include <QHash>
 #include <QTransform>
 
-typedef QMap<QString, QVariant> Metadata;
+typedef QHash<QString, QVariant> Metadata;
 
 bool parseMetadata(const QString& filePath, Metadata& metadata);
 QTransform exifOrientation(const Metadata& metadata);
