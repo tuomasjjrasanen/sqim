@@ -262,5 +262,5 @@ void ImageArea::wheelEvent(QWheelEvent *event)
 
 QSize ImageArea::sizeHint() const
 {
-    return QSize(480, 360);
+    return QSize(640, 480);
 }
