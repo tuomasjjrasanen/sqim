@@ -30,11 +30,12 @@ static QStringList findFiles(QString dir, bool recursive)
     QStringList retval;
 
     QStringList findArgs;
+    findArgs << dir;
     if (!recursive) {
       findArgs << "-mindepth" << "1";
       findArgs << "-maxdepth" << "1";
     }
-    findArgs << dir << "-type" << "f";
+    findArgs << "-type" << "f";
     QProcess find;
     find.start("find", findArgs);
     if (!find.waitForStarted())
