@@ -47,7 +47,7 @@ static bool parseExif(const QString& filePath, Metadata& metadata)
         Exiv2::ExifData &exifData = image->exifData();
         if (exifData.empty()) {
             qWarning() << filePath << " does not have EXIF data";
-            return false;
+            return true;
         }
 
         QString dateTimeString = QString::fromStdString(
