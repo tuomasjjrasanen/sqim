@@ -130,7 +130,6 @@ MainWindow::MainWindow(QWidget *const parent)
 {
     m_imageDockWidget->toggleViewAction()->setShortcut(
         QKeySequence(Qt::Key_I));
-    m_imageDockWidget->hide();
     m_metadataDockWidget->toggleViewAction()->setShortcut(
         QKeySequence(Qt::Key_M));
     m_openDirAction->setShortcut(QKeySequence(Qt::Key_O));
