@@ -36,6 +36,8 @@ public:
     explicit MainWindow(QWidget *parent = 0);
     void openDir(QString dir);
     void openDir(QString dir, bool recursive);
+    void openFiles(const QStringList& filePaths);
+    void openPaths(const QStringList& paths, bool recursive);
     ~MainWindow();
 
 private slots:

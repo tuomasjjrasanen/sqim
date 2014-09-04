@@ -18,15 +18,14 @@
 
 #include "mainwindow.hh"
 
-static QString mainInitialDir;
+static QStringList mainInitialPaths;
 static bool mainRecursiveOpen;
 
 static void mainPrintHelp()
 {
     QTextStream cout(stdout);
 
-    cout << "Usage: sqim [OPTIONS]" << endl;
-    cout << "Usage: sqim [OPTIONS] [--] DIR" << endl;
+    cout << "Usage: sqim [OPTIONS] [DIR|FILE]..." << endl;
     cout << endl;
     cout << "Options:" << endl;
     cout << " -h, --help         display this help and exit" << endl;
@@ -34,6 +33,7 @@ static void mainPrintHelp()
     cout << endl;
     cout << "Parameters:" << endl;
     cout << " DIR                directory to search for images" << endl;
+    cout << " FILE               image to import" << endl;
 }
 
 static void mainPrintError(QString message)
@@ -49,9 +49,10 @@ static void mainParseArgs(QApplication &app)
     QStringList args = app.arguments();
 
     // Skip the first argument which is the program name in Linux.
-    QStringList::ConstIterator i;
-    for (i = args.constBegin() + 1; i != args.constEnd(); ++i) {
-        QString arg = *i;
+    int i = 1;
+    while (i != args.length()) {
+        QString arg = args.at(i);
+        ++i;
 
         if (arg == "--help" || arg == "-h") {
             mainPrintHelp();
@@ -68,16 +69,7 @@ static void mainParseArgs(QApplication &app)
         mainPrintError(QString("unrecognized argument '%1'").arg(arg));
         exit(1);
     }
-
-    if (i != args.constEnd()) {
-        mainInitialDir = *i;
-        ++i;
-    }
-
-    if (i != args.constEnd()) {
-        mainPrintError("too many arguments");
-        exit(1);
-    }
+    mainInitialPaths = args.mid(i - 1);
 }
 
 int main(int argc, char *argv[])
@@ -88,8 +80,7 @@ int main(int argc, char *argv[])
 
     MainWindow w;
 
-    if (!mainInitialDir.isEmpty())
-        w.openDir(mainInitialDir, mainRecursiveOpen);
+    w.openPaths(mainInitialPaths, mainRecursiveOpen);
 
     w.show();
 

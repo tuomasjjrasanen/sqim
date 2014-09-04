@@ -209,9 +209,7 @@ void MainWindow::openDir(QString dir, bool recursive)
         return;
 
     const QStringList filePaths(findFiles(dir, recursive));
-    m_openDirAction->setEnabled(false);
-    m_openCount = 0;
-    m_importer->setFuture(QtConcurrent::mapped(filePaths, import));
+    openFiles(filePaths);
 }
 
 void MainWindow::openDir(QString dir)
@@ -226,6 +224,29 @@ void MainWindow::openDir()
             this, "Open images from a directory and its subdirectories"));
 
     openDir(dir);
+}
+
+void MainWindow::openFiles(const QStringList& filePaths)
+{
+    m_openDirAction->setEnabled(false);
+    m_openCount = 0;
+    m_importer->setFuture(QtConcurrent::mapped(filePaths, import));
+}
+
+void MainWindow::openPaths(const QStringList& paths, bool recursive)
+{
+    QStringList filePaths;
+
+    foreach (QString path, paths) {
+        QFileInfo fileInfo(path);
+        if (fileInfo.isDir()) {
+            filePaths.append(findFiles(path, recursive));
+        } else {
+            filePaths.append(path);
+        }
+    }
+    if (!filePaths.isEmpty())
+        openFiles(filePaths);
 }
 
 void MainWindow::importReadyAt(const int i)
