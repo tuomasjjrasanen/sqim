@@ -38,6 +38,8 @@ isEmpty(PREFIX) {
     PREFIX = /usr/local
 }
 
+QMAKE_CXXFLAGS += -DVERSION=\'\"$$VERSION\"\'
+
 BINDIR=$$PREFIX/bin
 LIBDIR=$$PREFIX/lib/sqim
 
