@@ -41,6 +41,7 @@ signals:
 public slots:
     void sortAscTimeOrder();
     void sortDescTimeOrder();
+    void clear();
 
 protected:
     virtual void currentChanged(const QModelIndex &current,

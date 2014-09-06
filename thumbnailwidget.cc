@@ -50,3 +50,8 @@ bool ThumbnailWidget::addThumbnail(const Metadata metadata)
 {
     return m_thumbnailView->addThumbnail(metadata);
 }
+
+void ThumbnailWidget::clear()
+{
+    m_thumbnailView->clear();
+}

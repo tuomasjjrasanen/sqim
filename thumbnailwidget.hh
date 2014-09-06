@@ -31,6 +31,7 @@ public:
 
 public slots:
     bool addThumbnail(const Metadata metadata);
+    void clear();
 
 signals:
     void currentThumbnailChanged(Metadata metadata);

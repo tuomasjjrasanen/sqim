@@ -230,6 +230,7 @@ void MainWindow::openFiles(const QStringList& filePaths)
 {
     m_openDirAction->setEnabled(false);
     m_openCount = 0;
+    m_thumbnailWidget->clear();
     m_importer->setFuture(QtConcurrent::mapped(filePaths, import));
 }
 
