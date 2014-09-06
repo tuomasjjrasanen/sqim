@@ -130,9 +130,7 @@ Metadata getMetadata(const QString& imageFilePath)
     metadata.insert("fileSize", QVariant(imageFileInfo.size()));
 
     if (!parseExif(imageFilePath, metadata)) {
-        qCritical() << "failed to parse Exif metadata";
-        metadata.clear();
-        return metadata;
+        qWarning() << "failed to parse Exif metadata";
     }
 
     if (!writeMetadata(metadataFileInfo.filePath(), metadata)) {
