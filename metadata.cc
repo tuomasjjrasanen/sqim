@@ -96,13 +96,15 @@ static bool readMetadata(const QString& metadataFilePath, Metadata& metadata)
         return false;
     }
 
+    Metadata tmp;
     QDataStream in(&metadataFile);
-    in >> metadata;
+    in >> tmp;
     if (in.status() != QDataStream::Ok) {
         qWarning() << "failed to read metadata file";
         return false;
     }
 
+    metadata = tmp;
     return true;
 }
 
