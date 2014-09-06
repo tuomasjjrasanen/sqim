@@ -123,7 +123,6 @@ Metadata getMetadata(const QString& imageFilePath)
             return metadata;
         }
         qWarning() << "failed to read cached metadata";
-        metadata.clear();
     }
 
     metadata.insert("_version", QVariant(METADATA_VERSION));
