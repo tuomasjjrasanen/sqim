@@ -143,7 +143,7 @@ Metadata getMetadata(const QString& imageFilePath)
     return metadata;
 }
 
-QTransform exifOrientation(const Metadata& metadata)
+QTransform exifTransform(const Metadata& metadata)
 {
     static const QTransform transforms[] = {
         QTransform(),

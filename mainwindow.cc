@@ -87,7 +87,7 @@ static bool makeThumbnail(const QString& filePath, Metadata& metadata)
     }
 
     if (!thumbnail
-        .transformed(exifOrientation(metadata))
+        .transformed(exifTransform(metadata))
         .save(thumbnailFileInfo.filePath())) {
         qWarning() << "failed to save the thumbnail image to "
                    << thumbnailFileInfo.filePath();
