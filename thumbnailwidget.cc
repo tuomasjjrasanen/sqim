@@ -31,6 +31,7 @@ ThumbnailWidget::ThumbnailWidget(QWidget* parent)
                                           "&Ascending time order", this))
     ,m_sortDescTimeOrderAction(new QAction(QIcon(":/icons/sort_desc_date.png"),
                                            "&Descending time order", this))
+    ,m_thumbnailModel(new QStandardItemModel(this))
 {
     m_thumbnailView->setViewMode(QListView::IconMode);
     m_thumbnailView->setMovement(QListView::Static);
@@ -41,7 +42,7 @@ ThumbnailWidget::ThumbnailWidget(QWidget* parent)
     m_thumbnailView->setStyleSheet("QListView {background-color: grey}");
     m_thumbnailView->setUniformItemSizes(true);
     m_thumbnailView->setContextMenuPolicy(Qt::ActionsContextMenu);
-    m_thumbnailView->setModel(new QStandardItemModel(this));
+    m_thumbnailView->setModel(m_thumbnailModel);
 
     QLayout* layout = new QVBoxLayout(this);
     layout->addWidget(m_toolBar);
@@ -94,15 +95,15 @@ bool ThumbnailWidget::addThumbnail(const Metadata metadata)
     item->setData(metadata, MetadataRole);
     item->setData(metadata.value("timestamp").toDateTime(), TimestampRole);
 
-    qobject_cast<QStandardItemModel*>(m_thumbnailView->model())->appendRow(item);
+    m_thumbnailModel->appendRow(item);
 
     m_imageFilePaths << filePath;
 
     m_sortAscTimeOrderAction->setEnabled(true);
     m_sortDescTimeOrderAction->setEnabled(true);
 
-    if (qobject_cast<QStandardItemModel*>(m_thumbnailView->model())->rowCount() == 1) {
-        m_thumbnailView->setCurrentIndex(qobject_cast<QStandardItemModel*>(m_thumbnailView->model())->index(0, 0));
+    if (m_thumbnailModel->rowCount() == 1) {
+        m_thumbnailView->setCurrentIndex(m_thumbnailModel->index(0, 0));
     }
 
     return true;
@@ -110,25 +111,24 @@ bool ThumbnailWidget::addThumbnail(const Metadata metadata)
 
 void ThumbnailWidget::clear()
 {
-    qobject_cast<QStandardItemModel*>(m_thumbnailView->model())->clear();
+    m_thumbnailModel->clear();
     m_imageFilePaths.clear();
 }
 
 void ThumbnailWidget::sortAscTimeOrder()
 {
-    qobject_cast<QStandardItemModel*>(m_thumbnailView->model())->setSortRole(TimestampRole);
-    m_thumbnailView->model()->sort(0, Qt::AscendingOrder);
+    m_thumbnailModel->setSortRole(TimestampRole);
+    m_thumbnailModel->sort(0, Qt::AscendingOrder);
 }
 
 void ThumbnailWidget::sortDescTimeOrder()
 {
-    qobject_cast<QStandardItemModel*>(m_thumbnailView->model())->setSortRole(TimestampRole);
-    m_thumbnailView->model()->sort(0, Qt::DescendingOrder);
+    m_thumbnailModel->setSortRole(TimestampRole);
+    m_thumbnailModel->sort(0, Qt::DescendingOrder);
 }
 
 void ThumbnailWidget::emitCurrentThumbnailActivated(const QModelIndex& current)
 {
-    QStandardItemModel* m = qobject_cast<QStandardItemModel*>(m_thumbnailView->model());
-    QVariant data = m->item(current.row())->data();
+    QVariant data = m_thumbnailModel->item(current.row())->data();
     emit currentThumbnailActivated(data.toHash());
 }

@@ -19,6 +19,7 @@
 
 #include <QAction>
 #include <QSet>
+#include <QStandardItemModel>
 #include <QString>
 #include <QToolBar>
 
@@ -54,6 +55,7 @@ private:
     QAction* m_sortAscTimeOrderAction;
     QAction* m_sortDescTimeOrderAction;
 
+    QStandardItemModel* m_thumbnailModel;
 };
 
 #endif // THUMBNAILWIDGET_HH
