@@ -36,8 +36,6 @@ public:
     explicit ThumbnailView(QWidget *parent = 0);
     ~ThumbnailView();
 
-    bool addThumbnail(const Metadata metadata);
-
 signals:
     void currentThumbnailChanged(Metadata metadata);
 

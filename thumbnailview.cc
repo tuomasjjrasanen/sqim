@@ -33,24 +33,6 @@ ThumbnailView::~ThumbnailView()
 {
 }
 
-bool ThumbnailView::addThumbnail(const Metadata metadata)
-{
-    QString filePath = metadata.value("filePath").toString();
-
-    QStandardItem* item = new QStandardItem();
-    item->setIcon(QIcon(cacheDir(filePath).filePath("thumbnail.png")));
-    item->setData(metadata, MetadataRole);
-    item->setData(metadata.value("timestamp").toDateTime(), TimestampRole);
-
-    ((QStandardItemModel *)model())->appendRow(item);
-
-    if (((QStandardItemModel *)model())->rowCount() == 1) {
-        setCurrentIndex(((QStandardItemModel *)model())->index(0, 0));
-    }
-
-    return true;
-}
-
 void ThumbnailView::currentChanged(const QModelIndex &current,
                                    const QModelIndex &previous)
 {

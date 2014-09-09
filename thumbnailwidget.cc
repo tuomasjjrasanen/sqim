@@ -14,9 +14,11 @@
 // You should have received a copy of the GNU General Public License
 // along with this program. If not, see <http://www.gnu.org/licenses/>.
 
+#include <QDateTime>
 #include <QIcon>
 #include <QVBoxLayout>
 
+#include "common.hh"
 #include "thumbnaildelegate.hh"
 #include "thumbnailwidget.hh"
 
@@ -87,14 +89,23 @@ bool ThumbnailWidget::addThumbnail(const Metadata metadata)
     if (m_imageFilePaths.contains(filePath))
         return false;
 
-    if (m_thumbnailView->addThumbnail(metadata)) {
-        m_imageFilePaths << filePath;
-        m_sortAscTimeOrderAction->setEnabled(true);
-        m_sortDescTimeOrderAction->setEnabled(true);
-        return true;
+    QStandardItem* item = new QStandardItem();
+    item->setIcon(QIcon(cacheDir(filePath).filePath("thumbnail.png")));
+    item->setData(metadata, MetadataRole);
+    item->setData(metadata.value("timestamp").toDateTime(), TimestampRole);
+
+    qobject_cast<QStandardItemModel*>(m_thumbnailView->model())->appendRow(item);
+
+    m_imageFilePaths << filePath;
+
+    m_sortAscTimeOrderAction->setEnabled(true);
+    m_sortDescTimeOrderAction->setEnabled(true);
+
+    if (qobject_cast<QStandardItemModel*>(m_thumbnailView->model())->rowCount() == 1) {
+        m_thumbnailView->setCurrentIndex(qobject_cast<QStandardItemModel*>(m_thumbnailView->model())->index(0, 0));
     }
 
-    return false;
+    return true;
 }
 
 void ThumbnailWidget::clear()
