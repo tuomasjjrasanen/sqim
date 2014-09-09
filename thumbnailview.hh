@@ -40,14 +40,10 @@ public:
 
 signals:
     void currentThumbnailChanged(Metadata metadata);
-    void currentThumbnailActivated(Metadata metadata);
 
 protected:
     virtual void currentChanged(const QModelIndex &current,
                                 const QModelIndex &previous);
-
-private slots:
-    void emitCurrentThumbnailActivated(const QModelIndex &current);
 
 };
 

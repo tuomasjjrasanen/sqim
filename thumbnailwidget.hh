@@ -42,6 +42,9 @@ signals:
     void currentThumbnailChanged(Metadata metadata);
     void currentThumbnailActivated(Metadata metadata);
 
+private slots:
+    void emitCurrentThumbnailActivated(const QModelIndex &current);
+
 private:
     ThumbnailView* m_thumbnailView;
     QToolBar* m_toolBar;

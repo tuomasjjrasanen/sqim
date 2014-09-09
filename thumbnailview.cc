@@ -27,9 +27,6 @@
 ThumbnailView::ThumbnailView(QWidget *parent) :
     QListView(parent)
 {
-
-    connect(this, SIGNAL(activated(const QModelIndex&)),
-            this, SLOT(emitCurrentThumbnailActivated(const QModelIndex&)));
 }
 
 ThumbnailView::~ThumbnailView()
@@ -52,13 +49,6 @@ bool ThumbnailView::addThumbnail(const Metadata metadata)
     }
 
     return true;
-}
-
-void ThumbnailView::emitCurrentThumbnailActivated(const QModelIndex &current)
-{
-    QStandardItemModel *m = (QStandardItemModel*) model();
-    QVariant data = m->item(current.row())->data();
-    emit currentThumbnailActivated(data.toHash());
 }
 
 void ThumbnailView::currentChanged(const QModelIndex &current,

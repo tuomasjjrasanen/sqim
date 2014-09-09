@@ -66,8 +66,8 @@ ThumbnailWidget::ThumbnailWidget(QWidget* parent)
 
     connect(m_thumbnailView, SIGNAL(currentThumbnailChanged(Metadata)),
             SIGNAL(currentThumbnailChanged(Metadata)));
-    connect(m_thumbnailView, SIGNAL(currentThumbnailActivated(Metadata)),
-            SIGNAL(currentThumbnailActivated(Metadata)));
+    connect(m_thumbnailView, SIGNAL(activated(const QModelIndex&)),
+            this, SLOT(emitCurrentThumbnailActivated(const QModelIndex&)));
 
     connect(m_sortAscTimeOrderAction, SIGNAL(triggered(bool)),
             SLOT(sortAscTimeOrder()));
@@ -113,4 +113,11 @@ void ThumbnailWidget::sortDescTimeOrder()
 {
     qobject_cast<QStandardItemModel*>(m_thumbnailView->model())->setSortRole(TimestampRole);
     m_thumbnailView->model()->sort(0, Qt::DescendingOrder);
+}
+
+void ThumbnailWidget::emitCurrentThumbnailActivated(const QModelIndex& current)
+{
+    QStandardItemModel* m = qobject_cast<QStandardItemModel*>(m_thumbnailView->model());
+    QVariant data = m->item(current.row())->data();
+    emit currentThumbnailActivated(data.toHash());
 }
