@@ -23,6 +23,11 @@
 
 #include "metadata.hh"
 
+enum {
+    MetadataRole = Qt::UserRole + 1,
+    TimestampRole,
+};
+
 class ThumbnailView : public QListView
 {
     Q_OBJECT
@@ -37,22 +42,12 @@ signals:
     void currentThumbnailChanged(Metadata metadata);
     void currentThumbnailActivated(Metadata metadata);
 
-public slots:
-    void sortAscTimeOrder();
-    void sortDescTimeOrder();
-
 protected:
     virtual void currentChanged(const QModelIndex &current,
                                 const QModelIndex &previous);
-    virtual void hideEvent(QHideEvent *event);
-    virtual void showEvent(QShowEvent *event);
 
 private slots:
     void emitCurrentThumbnailActivated(const QModelIndex &current);
-
-private:
-    QAction *m_sortAscTimeOrderAction;
-    QAction *m_sortDescTimeOrderAction;
 
 };
 

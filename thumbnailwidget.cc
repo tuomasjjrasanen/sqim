@@ -14,6 +14,7 @@
 // You should have received a copy of the GNU General Public License
 // along with this program. If not, see <http://www.gnu.org/licenses/>.
 
+#include <QIcon>
 #include <QVBoxLayout>
 
 #include "thumbnaildelegate.hh"
@@ -24,13 +25,28 @@ ThumbnailWidget::ThumbnailWidget(QWidget* parent)
     ,m_thumbnailView(new ThumbnailView(this))
     ,m_toolBar(new QToolBar(this))
     ,m_imageFilePaths()
+    ,m_sortAscTimeOrderAction(new QAction(QIcon(":/icons/sort_asc_date.png"),
+                                          "&Ascending time order", this))
+    ,m_sortDescTimeOrderAction(new QAction(QIcon(":/icons/sort_desc_date.png"),
+                                           "&Descending time order", this))
 {
     QLayout* layout = new QVBoxLayout(this);
     layout->addWidget(m_toolBar);
     layout->addWidget(m_thumbnailView);
     setLayout(layout);
 
-    foreach (QAction* action, m_thumbnailView->actions()) {
+    m_sortAscTimeOrderAction->setShortcut(
+        QKeySequence(Qt::Key_Less, Qt::Key_T));
+    m_sortDescTimeOrderAction->setShortcut(
+        QKeySequence(Qt::Key_Greater, Qt::Key_T));
+
+    m_sortAscTimeOrderAction->setEnabled(false);
+    m_sortDescTimeOrderAction->setEnabled(false);
+
+    addAction(m_sortAscTimeOrderAction);
+    addAction(m_sortDescTimeOrderAction);
+
+    foreach (QAction* action, actions()) {
         m_toolBar->addAction(action);
     }
 
@@ -41,6 +57,12 @@ ThumbnailWidget::ThumbnailWidget(QWidget* parent)
             SIGNAL(currentThumbnailChanged(Metadata)));
     connect(m_thumbnailView, SIGNAL(currentThumbnailActivated(Metadata)),
             SIGNAL(currentThumbnailActivated(Metadata)));
+
+    connect(m_sortAscTimeOrderAction, SIGNAL(triggered(bool)),
+            SLOT(sortAscTimeOrder()));
+    connect(m_sortDescTimeOrderAction, SIGNAL(triggered(bool)),
+            SLOT(sortDescTimeOrder()));
+
 }
 
 ThumbnailWidget::~ThumbnailWidget()
@@ -56,6 +78,8 @@ bool ThumbnailWidget::addThumbnail(const Metadata metadata)
 
     if (m_thumbnailView->addThumbnail(metadata)) {
         m_imageFilePaths << filePath;
+        m_sortAscTimeOrderAction->setEnabled(true);
+        m_sortDescTimeOrderAction->setEnabled(true);
         return true;
     }
 
@@ -66,4 +90,16 @@ void ThumbnailWidget::clear()
 {
     qobject_cast<QStandardItemModel*>(m_thumbnailView->model())->clear();
     m_imageFilePaths.clear();
+}
+
+void ThumbnailWidget::sortAscTimeOrder()
+{
+    qobject_cast<QStandardItemModel*>(m_thumbnailView->model())->setSortRole(TimestampRole);
+    m_thumbnailView->model()->sort(0, Qt::AscendingOrder);
+}
+
+void ThumbnailWidget::sortDescTimeOrder()
+{
+    qobject_cast<QStandardItemModel*>(m_thumbnailView->model())->setSortRole(TimestampRole);
+    m_thumbnailView->model()->sort(0, Qt::DescendingOrder);
 }

@@ -24,17 +24,8 @@
 #include "metadata.hh"
 #include "thumbnailview.hh"
 
-enum {
-    MetadataRole = Qt::UserRole + 1,
-    TimestampRole,
-};
-
 ThumbnailView::ThumbnailView(QWidget *parent) :
     QListView(parent)
-    ,m_sortAscTimeOrderAction(new QAction(QIcon(":/icons/sort_asc_date.png"),
-                                          "&Ascending time order", this))
-    ,m_sortDescTimeOrderAction(new QAction(QIcon(":/icons/sort_desc_date.png"),
-                                           "&Descending time order", this))
 {
     setViewMode(QListView::IconMode);
     setMovement(QListView::Static);
@@ -48,41 +39,12 @@ ThumbnailView::ThumbnailView(QWidget *parent) :
 
     setModel(new QStandardItemModel(this));
 
-    m_sortAscTimeOrderAction->setShortcut(
-        QKeySequence(Qt::Key_Less, Qt::Key_T));
-    m_sortDescTimeOrderAction->setShortcut(
-        QKeySequence(Qt::Key_Greater, Qt::Key_T));
-
-    addAction(m_sortAscTimeOrderAction);
-    addAction(m_sortDescTimeOrderAction);
-
-    connect(m_sortAscTimeOrderAction, SIGNAL(triggered(bool)),
-            SLOT(sortAscTimeOrder()));
-    connect(m_sortDescTimeOrderAction, SIGNAL(triggered(bool)),
-            SLOT(sortDescTimeOrder()));
     connect(this, SIGNAL(activated(const QModelIndex&)),
             this, SLOT(emitCurrentThumbnailActivated(const QModelIndex&)));
-
-    m_sortAscTimeOrderAction->setEnabled(false);
-    m_sortDescTimeOrderAction->setEnabled(false);
 }
 
 ThumbnailView::~ThumbnailView()
 {
-}
-
-void ThumbnailView::hideEvent(QHideEvent *event)
-{
-    m_sortAscTimeOrderAction->setEnabled(false);
-    m_sortDescTimeOrderAction->setEnabled(false);
-    QListView::hideEvent(event);
-}
-
-void ThumbnailView::showEvent(QShowEvent *event)
-{
-    m_sortAscTimeOrderAction->setEnabled(model()->hasChildren());
-    m_sortDescTimeOrderAction->setEnabled(model()->hasChildren());
-    QListView::showEvent(event);
 }
 
 bool ThumbnailView::addThumbnail(const Metadata metadata)
@@ -96,26 +58,11 @@ bool ThumbnailView::addThumbnail(const Metadata metadata)
 
     ((QStandardItemModel *)model())->appendRow(item);
 
-    m_sortAscTimeOrderAction->setEnabled(true);
-    m_sortDescTimeOrderAction->setEnabled(true);
-
     if (((QStandardItemModel *)model())->rowCount() == 1) {
         setCurrentIndex(((QStandardItemModel *)model())->index(0, 0));
     }
 
     return true;
-}
-
-void ThumbnailView::sortAscTimeOrder()
-{
-    qobject_cast<QStandardItemModel*>(model())->setSortRole(TimestampRole);
-    model()->sort(0, Qt::AscendingOrder);
-}
-
-void ThumbnailView::sortDescTimeOrder()
-{
-    qobject_cast<QStandardItemModel*>(model())->setSortRole(TimestampRole);
-    model()->sort(0, Qt::DescendingOrder);
 }
 
 void ThumbnailView::emitCurrentThumbnailActivated(const QModelIndex &current)

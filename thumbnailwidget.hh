@@ -17,6 +17,7 @@
 #ifndef THUMBNAILWIDGET_HH
 #define THUMBNAILWIDGET_HH
 
+#include <QAction>
 #include <QSet>
 #include <QString>
 #include <QToolBar>
@@ -34,6 +35,8 @@ public:
 public slots:
     bool addThumbnail(const Metadata metadata);
     void clear();
+    void sortAscTimeOrder();
+    void sortDescTimeOrder();
 
 signals:
     void currentThumbnailChanged(Metadata metadata);
@@ -44,6 +47,10 @@ private:
     QToolBar* m_toolBar;
 
     QSet<QString> m_imageFilePaths;
+
+    QAction* m_sortAscTimeOrderAction;
+    QAction* m_sortDescTimeOrderAction;
+
 };
 
 #endif // THUMBNAILWIDGET_HH
