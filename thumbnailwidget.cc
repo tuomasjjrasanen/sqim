@@ -64,6 +64,6 @@ bool ThumbnailWidget::addThumbnail(const Metadata metadata)
 
 void ThumbnailWidget::clear()
 {
-    m_thumbnailView->clear();
+    qobject_cast<QStandardItemModel*>(m_thumbnailView->model())->clear();
     m_imageFilePaths.clear();
 }

@@ -134,8 +134,3 @@ void ThumbnailView::currentChanged(const QModelIndex &current,
     QVariant data = m->item(current.row())->data();
     emit currentThumbnailChanged(data.toHash());
 }
-
-void ThumbnailView::clear()
-{
-    ((QStandardItemModel*) model())->clear();
-}
