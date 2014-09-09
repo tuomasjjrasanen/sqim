@@ -19,7 +19,6 @@
 
 #include <QAction>
 #include <QListView>
-#include <QSet>
 #include <QStandardItemModel>
 
 #include "metadata.hh"
@@ -53,8 +52,6 @@ private slots:
     void emitCurrentThumbnailActivated(const QModelIndex &current);
 
 private:
-    QSet<QString> m_imageFilePaths;
-
     QAction *m_sortAscTimeOrderAction;
     QAction *m_sortDescTimeOrderAction;
 

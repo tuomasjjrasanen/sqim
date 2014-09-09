@@ -80,8 +80,8 @@ void ThumbnailView::hideEvent(QHideEvent *event)
 
 void ThumbnailView::showEvent(QShowEvent *event)
 {
-    m_sortAscTimeOrderAction->setEnabled(!m_imageFilePaths.isEmpty());
-    m_sortDescTimeOrderAction->setEnabled(!m_imageFilePaths.isEmpty());
+    m_sortAscTimeOrderAction->setEnabled(model()->hasChildren());
+    m_sortDescTimeOrderAction->setEnabled(model()->hasChildren());
     QListView::showEvent(event);
 }
 
@@ -89,17 +89,12 @@ bool ThumbnailView::addThumbnail(const Metadata metadata)
 {
     QString filePath = metadata.value("filePath").toString();
 
-    if (m_imageFilePaths.contains(filePath))
-        return false;
-
     QStandardItem* item = new QStandardItem();
     item->setIcon(QIcon(cacheDir(filePath).filePath("thumbnail.png")));
     item->setData(metadata, MetadataRole);
     item->setData(metadata.value("timestamp").toDateTime(), TimestampRole);
 
     ((QStandardItemModel *)model())->appendRow(item);
-
-    m_imageFilePaths << filePath;
 
     m_sortAscTimeOrderAction->setEnabled(true);
     m_sortDescTimeOrderAction->setEnabled(true);
@@ -143,5 +138,4 @@ void ThumbnailView::currentChanged(const QModelIndex &current,
 void ThumbnailView::clear()
 {
     ((QStandardItemModel*) model())->clear();
-    m_imageFilePaths.clear();
 }

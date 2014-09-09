@@ -17,6 +17,8 @@
 #ifndef THUMBNAILWIDGET_HH
 #define THUMBNAILWIDGET_HH
 
+#include <QSet>
+#include <QString>
 #include <QToolBar>
 
 #include "thumbnailview.hh"
@@ -40,6 +42,8 @@ signals:
 private:
     ThumbnailView* m_thumbnailView;
     QToolBar* m_toolBar;
+
+    QSet<QString> m_imageFilePaths;
 };
 
 #endif // THUMBNAILWIDGET_HH

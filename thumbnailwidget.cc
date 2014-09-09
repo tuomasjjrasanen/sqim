@@ -23,6 +23,7 @@ ThumbnailWidget::ThumbnailWidget(QWidget* parent)
     :QWidget(parent)
     ,m_thumbnailView(new ThumbnailView(this))
     ,m_toolBar(new QToolBar(this))
+    ,m_imageFilePaths()
 {
     QLayout* layout = new QVBoxLayout(this);
     layout->addWidget(m_toolBar);
@@ -48,10 +49,21 @@ ThumbnailWidget::~ThumbnailWidget()
 
 bool ThumbnailWidget::addThumbnail(const Metadata metadata)
 {
-    return m_thumbnailView->addThumbnail(metadata);
+    QString filePath = metadata.value("filePath").toString();
+
+    if (m_imageFilePaths.contains(filePath))
+        return false;
+
+    if (m_thumbnailView->addThumbnail(metadata)) {
+        m_imageFilePaths << filePath;
+        return true;
+    }
+
+    return false;
 }
 
 void ThumbnailWidget::clear()
 {
     m_thumbnailView->clear();
+    m_imageFilePaths.clear();
 }
