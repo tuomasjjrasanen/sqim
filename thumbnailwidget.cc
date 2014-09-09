@@ -30,6 +30,17 @@ ThumbnailWidget::ThumbnailWidget(QWidget* parent)
     ,m_sortDescTimeOrderAction(new QAction(QIcon(":/icons/sort_desc_date.png"),
                                            "&Descending time order", this))
 {
+    m_thumbnailView->setViewMode(QListView::IconMode);
+    m_thumbnailView->setMovement(QListView::Static);
+    m_thumbnailView->setSelectionMode(QListView::ExtendedSelection);
+    m_thumbnailView->setEditTriggers(QAbstractItemView::NoEditTriggers);
+    m_thumbnailView->setResizeMode(QListView::Adjust);
+    m_thumbnailView->setIconSize(QSize(50, 50));
+    m_thumbnailView->setStyleSheet("QListView {background-color: grey}");
+    m_thumbnailView->setUniformItemSizes(true);
+    m_thumbnailView->setContextMenuPolicy(Qt::ActionsContextMenu);
+    m_thumbnailView->setModel(new QStandardItemModel(this));
+
     QLayout* layout = new QVBoxLayout(this);
     layout->addWidget(m_toolBar);
     layout->addWidget(m_thumbnailView);

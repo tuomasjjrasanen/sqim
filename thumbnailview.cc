@@ -27,17 +27,6 @@
 ThumbnailView::ThumbnailView(QWidget *parent) :
     QListView(parent)
 {
-    setViewMode(QListView::IconMode);
-    setMovement(QListView::Static);
-    setSelectionMode(QListView::ExtendedSelection);
-    setEditTriggers(QAbstractItemView::NoEditTriggers);
-    setResizeMode(QListView::Adjust);
-    setIconSize(QSize(50, 50));
-    setStyleSheet("QListView {background-color: grey}");
-    setUniformItemSizes(true);
-    setContextMenuPolicy(Qt::ActionsContextMenu);
-
-    setModel(new QStandardItemModel(this));
 
     connect(this, SIGNAL(activated(const QModelIndex&)),
             this, SLOT(emitCurrentThumbnailActivated(const QModelIndex&)));
