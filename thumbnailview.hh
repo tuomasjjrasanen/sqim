@@ -17,9 +17,7 @@
 #ifndef THUMBNAILVIEW_HH
 #define THUMBNAILVIEW_HH
 
-#include <QAction>
 #include <QListView>
-#include <QStandardItemModel>
 
 #include "metadata.hh"
 

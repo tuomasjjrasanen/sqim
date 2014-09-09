@@ -14,14 +14,6 @@
 // You should have received a copy of the GNU General Public License
 // along with this program. If not, see <http://www.gnu.org/licenses/>.
 
-#include <QDateTime>
-#include <QSize>
-#include <QDir>
-#include <QFileInfo>
-#include <QPixmap>
-
-#include "common.hh"
-#include "metadata.hh"
 #include "thumbnailview.hh"
 
 ThumbnailView::ThumbnailView(QWidget *parent) :
@@ -37,8 +29,5 @@ void ThumbnailView::currentChanged(const QModelIndex &current,
                                    const QModelIndex &previous)
 {
     QListView::currentChanged(current, previous);
-
-    QStandardItemModel *m = (QStandardItemModel*) model();
-    QVariant data = m->item(current.row())->data();
-    emit currentThumbnailChanged(data.toHash());
+    emit currentThumbnailChanged(model()->data(current, MetadataRole).toHash());
 }
