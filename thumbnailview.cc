@@ -25,13 +25,8 @@
 #include "thumbnailview.hh"
 
 enum {
-    COL_THUMBNAIL,
-    COL_FILEPATH,
-    COL_TIMESTAMP,
-    COL_MTIME,
-    COL_FILESIZE,
-    COL_IMGSIZE,
-    COLS
+    MetadataRole = Qt::UserRole + 1,
+    TimestampRole,
 };
 
 ThumbnailView::ThumbnailView(QWidget *parent) :
@@ -97,35 +92,12 @@ bool ThumbnailView::addThumbnail(const Metadata metadata)
     if (m_imageFilePaths.contains(filePath))
         return false;
 
-    QList<QStandardItem*> items;
-    QStandardItem *item;
-
-    item = new QStandardItem();
+    QStandardItem* item = new QStandardItem();
     item->setIcon(QIcon(cacheDir(filePath).filePath("thumbnail.png")));
-    items.insert(COL_THUMBNAIL, item);
+    item->setData(metadata, MetadataRole);
+    item->setData(metadata.value("timestamp").toDateTime(), TimestampRole);
 
-    item = new QStandardItem();
-    item->setText(filePath);
-    item->setData(metadata);
-    items.insert(COL_FILEPATH, item);
-
-    item = new QStandardItem();
-    item->setText(metadata.value("timestamp").toDateTime().toString());
-    items.insert(COL_TIMESTAMP, item);
-
-    item = new QStandardItem();
-    item->setText(metadata.value("modificationTime").toDateTime().toString());
-    items.insert(COL_MTIME, item);
-
-    item = new QStandardItem();
-    item->setText(fileSizeToString(metadata.value("fileSize").toULongLong()));
-    items.insert(COL_FILESIZE, item);
-
-    item = new QStandardItem();
-    item->setText(imageSizeToString(metadata.value("imageSize").toSize()));
-    items.insert(COL_IMGSIZE, item);
-
-    ((QStandardItemModel *)model())->appendRow(items);
+    ((QStandardItemModel *)model())->appendRow(item);
 
     m_imageFilePaths << filePath;
 
@@ -141,18 +113,20 @@ bool ThumbnailView::addThumbnail(const Metadata metadata)
 
 void ThumbnailView::sortAscTimeOrder()
 {
-    model()->sort(COL_TIMESTAMP, Qt::AscendingOrder);
+    qobject_cast<QStandardItemModel*>(model())->setSortRole(TimestampRole);
+    model()->sort(0, Qt::AscendingOrder);
 }
 
 void ThumbnailView::sortDescTimeOrder()
 {
-    model()->sort(COL_TIMESTAMP, Qt::DescendingOrder);
+    qobject_cast<QStandardItemModel*>(model())->setSortRole(TimestampRole);
+    model()->sort(0, Qt::DescendingOrder);
 }
 
 void ThumbnailView::emitCurrentThumbnailActivated(const QModelIndex &current)
 {
     QStandardItemModel *m = (QStandardItemModel*) model();
-    QVariant data = m->item(current.row(), COL_FILEPATH)->data();
+    QVariant data = m->item(current.row())->data();
     emit currentThumbnailActivated(data.toHash());
 }
 
@@ -162,7 +136,7 @@ void ThumbnailView::currentChanged(const QModelIndex &current,
     QListView::currentChanged(current, previous);
 
     QStandardItemModel *m = (QStandardItemModel*) model();
-    QVariant data = m->item(current.row(), COL_FILEPATH)->data();
+    QVariant data = m->item(current.row())->data();
     emit currentThumbnailChanged(data.toHash());
 }
 
