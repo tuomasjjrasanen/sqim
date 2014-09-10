@@ -16,8 +16,8 @@
 
 #include "thumbnailview.hh"
 
-ThumbnailView::ThumbnailView(QWidget *parent) :
-    QListView(parent)
+ThumbnailView::ThumbnailView(QWidget* parent)
+    :QListView(parent)
 {
 }
 
@@ -25,8 +25,8 @@ ThumbnailView::~ThumbnailView()
 {
 }
 
-void ThumbnailView::currentChanged(const QModelIndex &current,
-                                   const QModelIndex &previous)
+void ThumbnailView::currentChanged(const QModelIndex& current,
+                                   const QModelIndex& previous)
 {
     QListView::currentChanged(current, previous);
     emit currentThumbnailChanged(model()->data(current, MetadataRole).toHash());

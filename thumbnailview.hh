@@ -31,15 +31,15 @@ class ThumbnailView : public QListView
     Q_OBJECT
     
 public:
-    explicit ThumbnailView(QWidget *parent = 0);
+    explicit ThumbnailView(QWidget* parent = 0);
     ~ThumbnailView();
 
 signals:
     void currentThumbnailChanged(Metadata metadata);
 
 protected:
-    virtual void currentChanged(const QModelIndex &current,
-                                const QModelIndex &previous);
+    virtual void currentChanged(const QModelIndex& current,
+                                const QModelIndex& previous);
 
 };
 
