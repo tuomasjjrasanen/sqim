@@ -140,3 +140,13 @@ void ThumbnailWidget::emitCurrentThumbnailActivated(const QModelIndex& current)
     QVariant data = m_thumbnailModel->item(current.row())->data();
     emit currentThumbnailActivated(data.toHash());
 }
+
+void ThumbnailWidget::triggerSortAscTimeOrder()
+{
+    m_sortAscTimeOrderAction->trigger();
+}
+
+void ThumbnailWidget::triggerSortDescTimeOrder()
+{
+    m_sortDescTimeOrderAction->trigger();
+}

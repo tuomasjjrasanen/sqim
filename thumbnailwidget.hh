@@ -32,6 +32,8 @@ class ThumbnailWidget : public QWidget
 public:
     explicit ThumbnailWidget(QWidget* parent = 0);
     ~ThumbnailWidget();
+    void triggerSortAscTimeOrder();
+    void triggerSortDescTimeOrder();
 
 public slots:
     bool addThumbnail(const Metadata metadata);
