@@ -40,6 +40,7 @@ public slots:
     void clear();
     void sortAscTimeOrder();
     void sortDescTimeOrder();
+    void setCurrentIndex(int index);
 
 signals:
     void currentThumbnailChanged(Metadata metadata);

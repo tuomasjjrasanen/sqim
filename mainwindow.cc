@@ -267,4 +267,5 @@ void MainWindow::importFinished()
     statusBar()->showMessage(msg);
     m_openDirAction->setEnabled(true);
     m_thumbnailWidget->triggerSortAscTimeOrder();
+    m_thumbnailWidget->setCurrentIndex(0);
 }

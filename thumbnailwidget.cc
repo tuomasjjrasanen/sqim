@@ -150,3 +150,8 @@ void ThumbnailWidget::triggerSortDescTimeOrder()
 {
     m_sortDescTimeOrderAction->trigger();
 }
+
+void ThumbnailWidget::setCurrentIndex(int index)
+{
+    m_thumbnailView->setCurrentIndex(m_thumbnailModel->index(index, 0));
+}
