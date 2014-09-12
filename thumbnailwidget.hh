@@ -52,6 +52,7 @@ private:
 
     QSet<QString> m_imageFilePaths;
 
+    QActionGroup* m_sortActionGroup;
     QAction* m_sortAscTimeOrderAction;
     QAction* m_sortDescTimeOrderAction;
 

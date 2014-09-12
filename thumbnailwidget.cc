@@ -27,10 +27,13 @@ ThumbnailWidget::ThumbnailWidget(QWidget* parent)
     ,m_thumbnailView(new ThumbnailView(this))
     ,m_toolBar(new QToolBar(this))
     ,m_imageFilePaths()
+    ,m_sortActionGroup(new QActionGroup(m_toolBar))
     ,m_sortAscTimeOrderAction(new QAction(QIcon(":/icons/sort_asc_date.png"),
-                                          "&Ascending time order", this))
+                                          "&Ascending time order",
+                                          m_sortActionGroup))
     ,m_sortDescTimeOrderAction(new QAction(QIcon(":/icons/sort_desc_date.png"),
-                                           "&Descending time order", this))
+                                           "&Descending time order",
+                                           m_sortActionGroup))
     ,m_thumbnailModel(new QStandardItemModel(this))
 {
     m_thumbnailView->setViewMode(QListView::IconMode);
@@ -49,6 +52,8 @@ ThumbnailWidget::ThumbnailWidget(QWidget* parent)
     layout->addWidget(m_thumbnailView);
     setLayout(layout);
 
+    m_sortActionGroup->setExclusive(true);
+
     m_sortAscTimeOrderAction->setShortcut(
         QKeySequence(Qt::Key_Less, Qt::Key_T));
     m_sortDescTimeOrderAction->setShortcut(
@@ -56,6 +61,9 @@ ThumbnailWidget::ThumbnailWidget(QWidget* parent)
 
     m_sortAscTimeOrderAction->setEnabled(false);
     m_sortDescTimeOrderAction->setEnabled(false);
+
+    m_sortAscTimeOrderAction->setCheckable(true);
+    m_sortDescTimeOrderAction->setCheckable(true);
 
     addAction(m_sortAscTimeOrderAction);
     addAction(m_sortDescTimeOrderAction);
