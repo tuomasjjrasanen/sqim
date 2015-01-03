@@ -16,6 +16,7 @@
 
 #include <QDateTime>
 #include <QIcon>
+#include <QProcess>
 #include <QVBoxLayout>
 
 #include "common.hh"
@@ -35,6 +36,7 @@ ThumbnailWidget::ThumbnailWidget(QWidget* parent)
                                            "&Descending time order",
                                            m_sortActionGroup))
     ,m_thumbnailModel(new QStandardItemModel(this))
+    ,m_editAction(new QAction("Edit", this))
 {
     m_thumbnailView->setViewMode(QListView::IconMode);
     m_thumbnailView->setMovement(QListView::Static);
@@ -58,15 +60,18 @@ ThumbnailWidget::ThumbnailWidget(QWidget* parent)
         QKeySequence(Qt::Key_Less, Qt::Key_T));
     m_sortDescTimeOrderAction->setShortcut(
         QKeySequence(Qt::Key_Greater, Qt::Key_T));
+    m_editAction->setShortcut(QKeySequence(Qt::Key_E));
 
     m_sortAscTimeOrderAction->setEnabled(false);
     m_sortDescTimeOrderAction->setEnabled(false);
+    m_editAction->setEnabled(false);
 
     m_sortAscTimeOrderAction->setCheckable(true);
     m_sortDescTimeOrderAction->setCheckable(true);
 
     addAction(m_sortAscTimeOrderAction);
     addAction(m_sortDescTimeOrderAction);
+    addAction(m_editAction);
 
     foreach (QAction* action, actions()) {
         m_toolBar->addAction(action);
@@ -84,7 +89,8 @@ ThumbnailWidget::ThumbnailWidget(QWidget* parent)
             SLOT(sortAscTimeOrder()));
     connect(m_sortDescTimeOrderAction, SIGNAL(triggered(bool)),
             SLOT(sortDescTimeOrder()));
-
+    connect(m_editAction, SIGNAL(triggered(bool)),
+            SLOT(editSelectedThumbnails()));
 }
 
 ThumbnailWidget::~ThumbnailWidget()
@@ -109,6 +115,7 @@ bool ThumbnailWidget::addThumbnail(const Metadata metadata)
 
     m_sortAscTimeOrderAction->setEnabled(true);
     m_sortDescTimeOrderAction->setEnabled(true);
+    m_editAction->setEnabled(true);
 
     if (m_thumbnailModel->rowCount() == 1) {
         m_thumbnailView->setCurrentIndex(m_thumbnailModel->index(0, 0));
@@ -121,6 +128,7 @@ void ThumbnailWidget::clear()
 {
     m_thumbnailModel->clear();
     m_imageFilePaths.clear();
+    m_editAction->setEnabled(false);
 }
 
 void ThumbnailWidget::sortAscTimeOrder()
@@ -154,4 +162,20 @@ void ThumbnailWidget::triggerSortDescTimeOrder()
 void ThumbnailWidget::setCurrentIndex(int index)
 {
     m_thumbnailView->setCurrentIndex(m_thumbnailModel->index(index, 0));
+}
+
+void ThumbnailWidget::editSelectedThumbnails()
+{
+    QModelIndex currentIndex = m_thumbnailView->currentIndex();
+    QItemSelectionModel *selectionModel = m_thumbnailView->selectionModel();
+    QModelIndexList selectedIndexes = selectionModel->selectedIndexes();
+    QStringList filePaths;
+
+    foreach (QModelIndex index, selectedIndexes) {
+        Metadata metadata = m_thumbnailModel->data(index,
+                                                   MetadataRole).toHash();
+        filePaths.append(metadata.value("filePath").toString());
+    }
+
+    QProcess::startDetached("gimp", filePaths);
 }
