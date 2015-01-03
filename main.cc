@@ -70,10 +70,10 @@ static void mainParseArgs(QApplication &app)
     QStringList args = app.arguments();
 
     // Skip the first argument which is the program name in Linux.
-    int i = 1;
-    while (i != args.length()) {
-        QString arg = args.at(i);
-        ++i;
+    args.takeFirst();
+
+    while (!args.isEmpty()) {
+        QString arg = args.first();
 
         if (arg == "--help" || arg == "-h") {
             mainPrintHelp();
@@ -83,6 +83,7 @@ static void mainParseArgs(QApplication &app)
             exit(0);
         } else if (arg == "--recursive" || arg == "-r") {
             mainRecursiveOpen = true;
+            args.takeFirst();
             continue;
         } else if (arg == "--" || !arg.startsWith("-")) {
             // Option parsing stops, positional parameter parsing
@@ -93,7 +94,8 @@ static void mainParseArgs(QApplication &app)
         mainPrintError(QString("unrecognized argument '%1'").arg(arg));
         exit(1);
     }
-    mainInitialPaths = args.mid(i - 1);
+
+    mainInitialPaths = args;
 }
 
 int main(int argc, char *argv[])
