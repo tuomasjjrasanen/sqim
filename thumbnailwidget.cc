@@ -177,6 +177,8 @@ void ThumbnailWidget::clear()
 {
     m_thumbnailModel->clear();
     m_imageFilePaths.clear();
+    m_sortAscTimeOrderAction->setEnabled(false);
+    m_sortDescTimeOrderAction->setEnabled(false);
     m_editAction->setEnabled(false);
     m_removeAction->setEnabled(false);
 }
