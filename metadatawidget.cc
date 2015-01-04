@@ -35,11 +35,11 @@ MetadataWidget::MetadataWidget(QWidget *parent)
     m_imageSizeLabel->setTextInteractionFlags(Qt::TextBrowserInteraction);
 
     QFormLayout *layout = new QFormLayout(this);
-    layout->addRow("Filepath", m_filePathLabel);
-    layout->addRow("Exposure time", m_timestampLabel);
-    layout->addRow("Last modification time", m_modificationTimeLabel);
+    layout->addRow("File path", m_filePathLabel);
+    layout->addRow("Shot timestamp", m_timestampLabel);
+    layout->addRow("Modification timestamp", m_modificationTimeLabel);
     layout->addRow("File size", m_fileSizeLabel);
-    layout->addRow("Image size", m_imageSizeLabel);
+    layout->addRow("Pixel dimensions", m_imageSizeLabel);
     setLayout(layout);
 }
 
