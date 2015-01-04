@@ -52,6 +52,9 @@ ImageArea::ImageArea(QWidget *parent)
     addAction(m_zoomOutAction);
     addAction(m_zoomToFitAction);
     addAction(m_zoomTo100Action);
+    QAction *separator = new QAction(this);
+    separator->setSeparator(true);
+    addAction(separator);
     addAction(m_rotateLeftAction);
     addAction(m_rotateRightAction);
 

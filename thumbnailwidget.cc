@@ -71,6 +71,9 @@ ThumbnailWidget::ThumbnailWidget(QWidget* parent)
 
     addAction(m_sortAscTimeOrderAction);
     addAction(m_sortDescTimeOrderAction);
+    QAction *separator = new QAction(this);
+    separator->setSeparator(true);
+    addAction(separator);
     addAction(m_editAction);
 
     foreach (QAction* action, actions()) {
