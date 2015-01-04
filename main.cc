@@ -101,6 +101,8 @@ static void mainParseArgs(QApplication &app)
 int main(int argc, char *argv[])
 {
     QApplication app(argc, argv);
+    app.setOrganizationDomain("tjjr.fi");
+    app.setApplicationName("sqim");
 
     mainParseArgs(app);
 

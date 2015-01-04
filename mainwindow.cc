@@ -156,6 +156,10 @@ MainWindow::MainWindow(QWidget *const parent)
     windowsMenu->addAction(m_imageDockWidget->toggleViewAction());
     windowsMenu->addAction(m_metadataDockWidget->toggleViewAction());
 
+    QSettings settings;
+    m_imageDockWidget->setVisible(settings.value("imageDockWidget/visible", true).toBool());
+    m_metadataDockWidget->setVisible(settings.value("metadataDockWidget/visible", true).toBool());
+
     QMenu *helpMenu = menuBar()->addMenu("&Help");
     helpMenu->addAction(m_aboutAction);
 
@@ -268,4 +272,14 @@ void MainWindow::importFinished()
     m_openDirAction->setEnabled(true);
     m_thumbnailWidget->triggerSortAscTimeOrder();
     m_thumbnailWidget->setCurrentIndex(0);
+}
+
+void MainWindow::closeEvent(QCloseEvent *event)
+{
+    QSettings settings;
+
+    settings.setValue("imageDockWidget/visible", m_imageDockWidget->isVisible());
+    settings.setValue("metadataDockWidget/visible", m_metadataDockWidget->isVisible());
+
+    event->accept();
 }

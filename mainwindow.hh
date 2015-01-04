@@ -40,6 +40,9 @@ public:
     void openPaths(const QStringList& paths, bool recursive);
     ~MainWindow();
 
+protected:
+    virtual void closeEvent(QCloseEvent *event);
+
 private slots:
     void openDir();
     void importReadyAt(int i);
