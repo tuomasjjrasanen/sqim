@@ -42,6 +42,7 @@ public slots:
     void sortDescTimeOrder();
     void setCurrentIndex(int index);
     void editSelectedThumbnails();
+    void removeSelectedThumbnails();
 
 signals:
     void currentThumbnailChanged(Metadata metadata);
@@ -63,6 +64,7 @@ private:
     QStandardItemModel* m_thumbnailModel;
 
     QAction* m_editAction;
+    QAction* m_removeAction;
 };
 
 #endif // THUMBNAILWIDGET_HH

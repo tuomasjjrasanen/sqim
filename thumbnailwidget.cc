@@ -37,6 +37,7 @@ ThumbnailWidget::ThumbnailWidget(QWidget* parent)
                                            m_sortActionGroup))
     ,m_thumbnailModel(new QStandardItemModel(this))
     ,m_editAction(new QAction("Edit", this))
+    ,m_removeAction(new QAction("Remove", this))
 {
     m_thumbnailView->setViewMode(QListView::IconMode);
     m_thumbnailView->setMovement(QListView::Static);
@@ -63,10 +64,12 @@ ThumbnailWidget::ThumbnailWidget(QWidget* parent)
     m_sortDescTimeOrderAction->setShortcut(
         QKeySequence(Qt::Key_Greater, Qt::Key_T));
     m_editAction->setShortcut(QKeySequence(Qt::Key_E));
+    m_removeAction->setShortcut(QKeySequence(Qt::Key_Delete));
 
     m_sortAscTimeOrderAction->setEnabled(false);
     m_sortDescTimeOrderAction->setEnabled(false);
     m_editAction->setEnabled(false);
+    m_removeAction->setEnabled(false);
 
     m_sortAscTimeOrderAction->setCheckable(true);
     m_sortDescTimeOrderAction->setCheckable(true);
@@ -77,6 +80,7 @@ ThumbnailWidget::ThumbnailWidget(QWidget* parent)
     separator->setSeparator(true);
     addAction(separator);
     addAction(m_editAction);
+    addAction(m_removeAction);
 
     foreach (QAction* action, actions()) {
         m_toolBar->addAction(action);
@@ -96,6 +100,8 @@ ThumbnailWidget::ThumbnailWidget(QWidget* parent)
             SLOT(sortDescTimeOrder()));
     connect(m_editAction, SIGNAL(triggered(bool)),
             SLOT(editSelectedThumbnails()));
+    connect(m_removeAction, SIGNAL(triggered(bool)),
+            SLOT(removeSelectedThumbnails()));
 }
 
 ThumbnailWidget::~ThumbnailWidget()
@@ -121,6 +127,7 @@ bool ThumbnailWidget::addThumbnail(const Metadata metadata)
     m_sortAscTimeOrderAction->setEnabled(true);
     m_sortDescTimeOrderAction->setEnabled(true);
     m_editAction->setEnabled(true);
+    m_removeAction->setEnabled(true);
 
     if (m_thumbnailModel->rowCount() == 1) {
         m_thumbnailView->setCurrentIndex(m_thumbnailModel->index(0, 0));
@@ -129,11 +136,49 @@ bool ThumbnailWidget::addThumbnail(const Metadata metadata)
     return true;
 }
 
+void ThumbnailWidget::removeSelectedThumbnails()
+{
+    m_thumbnailView->setUpdatesEnabled(false);
+
+    QModelIndex currentIndex = m_thumbnailView->currentIndex();
+    QItemSelectionModel *selectionModel = m_thumbnailView->selectionModel();
+    QModelIndexList selectedIndexes = selectionModel->selectedIndexes();
+
+    qSort(selectedIndexes.begin(), selectedIndexes.end());
+
+    while (selectedIndexes.size()) {
+        QModelIndex index = selectedIndexes.takeLast();
+        Metadata metadata = m_thumbnailModel->data(index,
+                                                   MetadataRole).toHash();
+        m_imageFilePaths.remove(metadata.value("filePath").toString());
+        m_thumbnailModel->removeRow(index.row());
+    }
+
+    if (currentIndex.row() < m_thumbnailModel->rowCount()) {
+        m_thumbnailView->setCurrentIndex(currentIndex);
+    } else {
+        QModelIndex nextCurrentIndex = m_thumbnailModel->index(
+            m_thumbnailModel->rowCount() - 1,
+            m_thumbnailModel->columnCount() - 1);
+        m_thumbnailView->setCurrentIndex(nextCurrentIndex);
+    }
+
+    if (m_thumbnailModel->rowCount() == 0) {
+        m_sortAscTimeOrderAction->setEnabled(false);
+        m_sortDescTimeOrderAction->setEnabled(false);
+        m_editAction->setEnabled(false);
+        m_removeAction->setEnabled(false);
+    }
+
+    m_thumbnailView->setUpdatesEnabled(true);
+}
+
 void ThumbnailWidget::clear()
 {
     m_thumbnailModel->clear();
     m_imageFilePaths.clear();
     m_editAction->setEnabled(false);
+    m_removeAction->setEnabled(false);
 }
 
 void ThumbnailWidget::sortAscTimeOrder()
