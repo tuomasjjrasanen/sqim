@@ -49,6 +49,8 @@ ThumbnailWidget::ThumbnailWidget(QWidget* parent)
     m_thumbnailView->setContextMenuPolicy(Qt::ActionsContextMenu);
     m_thumbnailView->setModel(m_thumbnailModel);
 
+    setContextMenuPolicy(Qt::ActionsContextMenu);
+
     QLayout* layout = new QVBoxLayout(this);
     layout->addWidget(m_toolBar);
     layout->addWidget(m_thumbnailView);
