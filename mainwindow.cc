@@ -157,8 +157,10 @@ MainWindow::MainWindow(QWidget *const parent)
     windowsMenu->addAction(m_metadataDockWidget->toggleViewAction());
 
     QSettings settings;
-    m_imageDockWidget->setVisible(settings.value("imageDockWidget/visible", true).toBool());
-    m_metadataDockWidget->setVisible(settings.value("metadataDockWidget/visible", true).toBool());
+    m_imageDockWidget->setVisible(
+        settings.value("imageDockWidget/visible", true).toBool());
+    m_metadataDockWidget->setVisible(
+        settings.value("metadataDockWidget/visible", true).toBool());
 
     QMenu *helpMenu = menuBar()->addMenu("&Help");
     helpMenu->addAction(m_aboutAction);
@@ -195,12 +197,12 @@ void MainWindow::about()
         "<h1>Simple Qt Image Manager </h1>"
         "<p>Version " VERSION "</p>"
         "<p>Copyright © 2014 <a href=\"http://tjjr.fi\">Tuomas Räsänen</a></p>"
-        "<p>This program is free software: you can redistribute it and/or modify "
-        "it under the terms of the GNU General Public License as published by "
-        "the Free Software Foundation, either version 3 of the License, or (at "
-        "your option) any later version.</p>"
-        "<p>This program is distributed in the hope that it will be useful, but "
-        "WITHOUT ANY WARRANTY; without even the implied warranty of "
+        "<p>This program is free software: you can redistribute it and/or "
+        "modify it under the terms of the GNU General Public License as "
+        "published by the Free Software Foundation, either version 3 of the "
+        "License, or (at your option) any later version.</p>"
+        "<p>This program is distributed in the hope that it will be useful, but"
+        " WITHOUT ANY WARRANTY; without even the implied warranty of "
         "MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.</p>"
         "<p>See the <a href=\"https://www.gnu.org/licenses/gpl-3.0.html\">GNU "
         "General Public License</a> for more details.</p>");
@@ -278,8 +280,10 @@ void MainWindow::closeEvent(QCloseEvent *event)
 {
     QSettings settings;
 
-    settings.setValue("imageDockWidget/visible", m_imageDockWidget->isVisible());
-    settings.setValue("metadataDockWidget/visible", m_metadataDockWidget->isVisible());
+    settings.setValue("imageDockWidget/visible",
+                      m_imageDockWidget->isVisible());
+    settings.setValue("metadataDockWidget/visible",
+                      m_metadataDockWidget->isVisible());
 
     event->accept();
 }
