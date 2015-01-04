@@ -54,7 +54,6 @@ static bool parseExif(const QString& filePath, Metadata& metadata)
             exifData["Exif.Image.DateTime"]
             .toString());
         dateTimeString.truncate(19);
-        qWarning() << dateTimeString;
         QDateTime dateTime = QDateTime::fromString(dateTimeString,
                                                    "yyyy:MM:dd HH:mm:ss");
         metadata.insert("timestamp", QVariant(dateTime));
