@@ -21,6 +21,7 @@
 #include <QFutureWatcher>
 #include <QMainWindow>
 #include <QMenuBar>
+#include <QPushButton>
 #include <QStatusBar>
 #include <QToolBar>
 
@@ -48,6 +49,7 @@ private slots:
     void importReadyAt(int i);
     void importFinished();
     void about();
+    void cancelImport();
 
 private:
     QFutureWatcher<Metadata> *m_importer;
@@ -62,6 +64,8 @@ private:
     QAction *m_aboutAction;
 
     QAtomicInt m_openCount;
+
+    QPushButton *m_cancelImportButton;
 };
 
 #endif // MAINWINDOW_HH

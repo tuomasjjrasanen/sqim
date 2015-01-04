@@ -127,6 +127,7 @@ MainWindow::MainWindow(QWidget *const parent)
     ,m_quitAction(new QAction("&Quit", this))
     ,m_aboutAction(new QAction("&About", this))
     ,m_openCount()
+    ,m_cancelImportButton(new QPushButton("Cancel import", this))
 {
     m_imageDockWidget->toggleViewAction()->setShortcut(
         QKeySequence(Qt::Key_I));
@@ -183,6 +184,15 @@ MainWindow::MainWindow(QWidget *const parent)
                                SIGNAL(currentThumbnailActivated(Metadata)),
                                SLOT(show()));
     connect(m_aboutAction, SIGNAL(triggered(bool)), SLOT(about()));
+    connect(m_cancelImportButton, SIGNAL(clicked()),
+            SLOT(cancelImport()));
+}
+
+void MainWindow::cancelImport()
+{
+    statusBar()->removeWidget(m_cancelImportButton);
+    statusBar()->showMessage("Canceling import...");
+    m_importer->cancel();
 }
 
 MainWindow::~MainWindow()
@@ -238,6 +248,9 @@ void MainWindow::openFiles(const QStringList& filePaths)
     m_openCount = 0;
     m_thumbnailWidget->clear();
     m_importer->setFuture(QtConcurrent::mapped(filePaths, import));
+    statusBar()->addPermanentWidget(m_cancelImportButton);
+    m_cancelImportButton->show();
+    statusBar()->showMessage(QString("Importing %1 images...").arg(filePaths.size()));
 }
 
 void MainWindow::openPaths(const QStringList& paths, bool recursive)
@@ -270,6 +283,7 @@ void MainWindow::importReadyAt(const int i)
 void MainWindow::importFinished()
 {
     QString msg = QString("Opened %1 images").arg(m_openCount);
+    statusBar()->removeWidget(m_cancelImportButton);
     statusBar()->showMessage(msg);
     m_openDirAction->setEnabled(true);
     m_thumbnailWidget->triggerSortAscTimeOrder();
