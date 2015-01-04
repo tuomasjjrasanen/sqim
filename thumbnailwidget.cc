@@ -66,10 +66,7 @@ ThumbnailWidget::ThumbnailWidget(QWidget* parent)
     m_editAction->setShortcut(QKeySequence(Qt::Key_E));
     m_removeAction->setShortcut(QKeySequence(Qt::Key_Delete));
 
-    m_sortAscTimeOrderAction->setEnabled(false);
-    m_sortDescTimeOrderAction->setEnabled(false);
-    m_editAction->setEnabled(false);
-    m_removeAction->setEnabled(false);
+    setActionsEnabled(false);
 
     m_sortAscTimeOrderAction->setCheckable(true);
     m_sortDescTimeOrderAction->setCheckable(true);
@@ -108,6 +105,14 @@ ThumbnailWidget::~ThumbnailWidget()
 {
 }
 
+void ThumbnailWidget::setActionsEnabled(bool enabled)
+{
+    m_sortAscTimeOrderAction->setEnabled(enabled);
+    m_sortDescTimeOrderAction->setEnabled(enabled);
+    m_editAction->setEnabled(enabled);
+    m_removeAction->setEnabled(enabled);
+}
+
 bool ThumbnailWidget::addThumbnail(const Metadata metadata)
 {
     QString filePath = metadata.value("filePath").toString();
@@ -124,10 +129,7 @@ bool ThumbnailWidget::addThumbnail(const Metadata metadata)
 
     m_imageFilePaths << filePath;
 
-    m_sortAscTimeOrderAction->setEnabled(true);
-    m_sortDescTimeOrderAction->setEnabled(true);
-    m_editAction->setEnabled(true);
-    m_removeAction->setEnabled(true);
+    setActionsEnabled(true);
 
     if (m_thumbnailModel->rowCount() == 1) {
         m_thumbnailView->setCurrentIndex(m_thumbnailModel->index(0, 0));
@@ -163,12 +165,8 @@ void ThumbnailWidget::removeSelectedThumbnails()
         m_thumbnailView->setCurrentIndex(nextCurrentIndex);
     }
 
-    if (m_thumbnailModel->rowCount() == 0) {
-        m_sortAscTimeOrderAction->setEnabled(false);
-        m_sortDescTimeOrderAction->setEnabled(false);
-        m_editAction->setEnabled(false);
-        m_removeAction->setEnabled(false);
-    }
+    if (m_thumbnailModel->rowCount() == 0)
+        setActionsEnabled(false);
 
     m_thumbnailView->setUpdatesEnabled(true);
 }
@@ -177,10 +175,7 @@ void ThumbnailWidget::clear()
 {
     m_thumbnailModel->clear();
     m_imageFilePaths.clear();
-    m_sortAscTimeOrderAction->setEnabled(false);
-    m_sortDescTimeOrderAction->setEnabled(false);
-    m_editAction->setEnabled(false);
-    m_removeAction->setEnabled(false);
+    setActionsEnabled(false);
 }
 
 void ThumbnailWidget::sortAscTimeOrder()

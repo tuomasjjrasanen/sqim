@@ -52,6 +52,8 @@ private slots:
     void emitCurrentThumbnailActivated(const QModelIndex &current);
 
 private:
+    void setActionsEnabled(bool enabled);
+
     ThumbnailView* m_thumbnailView;
     QToolBar* m_toolBar;
 
