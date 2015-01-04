@@ -72,13 +72,13 @@ static bool makeThumbnail(const QString& filePath, Metadata& metadata)
         return false;
     }
 
-    QImage thumbnail(50, 50, QImage::Format_ARGB32);
+    QImage thumbnail(80, 80, QImage::Format_ARGB32);
     thumbnail.fill(Qt::transparent);
 
     QPainter thumbnailPainter(&thumbnail);
-    QImage smallImage(image.scaled(50, 50, Qt::KeepAspectRatio));
-    thumbnailPainter.drawImage(QPoint((50 - smallImage.width()) / 2,
-                                      (50 - smallImage.height()) / 2),
+    QImage smallImage(image.scaled(80, 80, Qt::KeepAspectRatio));
+    thumbnailPainter.drawImage(QPoint((80 - smallImage.width()) / 2,
+                                      (80 - smallImage.height()) / 2),
                                smallImage);
     if (thumbnail.isNull()) {
         qWarning() << "failed to create a thumbnail image from "
