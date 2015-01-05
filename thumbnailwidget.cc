@@ -16,7 +16,10 @@
 
 #include <QDateTime>
 #include <QIcon>
+#include <QInputDialog>
 #include <QProcess>
+#include <QSqlQuery>
+#include <QSqlRecord>
 #include <QVBoxLayout>
 
 #include "common.hh"
@@ -38,7 +41,21 @@ ThumbnailWidget::ThumbnailWidget(QWidget* parent)
     ,m_thumbnailModel(new QStandardItemModel(this))
     ,m_editAction(new QAction("Edit", this))
     ,m_removeAction(new QAction("Remove", this))
+    ,m_tagAction(new QAction("Add tag", this))
+    ,m_tagModel(new QSqlQueryModel(this))
+    ,m_tagView(new QListView(this))
 {
+    updateTags();
+
+    m_tagView->setModel(m_tagModel);
+    m_tagView->setEditTriggers(QAbstractItemView::NoEditTriggers);
+    m_tagView->setSelectionMode(QAbstractItemView::MultiSelection);
+    m_tagView->setViewMode(QListView::IconMode);
+    m_tagView->setMovement(QListView::Static);
+    m_tagView->setSelectionRectVisible(false);
+    m_tagView->setSpacing(10);
+    m_tagView->setResizeMode(QListView::Adjust);
+
     m_thumbnailView->setViewMode(QListView::IconMode);
     m_thumbnailView->setMovement(QListView::Static);
     m_thumbnailView->setSelectionMode(QListView::ExtendedSelection);
@@ -52,9 +69,13 @@ ThumbnailWidget::ThumbnailWidget(QWidget* parent)
 
     setContextMenuPolicy(Qt::ActionsContextMenu);
 
-    QLayout* layout = new QVBoxLayout(this);
+    QVBoxLayout* layout = new QVBoxLayout(this);
     layout->addWidget(m_toolBar);
     layout->addWidget(m_thumbnailView);
+    layout->addWidget(m_tagView);
+    layout->setStretch(0, 1);
+    layout->setStretch(1, 10);
+    layout->setStretch(2, 2);
     setLayout(layout);
 
     m_sortActionGroup->setExclusive(true);
@@ -78,6 +99,7 @@ ThumbnailWidget::ThumbnailWidget(QWidget* parent)
     addAction(separator);
     addAction(m_editAction);
     addAction(m_removeAction);
+    addAction(m_tagAction);
 
     foreach (QAction* action, actions()) {
         m_toolBar->addAction(action);
@@ -99,6 +121,8 @@ ThumbnailWidget::ThumbnailWidget(QWidget* parent)
             SLOT(editSelectedThumbnails()));
     connect(m_removeAction, SIGNAL(triggered(bool)),
             SLOT(removeSelectedThumbnails()));
+    connect(m_tagAction, SIGNAL(triggered(bool)),
+            SLOT(tagSelectedThumbnails()));
 }
 
 ThumbnailWidget::~ThumbnailWidget()
@@ -169,6 +193,41 @@ void ThumbnailWidget::removeSelectedThumbnails()
         setActionsEnabled(false);
 
     m_thumbnailView->setUpdatesEnabled(true);
+}
+
+void ThumbnailWidget::tagSelectedThumbnails()
+{
+    QStringList tags;
+    for (int i = 0; i < m_tagModel->rowCount(); ++i) {
+        tags << m_tagModel->record(i).value(0).toString();
+    }
+    QString tag = QInputDialog::getItem(this, "Add tag to selected images",
+                                        "Tag", tags);
+
+    QItemSelectionModel *selectionModel = m_thumbnailView->selectionModel();
+    QModelIndexList selectedIndexes = selectionModel->selectedIndexes();
+
+    foreach (QModelIndex index, selectedIndexes) {
+        Metadata metadata = m_thumbnailModel->data(index,
+                                                   MetadataRole).toHash();
+        QSqlQuery query;
+        if (!query.prepare("INSERT INTO Tagging(file_path, tag) VALUES(?, ?)"))
+            continue;
+
+        query.addBindValue(metadata.value("filePath").toString());
+        query.addBindValue(tag);
+
+        query.exec();
+    }
+
+    updateTags();
+}
+
+void ThumbnailWidget::updateTags()
+{
+    QSqlQuery query;
+    query.exec("SELECT DISTINCT(tag) FROM Tagging ORDER BY tag;");
+    m_tagModel->setQuery(query);
 }
 
 void ThumbnailWidget::clear()

@@ -19,6 +19,7 @@
 
 #include <QAction>
 #include <QSet>
+#include <QSqlQueryModel>
 #include <QStandardItemModel>
 #include <QString>
 #include <QToolBar>
@@ -43,6 +44,8 @@ public slots:
     void setCurrentIndex(int index);
     void editSelectedThumbnails();
     void removeSelectedThumbnails();
+    void tagSelectedThumbnails();
+    void updateTags();
 
 signals:
     void currentThumbnailChanged(Metadata metadata);
@@ -67,6 +70,9 @@ private:
 
     QAction* m_editAction;
     QAction* m_removeAction;
+    QAction* m_tagAction;
+    QSqlQueryModel* m_tagModel;
+    QListView* m_tagView;
 };
 
 #endif // THUMBNAILWIDGET_HH
