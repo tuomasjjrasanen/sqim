@@ -34,6 +34,7 @@ ImageArea::ImageArea(QWidget *parent)
                                    "&Zoom to fit", this))
     ,m_zoomTo100Action(new QAction(QIcon(":/icons/zoom_to_100.png"),
                                     "&Zoom to 100%", this))
+    ,m_transform()
 {
     m_imageLabel->setScaledContents(true);
     setWidget(m_imageLabel);
@@ -94,11 +95,12 @@ void ImageArea::setImage(Metadata metadata)
     m_imageReader.setFileName(filePath);
     m_originalImageSize = m_imageReader.size();
     m_imageReader.setScaledSize(m_imageReader.size() * 0.2);
+    m_transform = exifTransform(metadata);
 
     QPixmap pixmap;
     if (!QPixmapCache::find(filePath, &pixmap)) {
         pixmap = QPixmap::fromImageReader(&m_imageReader)
-            .transformed(exifTransform(metadata));
+            .transformed(m_transform);
         QPixmapCache::insert(filePath, pixmap);
     }
     m_imageLabel->setPixmap(pixmap);
@@ -209,8 +211,7 @@ void ImageArea::zoomTo(const qreal zoomLevel, const QPoint &focalPoint)
         currentSize.height() > pixmapSize.height()) {
         if (m_originalImageSize != pixmapSize) {
             QPixmap pixmap(m_imageReader.fileName());
-            m_imageLabel->setPixmap(pixmap.transformed(
-                                        exifTransform(m_loadedImageMetadata)));
+            m_imageLabel->setPixmap(pixmap.transformed(m_transform));
             zoomTo(currentSize.width() / qreal(pixmap.size().width()),
                    focalPoint);
         }
@@ -226,6 +227,7 @@ void ImageArea::rotate(qreal degrees)
         return;
     }
 
+    m_transform = m_transform.rotate(degrees);
     m_imageLabel->setPixmap(m_imageLabel->pixmap()->transformed(
                                 QTransform().rotate(degrees)));
     zoomTo(m_zoomLevel * 1.0);

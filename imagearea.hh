@@ -75,6 +75,7 @@ private:
     QImageReader m_imageReader;
     QSize m_originalImageSize;
 
+    QTransform m_transform;
 };
 
 #endif // IMAGEAREA_HH
