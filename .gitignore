@@ -1,0 +1,5 @@
+*.o
+# moc produces .cpp files, our files are .cc
+*.cpp
+Makefile
+sqim
