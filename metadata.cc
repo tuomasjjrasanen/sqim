@@ -25,8 +25,6 @@
 #include "common.hh"
 #include "metadata.hh"
 
-static const int METADATA_VERSION = 1;
-
 static bool parseExif(const QString& filePath, Metadata& metadata)
 {
     static QMutex mutex;
@@ -116,15 +114,12 @@ Metadata getMetadata(const QString& imageFilePath)
 
     if (metadataFileInfo.exists()
         && metadataFileInfo.lastModified() >= imageFileInfo.lastModified()) {
-        if (readMetadata(metadataFileInfo.filePath(), metadata)
-            && metadata.contains("_version")
-            && metadata.value("_version").toInt() == METADATA_VERSION) {
+        if (readMetadata(metadataFileInfo.filePath(), metadata)) {
             return metadata;
         }
         qWarning() << "failed to read cached metadata";
     }
 
-    metadata.insert("_version", QVariant(METADATA_VERSION));
     metadata.insert("filePath", QVariant(imageFilePath));
     metadata.insert("modificationTime", QVariant(imageFileInfo.lastModified()));
     metadata.insert("fileSize", QVariant(imageFileInfo.size()));
