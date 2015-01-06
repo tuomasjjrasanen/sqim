@@ -15,6 +15,9 @@
 // along with this program. If not, see <http://www.gnu.org/licenses/>.
 
 #include <QApplication>
+#include <QDir>
+#include <QSqlError>
+#include <QSqlQuery>
 
 #include "mainwindow.hh"
 
@@ -98,6 +101,55 @@ static void mainParseArgs(QApplication &app)
     mainInitialPaths = args;
 }
 
+static void mainInitDatabase()
+{
+    QTextStream cerr(stdout);
+
+    QSqlDatabase db = QSqlDatabase::addDatabase("QSQLITE");
+    QDir::home().mkdir(".sqim");
+    db.setDatabaseName(QString("%1/%2/%3")
+                       .arg(QDir::homePath())
+                       .arg(".sqim")
+                       .arg("db.sqlite3"));
+
+    if (!db.open()) {
+        // If the database cannot be opened, there's nothing to be done here.
+        cerr << "error: failed to open database:"
+             << db.lastError().databaseText() << endl;
+        exit(1);
+    }
+
+    if (!db.tables().isEmpty()) {
+        // Assume database is valid if it has tables. TODO: implement robust
+        // database validation check.
+        return;
+    }
+
+    if (!db.transaction()) {
+        cerr << "error: failed to begin initialization transaction:"
+             << db.lastError().databaseText() << endl;
+        exit(1);
+    }
+
+    QSqlQuery query;
+
+    if (!query.exec("CREATE TABLE Tagging ("
+                    "  id INTEGER PRIMARY KEY,"
+                    "  file_path TEXT NOT NULL,"
+                    "  tag TEXT NOT NULL,"
+                    "  UNIQUE(file_path, tag));")) {
+        cerr << "error: failed to create Tagging table:"
+             << query.lastError().databaseText() << endl;
+        exit(1);
+    }
+
+    if (!db.commit()) {
+        cerr << "error: failed to commit the initial transaction:"
+             << db.lastError().databaseText() << endl;
+        exit(1);
+    }
+}
+
 int main(int argc, char *argv[])
 {
     QApplication app(argc, argv);
@@ -105,6 +157,8 @@ int main(int argc, char *argv[])
     app.setApplicationName("sqim");
 
     mainParseArgs(app);
+
+    mainInitDatabase();
 
     MainWindow w;
 
