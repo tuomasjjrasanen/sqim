@@ -16,6 +16,7 @@
 
 #include <QDateTime>
 #include <QFormLayout>
+#include <QSqlQuery>
 
 #include "common.hh"
 #include "metadatawidget.hh"
@@ -27,12 +28,34 @@ MetadataWidget::MetadataWidget(QWidget *parent)
     ,m_modificationTimeLabel(new QLabel(this))
     ,m_fileSizeLabel(new QLabel(this))
     ,m_imageSizeLabel(new QLabel(this))
+    ,m_tagModel(new QSqlQueryModel(this))
+    ,m_tagView(new QListView(this))
 {
     m_filePathLabel->setTextInteractionFlags(Qt::TextBrowserInteraction);
     m_timestampLabel->setTextInteractionFlags(Qt::TextBrowserInteraction);
     m_modificationTimeLabel->setTextInteractionFlags(Qt::TextBrowserInteraction);
     m_fileSizeLabel->setTextInteractionFlags(Qt::TextBrowserInteraction);
     m_imageSizeLabel->setTextInteractionFlags(Qt::TextBrowserInteraction);
+    m_tagView->setModel(m_tagModel);
+    m_tagView->setViewMode(QListView::IconMode);
+    m_tagView->setStyleSheet("QListView::item {"
+                             "border: 1px solid black;"
+                             "border-radius: 8px;"
+                             "background-color: white;"
+                             "padding: 2px;"
+                             "margin: 2px;"
+                             "}"
+                             "QListView::item:hover {"
+                             "background: red;"
+                             "}"
+                             "QListView {"
+                             "background-color: transparent;"
+                             "}");
+    m_tagView->setFrameShape(QFrame::NoFrame);
+    m_tagView->setSelectionMode(QAbstractItemView::NoSelection);
+    m_tagView->setFocusPolicy(Qt::NoFocus);
+    connect(m_tagView, SIGNAL(clicked(const QModelIndex&)),
+            SLOT(removeTag(const QModelIndex&)));
 
     QFormLayout *layout = new QFormLayout(this);
     layout->addRow("File path", m_filePathLabel);
@@ -40,11 +63,22 @@ MetadataWidget::MetadataWidget(QWidget *parent)
     layout->addRow("Modification timestamp", m_modificationTimeLabel);
     layout->addRow("File size", m_fileSizeLabel);
     layout->addRow("Pixel dimensions", m_imageSizeLabel);
+    layout->addRow("Tags", m_tagView);
     setLayout(layout);
 }
 
 MetadataWidget::~MetadataWidget()
 {
+}
+
+void MetadataWidget::updateTags()
+{
+    QSqlQuery query;
+    query.prepare("SELECT tag FROM Tagging "
+                  "WHERE Tagging.file_path = ?");
+    query.addBindValue(m_filePathLabel->text());
+    query.exec();
+    m_tagModel->setQuery(query);
 }
 
 void MetadataWidget::setMetadata(Metadata metadata)
@@ -58,4 +92,17 @@ void MetadataWidget::setMetadata(Metadata metadata)
         fileSizeToString(metadata.value("fileSize").toULongLong()));
     m_imageSizeLabel->setText(
         imageSizeToString(metadata.value("imageSize").toSize()));
+    updateTags();
+}
+
+void MetadataWidget::removeTag(const QModelIndex &index)
+{
+    QSqlQuery query;
+
+    query.prepare("DELETE FROM Tagging "
+                  "WHERE file_path == ? AND tag == ?");
+    query.addBindValue(m_filePathLabel->text());
+    query.addBindValue(m_tagModel->data(index));
+    query.exec();
+    updateTags();
 }

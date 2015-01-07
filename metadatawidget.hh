@@ -18,6 +18,8 @@
 #define METADATAWIDGET_HH
 
 #include <QLabel>
+#include <QListView>
+#include <QSqlQueryModel>
 #include <QVariant>
 
 #include "metadata.hh"
@@ -32,6 +34,10 @@ public:
 
 public slots:
     void setMetadata(Metadata metadata);
+    void updateTags();
+
+private slots:
+    void removeTag(const QModelIndex &index);
 
 private:
     QLabel *m_filePathLabel;
@@ -39,6 +45,8 @@ private:
     QLabel *m_modificationTimeLabel;
     QLabel *m_fileSizeLabel;
     QLabel *m_imageSizeLabel;
+    QSqlQueryModel *m_tagModel;
+    QListView *m_tagView;
 
 };
 
