@@ -40,7 +40,6 @@ ImageArea::ImageArea(QWidget *parent)
     setWidget(m_imageLabel);
     setContextMenuPolicy(Qt::ActionsContextMenu);
 
-    setStyleSheet("QScrollArea, QLabel {background-color: grey}");
     setAlignment(Qt::AlignHCenter | Qt::AlignVCenter);
 
     m_rotateLeftAction->setShortcut(QKeySequence(Qt::Key_R, Qt::Key_Left));

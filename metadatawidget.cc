@@ -38,19 +38,6 @@ MetadataWidget::MetadataWidget(QWidget *parent)
     m_imageSizeLabel->setTextInteractionFlags(Qt::TextBrowserInteraction);
     m_tagView->setModel(m_tagModel);
     m_tagView->setViewMode(QListView::IconMode);
-    m_tagView->setStyleSheet("QListView::item {"
-                             "border: 1px solid black;"
-                             "border-radius: 8px;"
-                             "background-color: white;"
-                             "padding: 2px;"
-                             "margin: 2px;"
-                             "}"
-                             "QListView::item:hover {"
-                             "background: red;"
-                             "}"
-                             "QListView {"
-                             "background-color: transparent;"
-                             "}");
     m_tagView->setFrameShape(QFrame::NoFrame);
     m_tagView->setSelectionMode(QAbstractItemView::NoSelection);
     m_tagView->setFocusPolicy(Qt::NoFocus);

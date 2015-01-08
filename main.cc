@@ -156,6 +156,10 @@ int main(int argc, char *argv[])
     app.setOrganizationDomain("tjjr.fi");
     app.setApplicationName("sqim");
 
+    QFile styleSheetFile(":sqim.qss");
+    styleSheetFile.open(QFile::ReadOnly);
+    app.setStyleSheet(styleSheetFile.readAll());
+
     mainParseArgs(app);
 
     mainInitDatabase();

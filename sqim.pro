@@ -50,4 +50,4 @@ INSTALLS += sqim
 
 LIBS += -lexiv2
 
-RESOURCES += icons.qrc
+RESOURCES += icons.qrc application.qrc

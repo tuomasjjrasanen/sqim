@@ -1,0 +1,23 @@
+MetadataWidget QListView {
+    background-color: transparent;
+}
+
+MetadataWidget QListView::item {
+    border: 1px solid black;
+    border-radius: 8px;
+    background-color: white;
+    padding: 2px;
+    margin: 2px;
+}
+
+MetadataWidget QListView::item:hover {
+    background-color: red;
+}
+
+ImageArea {
+    background-color: grey;
+}
+
+ThumbnailView {
+    background-color: grey;
+}
