@@ -206,6 +206,9 @@ void ThumbnailWidget::tagSelectedThumbnails()
     QItemSelectionModel *selectionModel = m_thumbnailView->selectionModel();
     QModelIndexList selectedIndexes = selectionModel->selectedIndexes();
 
+    QSqlDatabase db = QSqlDatabase::database();
+    db.transaction();
+
     foreach (QModelIndex index, selectedIndexes) {
         Metadata metadata = m_thumbnailModel->data(index,
                                                    MetadataRole).toHash();
@@ -219,6 +222,7 @@ void ThumbnailWidget::tagSelectedThumbnails()
         query.exec();
     }
 
+    db.commit();
     updateTags();
 }
 
