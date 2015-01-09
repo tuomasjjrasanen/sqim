@@ -21,10 +21,7 @@
 
 #include "mainwindow.hh"
 
-static QStringList mainInitialPaths;
-static bool mainRecursiveOpen;
-
-static void mainPrintHelp()
+static void printHelp()
 {
     QTextStream cout(stdout);
 
@@ -40,7 +37,7 @@ static void mainPrintHelp()
     cout << " FILE               image to import" << endl;
 }
 
-static void mainPrintVersion()
+static void printVersion()
 {
     QTextStream cout(stdout);
 
@@ -60,7 +57,7 @@ static void mainPrintVersion()
         "General Public License for more details.\n");
 }
 
-static void mainPrintError(QString message)
+static void printError(QString message)
 {
     QTextStream cerr(stderr);
 
@@ -68,9 +65,11 @@ static void mainPrintError(QString message)
     cerr << "Try --help for more information." << endl;
 }
 
-static void mainParseArgs(QApplication &app)
+static QHash<QString, QVariant> parseArgs(QStringList args)
 {
-    QStringList args = app.arguments();
+    QHash<QString, QVariant> options;
+
+    options["recursive"] = false;
 
     // Skip the first argument which is the program name in Linux.
     args.takeFirst();
@@ -79,13 +78,13 @@ static void mainParseArgs(QApplication &app)
         QString arg = args.first();
 
         if (arg == "--help" || arg == "-h") {
-            mainPrintHelp();
+            printHelp();
             exit(0);
         } else if (arg == "--version") {
-            mainPrintVersion();
+            printVersion();
             exit(0);
         } else if (arg == "--recursive" || arg == "-r") {
-            mainRecursiveOpen = true;
+            options["recursive"] = true;
             args.takeFirst();
             continue;
         } else if (arg == "--" || !arg.startsWith("-")) {
@@ -94,14 +93,16 @@ static void mainParseArgs(QApplication &app)
             break;
         }
 
-        mainPrintError(QString("unrecognized argument '%1'").arg(arg));
+        printError(QString("unrecognized argument '%1'").arg(arg));
         exit(1);
     }
 
-    mainInitialPaths = args;
+    options["paths"] = args;
+
+    return options;
 }
 
-static void mainInitDatabase()
+static void prepareDatabase()
 {
     QTextStream cerr(stdout);
 
@@ -160,15 +161,14 @@ int main(int argc, char *argv[])
     styleSheetFile.open(QFile::ReadOnly);
     app.setStyleSheet(styleSheetFile.readAll());
 
-    mainParseArgs(app);
+    QHash<QString, QVariant> options = parseArgs(app.arguments());
 
-    mainInitDatabase();
+    prepareDatabase();
 
-    MainWindow w;
-
-    w.openPaths(mainInitialPaths, mainRecursiveOpen);
-
-    w.show();
+    MainWindow mainWindow;
+    mainWindow.openPaths(options["paths"].toStringList(),
+                         options["recursive"].toBool());
+    mainWindow.show();
 
     return app.exec();
 }
