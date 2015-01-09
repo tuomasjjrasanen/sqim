@@ -62,7 +62,8 @@ void MetadataWidget::updateTags()
 {
     QSqlQuery query;
     query.prepare("SELECT tag FROM Tagging "
-                  "WHERE Tagging.file_path = ?");
+                  "WHERE Tagging.file_path = ? "
+                  "ORDER BY tag");
     query.addBindValue(m_filePathLabel->text());
     query.exec();
     m_tagModel->setQuery(query);
