@@ -25,6 +25,14 @@
 #include "common.hh"
 #include "metadata.hh"
 
+static bool isImageFile(const QString& filePath)
+{
+    Exiv2::Image::AutoPtr image = Exiv2::ImageFactory::open(
+        filePath.toStdString());
+
+    return image.get() != 0;
+}
+
 static bool parseExif(const QString& filePath, Metadata& metadata)
 {
     static QMutex mutex;
