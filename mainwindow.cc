@@ -103,7 +103,9 @@ static Metadata import(const QString& filePath)
 
     Metadata metadata = getMetadata(filePath);
     if (metadata.isEmpty()) {
-        qWarning() << "failed to parse metadata";
+        qCritical() << "failed to parse metadata";
+        metadata.clear();
+        return metadata;
     }
 
     if (!makeThumbnail(filePath, metadata)) {
