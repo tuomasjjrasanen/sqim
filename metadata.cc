@@ -69,59 +69,11 @@ static bool parseExif(const QString& filePath, Metadata& metadata)
     return true;
 }
 
-static bool writeMetadata(const QString& metadataFilePath,
-                          const Metadata& metadata)
-{
-    QFile metadataFile(metadataFilePath);
-    if (!metadataFile.open(QIODevice::WriteOnly)) {
-        qWarning() << "failed to open metadata file for writing";
-        return false;
-    }
-
-    QDataStream out(&metadataFile);
-    out << metadata;
-    if (out.status() != QDataStream::Ok) {
-        qWarning() << "failed to write to the metadata file";
-        return false;
-    }
-
-    return true;
-}
-
-static bool readMetadata(const QString& metadataFilePath, Metadata& metadata)
-{
-    QFile metadataFile(metadataFilePath);
-    if (!metadataFile.open(QIODevice::ReadOnly)) {
-        qWarning() << "failed to open metadata file for reading";
-        return false;
-    }
-
-    Metadata tmp;
-    QDataStream in(&metadataFile);
-    in >> tmp;
-    if (in.status() != QDataStream::Ok) {
-        qWarning() << "failed to read metadata file";
-        return false;
-    }
-
-    metadata = tmp;
-    return true;
-}
-
 Metadata getMetadata(const QString& imageFilePath)
 {
     Metadata metadata;
 
     QFileInfo imageFileInfo(imageFilePath);
-    QFileInfo metadataFileInfo(cacheDir(imageFilePath), "meta.dat");
-
-    if (metadataFileInfo.exists()
-        && metadataFileInfo.lastModified() >= imageFileInfo.lastModified()) {
-        if (readMetadata(metadataFileInfo.filePath(), metadata)) {
-            return metadata;
-        }
-        qWarning() << "failed to read cached metadata";
-    }
 
     metadata.insert("filePath", QVariant(imageFilePath));
     metadata.insert("modificationTime", QVariant(imageFileInfo.lastModified()));
@@ -129,12 +81,6 @@ Metadata getMetadata(const QString& imageFilePath)
 
     if (!parseExif(imageFilePath, metadata)) {
         qWarning() << "failed to parse Exif metadata";
-    }
-
-    if (!writeMetadata(metadataFileInfo.filePath(), metadata)) {
-        qCritical() << "failed to write cached metadata";
-        metadata.clear();
-        return metadata;
     }
 
     return metadata;
