@@ -42,6 +42,9 @@ static bool parseExif(const QString& filePath, Metadata& metadata)
         const int h = image->pixelHeight();
         metadata.insert("imageSize", QVariant(QSize(w, h)));
 
+        metadata.insert("timestamp", QDateTime());
+        metadata.insert("orientation", 1);
+
         Exiv2::ExifData &exifData = image->exifData();
         if (exifData.empty()) {
             qWarning() << filePath << " does not have EXIF data";
