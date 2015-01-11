@@ -25,15 +25,18 @@
 #include "common.hh"
 #include "metadata.hh"
 
-static bool isImageFile(const QString& filePath)
+static bool fillWithFileInfo(const QString& filePath, Metadata& metadata)
 {
-    Exiv2::Image::AutoPtr image = Exiv2::ImageFactory::open(
-        filePath.toStdString());
+    QFileInfo fileInfo(filePath);
 
-    return image.get() != 0;
+    metadata.insert("filePath", QVariant(filePath));
+    metadata.insert("modificationTime", QVariant(fileInfo.lastModified()));
+    metadata.insert("fileSize", QVariant(fileInfo.size()));
+
+    return true;
 }
 
-static bool parseExif(const QString& filePath, Metadata& metadata)
+static bool fillWithImageInfo(const QString& filePath, Metadata& metadata)
 {
     static QMutex mutex;
     QMutexLocker locker(&mutex);
@@ -41,7 +44,7 @@ static bool parseExif(const QString& filePath, Metadata& metadata)
         Exiv2::Image::AutoPtr image = Exiv2::ImageFactory::open(
             filePath.toStdString());
         if (image.get() == 0) {
-            qWarning() << filePath << " is not recognized as a valid image file";
+            qCritical() << "failed to recognize " << filePath << " as an image";
             return false;
         }
         image->readMetadata();
@@ -77,18 +80,20 @@ static bool parseExif(const QString& filePath, Metadata& metadata)
     return true;
 }
 
-Metadata getMetadata(const QString& imageFilePath)
+Metadata getMetadata(const QString& filePath)
 {
     Metadata metadata;
 
-    QFileInfo imageFileInfo(imageFilePath);
+    if (!fillWithFileInfo(filePath, metadata)) {
+        qCritical() << "failed to get file info from " << filePath;
+        metadata.clear();
+        return metadata;
+    }
 
-    metadata.insert("filePath", QVariant(imageFilePath));
-    metadata.insert("modificationTime", QVariant(imageFileInfo.lastModified()));
-    metadata.insert("fileSize", QVariant(imageFileInfo.size()));
-
-    if (!parseExif(imageFilePath, metadata)) {
-        qWarning() << "failed to parse Exif metadata";
+    if (!fillWithImageInfo(filePath, metadata)) {
+        qCritical() << "failed to get image info from " << filePath;
+        metadata.clear();
+        return metadata;
     }
 
     return metadata;
