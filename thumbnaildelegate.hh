@@ -25,13 +25,11 @@ class ThumbnailDelegate : public QStyledItemDelegate
     Q_OBJECT
 
 public:
-    explicit ThumbnailDelegate(QAbstractItemView *view, QObject *parent = 0);
+    explicit ThumbnailDelegate(QObject *parent = 0);
 
     void paint(QPainter *painter, const QStyleOptionViewItem &option,
                const QModelIndex &index) const;
 
-private:
-    QAbstractItemView *m_view;
 };
 
 #endif // THUMBNAILWIDGET_HH

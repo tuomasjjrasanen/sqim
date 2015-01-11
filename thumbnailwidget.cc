@@ -104,8 +104,7 @@ ThumbnailWidget::ThumbnailWidget(QWidget* parent)
         m_toolBar->addAction(action);
     }
 
-    m_thumbnailView->setItemDelegate(
-        new ThumbnailDelegate(m_thumbnailView, this));
+    m_thumbnailView->setItemDelegate(new ThumbnailDelegate(this));
 
     connect(m_thumbnailView, SIGNAL(currentThumbnailChanged(Metadata)),
             SIGNAL(currentThumbnailChanged(Metadata)));

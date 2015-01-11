@@ -18,9 +18,8 @@
 
 #include "thumbnaildelegate.hh"
 
-ThumbnailDelegate::ThumbnailDelegate(QAbstractItemView *view, QObject *parent)
+ThumbnailDelegate::ThumbnailDelegate(QObject *parent)
     : QStyledItemDelegate(parent)
-    , m_view(view)
 {
 }
 
@@ -36,7 +35,7 @@ void ThumbnailDelegate::paint(QPainter *painter,
     if (option.state.testFlag(QStyle::State_Selected)) {
         QPen pen(painter->pen());
         pen.setColor(Qt::white);
-        if (m_view && m_view->currentIndex() == index)
+        if (option.state.testFlag(QStyle::State_HasFocus))
             pen.setColor(Qt::yellow);
         painter->setPen(pen);
         QRect rect(option.rect);
