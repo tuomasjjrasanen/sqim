@@ -18,9 +18,10 @@
 #define THUMBNAILDELEGATE_HH
 
 #include <QAbstractItemView>
+#include <QItemDelegate>
 #include <QStyledItemDelegate>
 
-class ThumbnailDelegate : public QStyledItemDelegate
+class ThumbnailDelegate : public QItemDelegate
 {
     Q_OBJECT
 

@@ -14,12 +14,14 @@
 // You should have received a copy of the GNU General Public License
 // along with this program. If not, see <http://www.gnu.org/licenses/>.
 
+#include <QIcon>
 #include <QPainter>
+#include <QPixmap>
 
 #include "thumbnaildelegate.hh"
 
 ThumbnailDelegate::ThumbnailDelegate(QObject *parent)
-    : QStyledItemDelegate(parent)
+    : QItemDelegate(parent)
 {
 }
 
@@ -27,7 +29,13 @@ void ThumbnailDelegate::paint(QPainter *painter,
                               const QStyleOptionViewItem &option,
                               const QModelIndex &index) const
 {
-    QStyledItemDelegate::paint(painter, option, index);
+    QRect rect(option.rect);
+    rect.setWidth(rect.width() - 3);
+    rect.setHeight(rect.height() - 3);
+
+    QIcon icon = index.data(Qt::DecorationRole).value<QIcon>();
+
+    painter->drawPixmap(rect, icon.pixmap(rect.size()));
 
     // Draw rects to create more distinctive visualization for item
     // selection and current item.
@@ -38,9 +46,6 @@ void ThumbnailDelegate::paint(QPainter *painter,
         if (option.state.testFlag(QStyle::State_HasFocus))
             pen.setColor(Qt::yellow);
         painter->setPen(pen);
-        QRect rect(option.rect);
-        rect.setWidth(rect.width() - 3);
-        rect.setHeight(rect.height() - 3);
         painter->drawRect(rect);
     }
     painter->restore();
