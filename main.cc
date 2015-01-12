@@ -134,6 +134,24 @@ static void prepareDatabase()
 
     QSqlQuery query;
 
+    if (!query.exec("CREATE TABLE Image ("
+                    "  id INTEGER PRIMARY KEY,"
+                    "  file_path TEXT NOT NULL,"
+                    "  file_size INTEGER NOT NULL,"
+                    "  mtime TEXT NOT NULL,"
+                    "  pixel_width INTEGER NOT NULL,"
+                    "  pixel_height INTEGER NOT NULL,"
+                    "  exif_datetime TEXT NOT NULL,"
+                    "  exif_orientation INTEGER NOT NULL,"
+                    "  thumbnail_file_path TEXT NOT NULL,"
+                    "  thumbnail_pixel_width INTEGER NOT NULL,"
+                    "  thumbnail_pixel_height INTEGER NOT NULL,"
+                    "  UNIQUE(file_path));")) {
+        cerr << "error: failed to create Image table:"
+             << query.lastError().databaseText() << endl;
+        exit(1);
+    }
+
     if (!query.exec("CREATE TABLE Tagging ("
                     "  id INTEGER PRIMARY KEY,"
                     "  file_path TEXT NOT NULL,"

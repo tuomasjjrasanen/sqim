@@ -20,6 +20,8 @@
 #include <QPainter>
 #include <QProcess>
 #include <QtCore>
+#include <QSqlError>
+#include <QSqlQuery>
 
 #include "common.hh"
 #include "mainwindow.hh"
@@ -112,6 +114,39 @@ static Metadata import(const QString& filePath)
         qWarning() << "failed to make a thumbnail";
         metadata.clear();
         return metadata;
+    }
+
+    QSqlQuery query;
+    query.prepare("SELECT id FROM Image WHERE file_path == ?");
+    query.addBindValue(filePath);
+    if (!query.exec()) {
+        qWarning() << "failed to query the database for an image:"
+                   << query.lastError().databaseText();
+        metadata.clear();
+        return metadata;
+    }
+
+    if (!query.next()) {
+        query.prepare("INSERT INTO Image "
+                      "VALUES(NULL, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)");
+        query.addBindValue(filePath);
+        query.addBindValue(metadata.value("fileSize"));
+        query.addBindValue(metadata.value("modificationTime"));
+        QSize imageSize = metadata.value("imageSize").toSize();
+        query.addBindValue(imageSize.width());
+        query.addBindValue(imageSize.height());
+        query.addBindValue(metadata.value("timestamp"));
+        query.addBindValue(metadata.value("orientation"));
+        query.addBindValue(cacheDir(filePath).filePath("thumbnail.png"));
+        query.addBindValue(80);
+        query.addBindValue(80);
+
+        if (!query.exec()) {
+            qWarning() << "failed to store image info:"
+                       << query.lastError().databaseText();
+            metadata.clear();
+            return metadata;
+        }
     }
 
     return metadata;
@@ -248,6 +283,7 @@ void MainWindow::openFiles(const QStringList& filePaths)
 {
     m_openDirAction->setEnabled(false);
     m_openCount = 0;
+    QSqlDatabase::database().transaction();
     m_importer->setFuture(QtConcurrent::mapped(filePaths, import));
     statusBar()->addPermanentWidget(m_cancelImportButton);
     m_cancelImportButton->show();
@@ -283,6 +319,7 @@ void MainWindow::importReadyAt(const int i)
 
 void MainWindow::importFinished()
 {
+    QSqlDatabase::database().commit();
     QString msg = QString("Opened %1 images").arg(m_openCount);
     statusBar()->removeWidget(m_cancelImportButton);
     statusBar()->showMessage(msg);
