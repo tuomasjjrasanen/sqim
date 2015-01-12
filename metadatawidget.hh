@@ -17,10 +17,8 @@
 #ifndef METADATAWIDGET_HH
 #define METADATAWIDGET_HH
 
-#include <QLabel>
-#include <QListView>
-#include <QSqlQueryModel>
-#include <QVariant>
+#include <QtGui>
+#include <QtSql>
 
 #include "metadata.hh"
 

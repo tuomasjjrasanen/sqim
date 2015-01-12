@@ -17,7 +17,7 @@
 #ifndef IMAGEWIDGET_HH
 #define IMAGEWIDGET_HH
 
-#include <QToolBar>
+#include <QtGui>
 
 #include "imagearea.hh"
 

@@ -17,7 +17,7 @@
 #ifndef THUMBNAILVIEW_HH
 #define THUMBNAILVIEW_HH
 
-#include <QListView>
+#include <QtGui>
 
 #include "metadata.hh"
 

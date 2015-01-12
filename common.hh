@@ -17,8 +17,7 @@
 #ifndef COMMON_HH
 #define COMMON_HH
 
-#include <QDir>
-#include <QSize>
+#include <QtCore>
 
 QDir cacheDir(const QString& filePath);
 bool makeCacheDir(const QString& filePath);

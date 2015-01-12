@@ -17,12 +17,8 @@
 #ifndef THUMBNAILWIDGET_HH
 #define THUMBNAILWIDGET_HH
 
-#include <QAction>
-#include <QSet>
-#include <QSqlQueryModel>
-#include <QStandardItemModel>
-#include <QString>
-#include <QToolBar>
+#include <QtGui>
+#include <QtSql>
 
 #include "thumbnailview.hh"
 

@@ -17,9 +17,7 @@
 #ifndef THUMBNAILDELEGATE_HH
 #define THUMBNAILDELEGATE_HH
 
-#include <QAbstractItemView>
-#include <QItemDelegate>
-#include <QStyledItemDelegate>
+#include <QtGui>
 
 class ThumbnailDelegate : public QItemDelegate
 {

@@ -14,15 +14,6 @@
 // You should have received a copy of the GNU General Public License
 // along with this program. If not, see <http://www.gnu.org/licenses/>.
 
-#include <QDataStream>
-#include <QFileDialog>
-#include <QMessageBox>
-#include <QPainter>
-#include <QProcess>
-#include <QtCore>
-#include <QSqlError>
-#include <QSqlQuery>
-
 #include "common.hh"
 #include "mainwindow.hh"
 #include "metadata.hh"

@@ -17,8 +17,7 @@
 #ifndef METADATA_HH
 #define METADATA_HH
 
-#include <QHash>
-#include <QTransform>
+#include <QtGui>
 
 typedef QHash<QString, QVariant> Metadata;
 

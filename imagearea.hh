@@ -17,11 +17,7 @@
 #ifndef IMAGEAREA_HH
 #define IMAGEAREA_HH
 
-#include <QAction>
-#include <QImageReader>
-#include <QLabel>
-#include <QScrollArea>
-#include <QWheelEvent>
+#include <QtGui>
 
 #include "metadata.hh"
 

@@ -14,14 +14,6 @@
 // You should have received a copy of the GNU General Public License
 // along with this program. If not, see <http://www.gnu.org/licenses/>.
 
-#include <QDateTime>
-#include <QIcon>
-#include <QInputDialog>
-#include <QProcess>
-#include <QSqlQuery>
-#include <QSqlRecord>
-#include <QVBoxLayout>
-
 #include "common.hh"
 #include "thumbnaildelegate.hh"
 #include "thumbnailwidget.hh"

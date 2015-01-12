@@ -17,13 +17,8 @@
 #ifndef MAINWINDOW_HH
 #define MAINWINDOW_HH
 
-#include <QDockWidget>
-#include <QFutureWatcher>
-#include <QMainWindow>
-#include <QMenuBar>
-#include <QPushButton>
-#include <QStatusBar>
-#include <QToolBar>
+#include <QtSql>
+#include <QtGui>
 
 #include "imagewidget.hh"
 #include "metadatawidget.hh"
