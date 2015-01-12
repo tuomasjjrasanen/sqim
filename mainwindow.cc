@@ -62,6 +62,10 @@ static bool makeThumbnail(const QString& filePath, Metadata& metadata)
 {
     QFileInfo imageFileInfo(filePath);
     QFileInfo thumbnailFileInfo(cacheDir(filePath), "thumbnail.png");
+    QSize thumbnailSize(80, 80);
+
+    metadata.insert("thumbnailFilePath", thumbnailFileInfo.absoluteFilePath());
+    metadata.insert("thumbnailImageSize", thumbnailSize);
 
     if (thumbnailFileInfo.exists()
         && thumbnailFileInfo.lastModified() >= imageFileInfo.lastModified()) {
@@ -74,7 +78,7 @@ static bool makeThumbnail(const QString& filePath, Metadata& metadata)
         return false;
     }
 
-    QImage thumbnail(80, 80, QImage::Format_ARGB32);
+    QImage thumbnail(thumbnailSize, QImage::Format_ARGB32);
     thumbnail.fill(Qt::transparent);
 
     QPainter thumbnailPainter(&thumbnail);
@@ -137,9 +141,10 @@ static Metadata import(const QString& filePath)
         query.addBindValue(imageSize.height());
         query.addBindValue(metadata.value("timestamp"));
         query.addBindValue(metadata.value("orientation"));
-        query.addBindValue(cacheDir(filePath).filePath("thumbnail.png"));
-        query.addBindValue(80);
-        query.addBindValue(80);
+        query.addBindValue(metadata.value("thumbnailFilePath"));
+        QSize thumbnailSize = metadata.value("thumbnailImageSize").toSize();
+        query.addBindValue(thumbnailSize.width());
+        query.addBindValue(thumbnailSize.height());
 
         if (!query.exec()) {
             qWarning() << "failed to store image info:"
