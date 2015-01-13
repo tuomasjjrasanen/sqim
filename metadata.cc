@@ -30,7 +30,7 @@ static bool fillWithFileInfo(const QString& filePath, Metadata& metadata)
     QFileInfo fileInfo(filePath);
 
     metadata.insert("filePath", QVariant(filePath));
-    metadata.insert("modificationTime", QVariant(fileInfo.lastModified()));
+    metadata.insert("modificationTime", QVariant(fileInfo.lastModified().toUTC()));
     metadata.insert("fileSize", QVariant(fileInfo.size()));
 
     return true;
@@ -53,7 +53,7 @@ static bool fillWithImageInfo(const QString& filePath, Metadata& metadata)
         const int h = image->pixelHeight();
         metadata.insert("imageSize", QVariant(QSize(w, h)));
 
-        metadata.insert("timestamp", QDateTime());
+        metadata.insert("timestamp", QDateTime::fromTime_t(0).toUTC());
         metadata.insert("orientation", 1);
 
         Exiv2::ExifData &exifData = image->exifData();
@@ -68,7 +68,9 @@ static bool fillWithImageInfo(const QString& filePath, Metadata& metadata)
         dateTimeString.truncate(19);
         QDateTime dateTime = QDateTime::fromString(dateTimeString,
                                                    "yyyy:MM:dd HH:mm:ss");
-        metadata.insert("timestamp", QVariant(dateTime));
+        dateTime.setTimeSpec(Qt::UTC);
+        if (dateTime.isValid())
+            metadata.insert("timestamp", QVariant(dateTime));
         qlonglong orientation = qlonglong(
             exifData["Exif.Image.Orientation"].toLong());
         metadata.insert("orientation", QVariant(orientation));
