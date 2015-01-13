@@ -69,9 +69,9 @@ void MetadataWidget::setMetadata(Metadata metadata)
 {
     m_filePathLabel->setText(metadata.value("filePath").toString());
     m_timestampLabel->setText(
-        metadata.value("timestamp").toDateTime().toString());
+        metadata.value("timestamp").toDateTime().toString(Qt::ISODate));
     m_modificationTimeLabel->setText(
-        metadata.value("modificationTime").toDateTime().toString());
+        metadata.value("modificationTime").toDateTime().toString(Qt::ISODate));
     m_fileSizeLabel->setText(
         fileSizeToString(metadata.value("fileSize").toULongLong()));
     m_imageSizeLabel->setText(
