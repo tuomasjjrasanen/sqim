@@ -162,6 +162,8 @@ MainWindow::MainWindow(QWidget *const parent)
     ,m_openCount()
     ,m_cancelImportButton(new QPushButton("Cancel import", this))
 {
+    m_cancelImportButton->hide();
+
     m_imageDockWidget->toggleViewAction()->setShortcut(
         QKeySequence(Qt::Key_I));
     m_metadataDockWidget->toggleViewAction()->setShortcut(
