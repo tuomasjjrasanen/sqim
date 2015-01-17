@@ -144,17 +144,7 @@ MainWindow::MainWindow(QWidget *const parent)
 
     setContextMenuPolicy(Qt::ActionsContextMenu);
 
-    m_sortAscTimeOrderAction->setCheckable(true);
-    m_sortDescTimeOrderAction->setCheckable(true);
-
-    addAction(m_sortAscTimeOrderAction);
-    addAction(m_sortDescTimeOrderAction);
-    QAction *separator = new QAction(this);
-    separator->setSeparator(true);
-    addAction(separator);
-    addAction(m_editAction);
-    addAction(m_tagAction);
-
+    setupActions();
     setupToolBars();
 
     connectSignals();
@@ -496,6 +486,20 @@ void MainWindow::setupCentralWidget()
     m_imageListView->setModel(m_imageModel);
     m_imageListView->setModelColumn(8);
     setCentralWidget(m_imageListView);
+}
+
+void MainWindow::setupActions()
+{
+    m_sortAscTimeOrderAction->setCheckable(true);
+    m_sortDescTimeOrderAction->setCheckable(true);
+
+    addAction(m_sortAscTimeOrderAction);
+    addAction(m_sortDescTimeOrderAction);
+    QAction *separator = new QAction(this);
+    separator->setSeparator(true);
+    addAction(separator);
+    addAction(m_editAction);
+    addAction(m_tagAction);
 }
 
 void MainWindow::resetImageListView()

@@ -59,6 +59,7 @@ private:
     void connectSignals();
     void loadSettings();
     void saveSettings();
+    void setupActions();
     void setupCentralWidget();
     void setupDockWidgets();
     void setupMenus();
