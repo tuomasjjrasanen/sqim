@@ -140,7 +140,7 @@ MainWindow::MainWindow(QWidget *const parent)
     ,m_tagAction(new QAction("Add tag", this))
     ,m_tagModel(new QSqlQueryModel(this))
 {
-    updateTags();
+    loadTags();
 
     setContextMenuPolicy(Qt::ActionsContextMenu);
 
@@ -318,10 +318,10 @@ void MainWindow::tagSelectedImages()
     }
 
     db.commit();
-    updateTags();
+    loadTags();
 }
 
-void MainWindow::updateTags()
+void MainWindow::loadTags()
 {
     QSqlQuery query;
     query.exec("SELECT DISTINCT(tag) FROM Tagging ORDER BY tag;");

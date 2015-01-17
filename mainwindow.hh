@@ -43,7 +43,7 @@ public slots:
     void sortDescTimeOrder();
     void editSelectedImages();
     void tagSelectedImages();
-    void updateTags();
+    void loadTags();
 
 protected:
     virtual void closeEvent(QCloseEvent *event);
