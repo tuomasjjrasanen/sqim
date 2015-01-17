@@ -103,6 +103,14 @@ Metadata getMetadata(const QString& filePath)
 
 QTransform exifTransform(const Metadata& metadata)
 {
+    if (metadata.contains("orientation"))
+        return exifTransform(metadata.value("orientation").toInt());
+
+    return QTransform();
+}
+
+QTransform exifTransform(int orientation)
+{
     static const QTransform transforms[] = {
         QTransform(),
         QTransform(),
@@ -114,8 +122,5 @@ QTransform exifTransform(const Metadata& metadata)
         QTransform().rotate(-90)
     };
 
-    if (metadata.contains("orientation"))
-        return transforms[metadata.value("orientation").toInt() - 1];
-
-    return QTransform();
+    return transforms[orientation - 1];
 }

@@ -23,5 +23,6 @@ typedef QHash<QString, QVariant> Metadata;
 
 Metadata getMetadata(const QString& filePath);
 QTransform exifTransform(const Metadata& metadata);
+QTransform exifTransform(int orientation);
 
 #endif // METADATA_HH
