@@ -68,19 +68,19 @@ private:
 
     void resetImageListView();
 
-    QFutureWatcher<Metadata> *m_importer;
-    QDockWidget *m_metadataDockWidget;
-    MetadataWidget *m_metadataWidget;
-    QDockWidget *m_imageDockWidget;
-    ImageView *m_imageView;
-    ImageListView *m_imageListView;
-    QSqlTableModel *m_imageModel;
-
-
     QAtomicInt m_openCount;
+    QFutureWatcher<Metadata>* m_importer;
+    QPushButton* m_cancelImportButton;
 
-    QPushButton *m_cancelImportButton;
+    ImageListView* m_imageListView;
+    ImageView* m_imageView;
+    MetadataWidget* m_metadataWidget;
+
+    QDockWidget* m_imageDockWidget;
+    QDockWidget* m_metadataDockWidget;
+
     QSqlQueryModel* m_tagModel;
+    QSqlTableModel* m_imageModel;
 
     QAction* m_aboutAction;
     QAction* m_editAction;

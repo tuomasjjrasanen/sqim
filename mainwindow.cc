@@ -117,16 +117,19 @@ static Metadata import(const QString& filePath)
 
 MainWindow::MainWindow(QWidget *const parent)
     :QMainWindow(parent)
-    ,m_importer(new QFutureWatcher<Metadata>(this))
-    ,m_metadataDockWidget(new QDockWidget(this))
-    ,m_metadataWidget(new MetadataWidget(this))
-    ,m_imageDockWidget(new QDockWidget(this))
-    ,m_imageView(new ImageView(this))
-    ,m_imageListView(new ImageListView(this))
-    ,m_imageModel(new QSqlTableModel(this))
     ,m_openCount()
+    ,m_importer(new QFutureWatcher<Metadata>(this))
     ,m_cancelImportButton(new QPushButton(this))
+
+    ,m_imageListView(new ImageListView(this))
+    ,m_imageView(new ImageView(this))
+    ,m_metadataWidget(new MetadataWidget(this))
+
+    ,m_imageDockWidget(new QDockWidget(this))
+    ,m_metadataDockWidget(new QDockWidget(this))
+
     ,m_tagModel(new QSqlQueryModel(this))
+    ,m_imageModel(new QSqlTableModel(this))
 
     ,m_aboutAction(new QAction(this))
     ,m_editAction(new QAction(this))
