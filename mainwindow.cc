@@ -208,11 +208,7 @@ MainWindow::MainWindow(QWidget *const parent)
 
     setupMenus();
 
-    QSettings settings;
-    m_imageDockWidget->setVisible(
-        settings.value("imageDockWidget/visible", true).toBool());
-    m_metadataDockWidget->setVisible(
-        settings.value("metadataDockWidget/visible", true).toBool());
+    loadSettings();
 
     connect(m_importer, SIGNAL(finished()),
             SLOT(importFinished()));
@@ -359,12 +355,7 @@ void MainWindow::importFinished()
 
 void MainWindow::closeEvent(QCloseEvent *event)
 {
-    QSettings settings;
-
-    settings.setValue("imageDockWidget/visible",
-                      m_imageDockWidget->isVisible());
-    settings.setValue("metadataDockWidget/visible",
-                      m_metadataDockWidget->isVisible());
+    saveSettings();
 
     event->accept();
 }
@@ -466,4 +457,24 @@ void MainWindow::setupMenus()
 
     QMenu *helpMenu = menuBar()->addMenu("&Help");
     helpMenu->addAction(m_aboutAction);
+}
+
+void MainWindow::loadSettings()
+{
+    QSettings settings;
+    m_imageDockWidget->setVisible(
+        settings.value("imageDockWidget/visible", true).toBool());
+    m_metadataDockWidget->setVisible(
+        settings.value("metadataDockWidget/visible", true).toBool());
+}
+
+void MainWindow::saveSettings()
+{
+    QSettings settings;
+
+    settings.setValue("imageDockWidget/visible",
+                      m_imageDockWidget->isVisible());
+    settings.setValue("metadataDockWidget/visible",
+                      m_metadataDockWidget->isVisible());
+
 }

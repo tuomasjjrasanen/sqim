@@ -56,6 +56,8 @@ private slots:
     void cancelImport();
 
 private:
+    void loadSettings();
+    void saveSettings();
     void setupDockWidgets();
     void setupMenus();
 
