@@ -143,11 +143,6 @@ MainWindow::MainWindow(QWidget *const parent)
     updateTags();
 
     setContextMenuPolicy(Qt::ActionsContextMenu);
-    m_sortAscTimeOrderAction->setShortcut(
-        QKeySequence(Qt::Key_Less, Qt::Key_T));
-    m_sortDescTimeOrderAction->setShortcut(
-        QKeySequence(Qt::Key_Greater, Qt::Key_T));
-    m_editAction->setShortcut(QKeySequence(Qt::Key_E));
 
     m_sortAscTimeOrderAction->setCheckable(true);
     m_sortDescTimeOrderAction->setCheckable(true);
@@ -172,12 +167,7 @@ MainWindow::MainWindow(QWidget *const parent)
 
     m_cancelImportButton->hide();
 
-    m_imageDockWidget->toggleViewAction()->setShortcut(
-        QKeySequence(Qt::Key_I));
-    m_metadataDockWidget->toggleViewAction()->setShortcut(
-        QKeySequence(Qt::Key_M));
-    m_openDirAction->setShortcut(QKeySequence(Qt::Key_O));
-    m_quitAction->setShortcut(QKeySequence(Qt::Key_Q));
+    setupShortcuts();
 
     m_imageModel->setTable("Image");
     m_imageModel->setEditStrategy(QSqlTableModel::OnManualSubmit);
@@ -481,5 +471,21 @@ void MainWindow::saveSettings()
                       m_imageDockWidget->isVisible());
     settings.setValue("metadataDockWidget/visible",
                       m_metadataDockWidget->isVisible());
+
+}
+
+void MainWindow::setupShortcuts()
+{
+    m_sortAscTimeOrderAction->setShortcut(
+        QKeySequence(Qt::Key_Less, Qt::Key_T));
+    m_sortDescTimeOrderAction->setShortcut(
+        QKeySequence(Qt::Key_Greater, Qt::Key_T));
+    m_editAction->setShortcut(QKeySequence(Qt::Key_E));
+    m_imageDockWidget->toggleViewAction()->setShortcut(
+        QKeySequence(Qt::Key_I));
+    m_metadataDockWidget->toggleViewAction()->setShortcut(
+        QKeySequence(Qt::Key_M));
+    m_openDirAction->setShortcut(QKeySequence(Qt::Key_O));
+    m_quitAction->setShortcut(QKeySequence(Qt::Key_Q));
 
 }

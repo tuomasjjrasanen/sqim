@@ -61,6 +61,7 @@ private:
     void saveSettings();
     void setupDockWidgets();
     void setupMenus();
+    void setupShortcuts();
 
     QFutureWatcher<Metadata> *m_importer;
     QDockWidget *m_metadataDockWidget;
