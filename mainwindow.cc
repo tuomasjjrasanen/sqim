@@ -142,8 +142,6 @@ MainWindow::MainWindow(QWidget *const parent)
 {
     loadTags();
 
-    setContextMenuPolicy(Qt::ActionsContextMenu);
-
     setupActions();
     setupToolBars();
 
