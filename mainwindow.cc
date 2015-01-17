@@ -168,14 +168,7 @@ MainWindow::MainWindow(QWidget *const parent)
     toolBar->addAction(m_sortAscTimeOrderAction);
     toolBar->addAction(m_sortDescTimeOrderAction);
 
-    connect(m_sortAscTimeOrderAction, SIGNAL(triggered(bool)),
-            SLOT(sortAscTimeOrder()));
-    connect(m_sortDescTimeOrderAction, SIGNAL(triggered(bool)),
-            SLOT(sortDescTimeOrder()));
-    connect(m_editAction, SIGNAL(triggered(bool)),
-            SLOT(editSelectedImages()));
-    connect(m_tagAction, SIGNAL(triggered(bool)),
-            SLOT(tagSelectedImages()));
+    connectSignals();
 
     m_cancelImportButton->hide();
 
@@ -209,27 +202,6 @@ MainWindow::MainWindow(QWidget *const parent)
     setupMenus();
 
     loadSettings();
-
-    connect(m_importer, SIGNAL(finished()),
-            SLOT(importFinished()));
-    connect(m_importer, SIGNAL(resultReadyAt(int)),
-            SLOT(importReadyAt(int)));
-    connect(m_openDirAction, SIGNAL(triggered(bool)),
-            SLOT(openDir()));
-    connect(m_quitAction, SIGNAL(triggered(bool)),
-            SLOT(close()));
-    m_metadataWidget->connect(m_imageListView,
-                              SIGNAL(currentImageChanged(const QModelIndex&, const QModelIndex&)),
-                              SLOT(setMetadata(const QModelIndex&)));
-    m_imageView->connect(m_imageListView,
-                         SIGNAL(currentImageChanged(const QModelIndex&, const QModelIndex&)),
-                         SLOT(setImage(const QModelIndex&)));
-    m_imageDockWidget->connect(m_imageListView,
-                               SIGNAL(activated(const QModelIndex&)),
-                               SLOT(show()));
-    connect(m_aboutAction, SIGNAL(triggered(bool)), SLOT(about()));
-    connect(m_cancelImportButton, SIGNAL(clicked()),
-            SLOT(cancelImport()));
 
     triggerSortAscTimeOrder();
     m_imageListView->setCurrentIndex(m_imageModel->index(0, 8));
@@ -433,6 +405,39 @@ void MainWindow::editSelectedImages()
     QProcess::startDetached("gimp", filePaths);
 }
 
+
+void MainWindow::connectSignals()
+{
+    connect(m_sortAscTimeOrderAction, SIGNAL(triggered(bool)),
+            SLOT(sortAscTimeOrder()));
+    connect(m_sortDescTimeOrderAction, SIGNAL(triggered(bool)),
+            SLOT(sortDescTimeOrder()));
+    connect(m_editAction, SIGNAL(triggered(bool)),
+            SLOT(editSelectedImages()));
+    connect(m_tagAction, SIGNAL(triggered(bool)),
+            SLOT(tagSelectedImages()));
+
+    connect(m_importer, SIGNAL(finished()),
+            SLOT(importFinished()));
+    connect(m_importer, SIGNAL(resultReadyAt(int)),
+            SLOT(importReadyAt(int)));
+    connect(m_openDirAction, SIGNAL(triggered(bool)),
+            SLOT(openDir()));
+    connect(m_quitAction, SIGNAL(triggered(bool)),
+            SLOT(close()));
+    m_metadataWidget->connect(m_imageListView,
+                              SIGNAL(currentImageChanged(const QModelIndex&, const QModelIndex&)),
+                              SLOT(setMetadata(const QModelIndex&)));
+    m_imageView->connect(m_imageListView,
+                         SIGNAL(currentImageChanged(const QModelIndex&, const QModelIndex&)),
+                         SLOT(setImage(const QModelIndex&)));
+    m_imageDockWidget->connect(m_imageListView,
+                               SIGNAL(activated(const QModelIndex&)),
+                               SLOT(show()));
+    connect(m_aboutAction, SIGNAL(triggered(bool)), SLOT(about()));
+    connect(m_cancelImportButton, SIGNAL(clicked()),
+            SLOT(cancelImport()));
+}
 void MainWindow::setupDockWidgets()
 {
     m_metadataDockWidget->setWidget(m_metadataWidget);

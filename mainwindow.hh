@@ -56,6 +56,7 @@ private slots:
     void cancelImport();
 
 private:
+    void connectSignals();
     void loadSettings();
     void saveSettings();
     void setupDockWidgets();
