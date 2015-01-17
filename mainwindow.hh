@@ -64,6 +64,7 @@ private:
     void setupDockWidgets();
     void setupMenus();
     void setupShortcuts();
+    void setupStatusBar();
     void setupToolBars();
 
     void resetWidgets();

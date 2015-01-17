@@ -153,7 +153,7 @@ MainWindow::MainWindow(QWidget *const parent)
 
     setupDockWidgets();
 
-    setStatusBar(new QStatusBar());
+    setupStatusBar();
 
     setupMenus();
 
@@ -508,4 +508,9 @@ void MainWindow::resetImageListView()
 {
     triggerSortAscTimeOrder();
     m_imageListView->setCurrentIndex(m_imageModel->index(0, 8));
+}
+
+void MainWindow::setupStatusBar()
+{
+    setStatusBar(new QStatusBar());
 }
