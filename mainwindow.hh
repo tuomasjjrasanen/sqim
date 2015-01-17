@@ -34,13 +34,13 @@ public:
     void openDir(QString dir, bool recursive);
     void openFiles(const QStringList& filePaths);
     void openPaths(const QStringList& paths, bool recursive);
-    void triggerSortAscTimeOrder();
-    void triggerSortDescTimeOrder();
+    void triggerSortAscDate();
+    void triggerSortDescDate();
     ~MainWindow();
 
 public slots:
-    void sortAscTimeOrder();
-    void sortDescTimeOrder();
+    void sortAscDate();
+    void sortDescDate();
     void editSelectedImages();
     void tagSelectedImages();
     void loadTags();
@@ -87,8 +87,8 @@ private:
     QAction* m_editAction;
     QAction* m_openDirAction;
     QAction* m_quitAction;
-    QAction* m_sortAscTimeOrderAction;
-    QAction* m_sortDescTimeOrderAction;
+    QAction* m_sortAscDateAction;
+    QAction* m_sortDescDateAction;
     QAction* m_tagAction;
     QActionGroup* m_sortActionGroup;
 

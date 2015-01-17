@@ -132,8 +132,8 @@ MainWindow::MainWindow(QWidget *const parent)
     ,m_editAction(new QAction(this))
     ,m_openDirAction(new QAction(this))
     ,m_quitAction(new QAction(this))
-    ,m_sortAscTimeOrderAction(new QAction(this))
-    ,m_sortDescTimeOrderAction(new QAction(this))
+    ,m_sortAscDateAction(new QAction(this))
+    ,m_sortDescDateAction(new QAction(this))
     ,m_tagAction(new QAction(this))
 
     ,m_sortActionGroup(new QActionGroup(this))
@@ -315,24 +315,24 @@ void MainWindow::loadTags()
     m_tagModel->setQuery(query);
 }
 
-void MainWindow::sortAscTimeOrder()
+void MainWindow::sortAscDate()
 {
     m_imageModel->sort(6, Qt::AscendingOrder);
 }
 
-void MainWindow::sortDescTimeOrder()
+void MainWindow::sortDescDate()
 {
     m_imageModel->sort(6, Qt::DescendingOrder);
 }
 
-void MainWindow::triggerSortAscTimeOrder()
+void MainWindow::triggerSortAscDate()
 {
-    m_sortAscTimeOrderAction->trigger();
+    m_sortAscDateAction->trigger();
 }
 
-void MainWindow::triggerSortDescTimeOrder()
+void MainWindow::triggerSortDescDate()
 {
-    m_sortDescTimeOrderAction->trigger();
+    m_sortDescDateAction->trigger();
 }
 
 void MainWindow::editSelectedImages()
@@ -353,10 +353,10 @@ void MainWindow::editSelectedImages()
 
 void MainWindow::connectSignals()
 {
-    connect(m_sortAscTimeOrderAction, SIGNAL(triggered(bool)),
-            SLOT(sortAscTimeOrder()));
-    connect(m_sortDescTimeOrderAction, SIGNAL(triggered(bool)),
-            SLOT(sortDescTimeOrder()));
+    connect(m_sortAscDateAction, SIGNAL(triggered(bool)),
+            SLOT(sortAscDate()));
+    connect(m_sortDescDateAction, SIGNAL(triggered(bool)),
+            SLOT(sortDescDate()));
     connect(m_editAction, SIGNAL(triggered(bool)),
             SLOT(editSelectedImages()));
     connect(m_tagAction, SIGNAL(triggered(bool)),
@@ -436,8 +436,8 @@ void MainWindow::setupToolBars()
         toolBar->addAction(action);
     toolBar->addAction(m_editAction);
     toolBar->addAction(m_tagAction);
-    toolBar->addAction(m_sortAscTimeOrderAction);
-    toolBar->addAction(m_sortDescTimeOrderAction);
+    toolBar->addAction(m_sortAscDateAction);
+    toolBar->addAction(m_sortDescDateAction);
 }
 
 void MainWindow::setupCentralWidget()
@@ -465,35 +465,38 @@ void MainWindow::setupActions()
     m_editAction->setText("Edit");
     m_openDirAction->setText("&Open directory...");
     m_quitAction->setText("&Quit");
-    m_sortAscTimeOrderAction->setText("&Ascending time order");
-    m_sortDescTimeOrderAction->setText("&Descending time order");
+    m_sortAscDateAction->setText("&Ascending time order");
+    m_sortDescDateAction->setText("&Descending time order");
     m_tagAction->setText("Add tag");
 
-    m_sortAscTimeOrderAction->setIcon(QIcon(":/icons/sort_asc_date.png"));
-    m_sortDescTimeOrderAction->setIcon(QIcon(":/icons/sort_desc_date.png"));
+    m_sortAscDateAction->setIcon(QIcon(":/icons/sort_asc_date.png"));
+    m_sortDescDateAction->setIcon(QIcon(":/icons/sort_desc_date.png"));
 
-    m_sortAscTimeOrderAction->setCheckable(true);
-    m_sortDescTimeOrderAction->setCheckable(true);
+    m_sortAscDateAction->setCheckable(true);
+    m_sortDescDateAction->setCheckable(true);
 
-    m_sortActionGroup->addAction(m_sortAscTimeOrderAction);
-    m_sortActionGroup->addAction(m_sortDescTimeOrderAction);
+    m_sortActionGroup->addAction(m_sortAscDateAction);
+    m_sortActionGroup->addAction(m_sortDescDateAction);
 
-    addAction(m_sortAscTimeOrderAction);
-    addAction(m_sortDescTimeOrderAction);
+    addAction(m_sortAscDateAction);
+    addAction(m_sortDescDateAction);
     addAction(m_editAction);
     addAction(m_tagAction);
 
-    m_sortAscTimeOrderAction->setShortcut(
-        QKeySequence(Qt::Key_Less, Qt::Key_T));
-    m_sortDescTimeOrderAction->setShortcut(
-        QKeySequence(Qt::Key_Greater, Qt::Key_T));
-    m_editAction->setShortcut(QKeySequence(Qt::Key_E));
+    m_editAction->setShortcut(
+        QKeySequence(Qt::Key_E));
     m_imageDockWidget->toggleViewAction()->setShortcut(
         QKeySequence(Qt::Key_I));
     m_metadataDockWidget->toggleViewAction()->setShortcut(
         QKeySequence(Qt::Key_M));
-    m_openDirAction->setShortcut(QKeySequence(Qt::Key_O));
-    m_quitAction->setShortcut(QKeySequence(Qt::Key_Q));
+    m_openDirAction->setShortcut(
+        QKeySequence(Qt::Key_O));
+    m_quitAction->setShortcut(
+        QKeySequence(Qt::Key_Q));
+    m_sortAscDateAction->setShortcut(
+        QKeySequence(Qt::Key_Less, Qt::Key_T));
+    m_sortDescDateAction->setShortcut(
+        QKeySequence(Qt::Key_Greater, Qt::Key_T));
 }
 
 void MainWindow::resetWidgets()
@@ -504,7 +507,7 @@ void MainWindow::resetWidgets()
 
 void MainWindow::resetImageListView()
 {
-    triggerSortAscTimeOrder();
+    triggerSortAscDate();
     m_imageListView->setCurrentIndex(m_imageModel->index(0, 8));
 }
 
