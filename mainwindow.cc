@@ -163,21 +163,7 @@ MainWindow::MainWindow(QWidget *const parent)
 
     setupShortcuts();
 
-    m_imageModel->setTable("Image");
-    m_imageModel->setEditStrategy(QSqlTableModel::OnManualSubmit);
-    m_imageModel->select();
-    m_imageListView->setObjectName("ImageListView");
-    m_imageListView->setItemDelegate(new ImageItemDelegate(this));
-    m_imageListView->setViewMode(QListView::IconMode);
-    m_imageListView->setMovement(QListView::Static);
-    m_imageListView->setSelectionMode(QListView::ExtendedSelection);
-    m_imageListView->setEditTriggers(QAbstractItemView::NoEditTriggers);
-    m_imageListView->setResizeMode(QListView::Adjust);
-    m_imageListView->setIconSize(QSize(80, 80));
-    m_imageListView->setUniformItemSizes(true);
-    m_imageListView->setModel(m_imageModel);
-    m_imageListView->setModelColumn(8);
-    setCentralWidget(m_imageListView);
+    setupCentralWidget();
 
     setupDockWidgets();
 
@@ -491,6 +477,25 @@ void MainWindow::setupToolBars()
     toolBar->addAction(m_tagAction);
     toolBar->addAction(m_sortAscTimeOrderAction);
     toolBar->addAction(m_sortDescTimeOrderAction);
+}
+
+void MainWindow::setupCentralWidget()
+{
+    m_imageModel->setTable("Image");
+    m_imageModel->setEditStrategy(QSqlTableModel::OnManualSubmit);
+    m_imageModel->select();
+    m_imageListView->setObjectName("ImageListView");
+    m_imageListView->setItemDelegate(new ImageItemDelegate(this));
+    m_imageListView->setViewMode(QListView::IconMode);
+    m_imageListView->setMovement(QListView::Static);
+    m_imageListView->setSelectionMode(QListView::ExtendedSelection);
+    m_imageListView->setEditTriggers(QAbstractItemView::NoEditTriggers);
+    m_imageListView->setResizeMode(QListView::Adjust);
+    m_imageListView->setIconSize(QSize(80, 80));
+    m_imageListView->setUniformItemSizes(true);
+    m_imageListView->setModel(m_imageModel);
+    m_imageListView->setModelColumn(8);
+    setCentralWidget(m_imageListView);
 }
 
 void MainWindow::resetImageListView()
