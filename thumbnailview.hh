@@ -21,11 +21,6 @@
 
 #include "metadata.hh"
 
-enum {
-    MetadataRole = Qt::UserRole + 1,
-    TimestampRole,
-};
-
 class ThumbnailView : public QListView
 {
     Q_OBJECT
@@ -35,7 +30,8 @@ public:
     ~ThumbnailView();
 
 signals:
-    void currentThumbnailChanged(Metadata metadata);
+    void currentThumbnailChanged(const QModelIndex& current,
+                                 const QModelIndex& previous);
 
 protected:
     virtual void currentChanged(const QModelIndex& current,

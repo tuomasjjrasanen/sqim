@@ -32,7 +32,7 @@ public:
     virtual QSize sizeHint() const;
 
 public slots:
-    void setImage(Metadata metadata);
+    void setImage(const QModelIndex& current);
     void zoomIn();
     void zoomOut();
     void zoomIn(const QPoint &focalPoint);
@@ -54,6 +54,7 @@ private:
     void adjustScrollBars(const QPoint &focalPoint);
     const QPoint viewportCenter() const;
     void rotate(qreal degrees);
+    void loadImage();
 
     QLabel *m_imageLabel;
     qreal m_zoomLevel;
@@ -65,11 +66,12 @@ private:
     QAction *m_zoomToFitAction;
     QAction *m_zoomTo100Action;
 
-    Metadata m_loadedImageMetadata;
-    Metadata m_selectedImageMetadata;
+    bool m_isImageLoaded;
+    QString m_imageFilePath;
+    int m_imageOrientation;
 
     QImageReader m_imageReader;
-    QSize m_originalImageSize;
+    QSize m_imageSize;
 
     QTransform m_transform;
 };

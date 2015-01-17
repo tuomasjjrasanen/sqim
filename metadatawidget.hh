@@ -31,7 +31,7 @@ public:
     ~MetadataWidget();
 
 public slots:
-    void setMetadata(Metadata metadata);
+    void setMetadata(const QModelIndex& index);
     void updateTags();
 
 private slots:

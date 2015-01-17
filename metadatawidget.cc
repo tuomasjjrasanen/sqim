@@ -65,17 +65,20 @@ void MetadataWidget::updateTags()
     m_tagModel->setQuery(query);
 }
 
-void MetadataWidget::setMetadata(Metadata metadata)
+void MetadataWidget::setMetadata(const QModelIndex& index)
 {
-    m_filePathLabel->setText(metadata.value("filePath").toString());
+    m_filePathLabel->setText(
+        index.sibling(index.row(), 1).data().toString());
     m_timestampLabel->setText(
-        metadata.value("timestamp").toDateTime().toString(Qt::ISODate));
+        index.sibling(index.row(), 6).data().toDateTime().toString(Qt::ISODate));
     m_modificationTimeLabel->setText(
-        metadata.value("modificationTime").toDateTime().toString(Qt::ISODate));
+        index.sibling(index.row(), 3).data().toDateTime().toString(Qt::ISODate));
     m_fileSizeLabel->setText(
-        fileSizeToString(metadata.value("fileSize").toULongLong()));
+        fileSizeToString(index.sibling(index.row(), 2).data().toULongLong()));
+    int w = index.sibling(index.row(), 4).data().toInt();
+    int h = index.sibling(index.row(), 5).data().toInt();
     m_imageSizeLabel->setText(
-        imageSizeToString(metadata.value("imageSize").toSize()));
+        imageSizeToString(QSize(w, h)));
     updateTags();
 }
 

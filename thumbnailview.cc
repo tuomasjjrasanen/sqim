@@ -29,5 +29,5 @@ void ThumbnailView::currentChanged(const QModelIndex& current,
                                    const QModelIndex& previous)
 {
     QListView::currentChanged(current, previous);
-    emit currentThumbnailChanged(model()->data(current, MetadataRole).toHash());
+    emit currentThumbnailChanged(current, previous);
 }

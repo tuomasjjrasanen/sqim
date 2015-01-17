@@ -14,14 +14,13 @@
 // You should have received a copy of the GNU General Public License
 // along with this program. If not, see <http://www.gnu.org/licenses/>.
 
-#include <QIcon>
 #include <QPainter>
 #include <QPixmap>
 
 #include "thumbnaildelegate.hh"
 
 ThumbnailDelegate::ThumbnailDelegate(QObject *parent)
-    : QItemDelegate(parent)
+    : QStyledItemDelegate(parent)
 {
 }
 
@@ -29,13 +28,15 @@ void ThumbnailDelegate::paint(QPainter *painter,
                               const QStyleOptionViewItem &option,
                               const QModelIndex &index) const
 {
+    // Only the thumbnail column is rendered here.
+    if (index.column() != 8)
+        return QStyledItemDelegate::paint(painter, option, index);
+
     QRect rect(option.rect);
     rect.setWidth(rect.width() - 3);
     rect.setHeight(rect.height() - 3);
 
-    QIcon icon = index.data(Qt::DecorationRole).value<QIcon>();
-
-    painter->drawPixmap(rect, icon.pixmap(rect.size()));
+    painter->drawPixmap(rect, QPixmap(index.data().toString()));
 
     // Draw rects to create more distinctive visualization for item
     // selection and current item.
@@ -49,4 +50,16 @@ void ThumbnailDelegate::paint(QPainter *painter,
         painter->drawRect(rect);
     }
     painter->restore();
+}
+
+QSize ThumbnailDelegate::sizeHint(const QStyleOptionViewItem& option,
+                                  const QModelIndex& index) const
+{
+    // Only the thumbnail column is rendered here.
+    if (index.column() != 8)
+        return QStyledItemDelegate::sizeHint(option, index);
+
+    int thumbnailPixelWidth = index.sibling(index.row(), 9).data().toInt();
+    int thumbnailPixelHeight = index.sibling(index.row(), 10).data().toInt();
+    return QSize(thumbnailPixelWidth, thumbnailPixelHeight);
 }

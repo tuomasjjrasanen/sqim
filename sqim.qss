@@ -18,6 +18,6 @@ ImageArea {
     background-color: grey;
 }
 
-ThumbnailView {
+QListView#ThumbnailView {
     background-color: grey;
 }

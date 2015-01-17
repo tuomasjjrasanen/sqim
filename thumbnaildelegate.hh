@@ -19,7 +19,7 @@
 
 #include <QtGui>
 
-class ThumbnailDelegate : public QItemDelegate
+class ThumbnailDelegate : public QStyledItemDelegate
 {
     Q_OBJECT
 
@@ -28,7 +28,7 @@ public:
 
     void paint(QPainter *painter, const QStyleOptionViewItem &option,
                const QModelIndex &index) const;
-
+    QSize sizeHint(const QStyleOptionViewItem& option, const QModelIndex& index) const;
 };
 
 #endif // THUMBNAILWIDGET_HH

@@ -20,9 +20,9 @@
 #include <QtSql>
 #include <QtGui>
 
-#include "imagewidget.hh"
+#include "imagearea.hh"
 #include "metadatawidget.hh"
-#include "thumbnailwidget.hh"
+#include "thumbnailview.hh"
 
 class MainWindow : public QMainWindow
 {
@@ -34,7 +34,16 @@ public:
     void openDir(QString dir, bool recursive);
     void openFiles(const QStringList& filePaths);
     void openPaths(const QStringList& paths, bool recursive);
+    void triggerSortAscTimeOrder();
+    void triggerSortDescTimeOrder();
     ~MainWindow();
+
+public slots:
+    void sortAscTimeOrder();
+    void sortDescTimeOrder();
+    void editSelectedThumbnails();
+    void tagSelectedThumbnails();
+    void updateTags();
 
 protected:
     virtual void closeEvent(QCloseEvent *event);
@@ -51,8 +60,9 @@ private:
     QDockWidget *m_metadataDockWidget;
     MetadataWidget *m_metadataWidget;
     QDockWidget *m_imageDockWidget;
-    ImageWidget *m_imageWidget;
-    ThumbnailWidget *m_thumbnailWidget;
+    ImageArea *m_imageArea;
+    ThumbnailView *m_thumbnailView;
+    QSqlTableModel *m_thumbnailModel;
 
     QAction *m_openDirAction;
     QAction *m_quitAction;
@@ -61,6 +71,13 @@ private:
     QAtomicInt m_openCount;
 
     QPushButton *m_cancelImportButton;
+
+    QActionGroup* m_sortActionGroup;
+    QAction* m_sortAscTimeOrderAction;
+    QAction* m_sortDescTimeOrderAction;
+    QAction* m_editAction;
+    QAction* m_tagAction;
+    QSqlQueryModel* m_tagModel;
 };
 
 #endif // MAINWINDOW_HH

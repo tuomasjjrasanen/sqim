@@ -79,32 +79,43 @@ ImageArea::~ImageArea()
 {
 }
 
-void ImageArea::setImage(Metadata metadata)
+void ImageArea::setImage(const QModelIndex& current)
 {
-    QString filePath = metadata.value("filePath").toString();
+    QString filePath = current.sibling(current.row(), 1).data().toString();
+    int orientation = current.sibling(current.row(), 7).data().toInt();
 
-    m_selectedImageMetadata = metadata;
+    m_imageFilePath = filePath;
+    m_imageOrientation = orientation;
+    m_isImageLoaded = false;
 
+    loadImage();
+}
+
+void ImageArea::loadImage()
+{
     if (!isVisible())
         return;
 
-    if (m_loadedImageMetadata == metadata)
+    if (m_isImageLoaded)
         return;
 
-    m_imageReader.setFileName(filePath);
-    m_originalImageSize = m_imageReader.size();
+    if (m_imageFilePath.isEmpty())
+        return;
+
+    m_imageReader.setFileName(m_imageFilePath);
+    m_imageSize = m_imageReader.size();
     m_imageReader.setScaledSize(m_imageReader.size() * 0.2);
-    m_transform = exifTransform(metadata);
+    m_transform = exifTransform(m_imageOrientation);
 
     QPixmap pixmap;
-    if (!QPixmapCache::find(filePath, &pixmap)) {
+    if (!QPixmapCache::find(m_imageFilePath, &pixmap)) {
         pixmap = QPixmap::fromImageReader(&m_imageReader)
             .transformed(m_transform);
-        QPixmapCache::insert(filePath, pixmap);
+        QPixmapCache::insert(m_imageFilePath, pixmap);
     }
     m_imageLabel->setPixmap(pixmap);
 
-    m_loadedImageMetadata = metadata;
+    m_isImageLoaded = true;
 
     zoomToFit();
 
@@ -202,13 +213,13 @@ void ImageArea::zoomTo(const qreal zoomLevel, const QPoint &focalPoint)
     QSize currentSize(m_imageLabel->size());
     QSize pixmapSize(m_imageLabel->pixmap()->size());
 
-    // If the current zoom exceeds the loaded pixmap, load the original
-    // full size image first and then zoom. This needs to be done,
-    // because initial images are down-scaled versions to make the UI
-    // snappier. Here we load the full size image Just-In-Time.
+    // If the current zoom exceeds the loaded pixmap, load the full size image
+    // first and then zoom. This needs to be done, because initial images are
+    // down-scaled versions to make the UI snappier. Here we load the full size
+    // image Just-In-Time.
     if (currentSize.width() > pixmapSize.width() ||
         currentSize.height() > pixmapSize.height()) {
-        if (m_originalImageSize != pixmapSize) {
+        if (m_imageSize != pixmapSize) {
             QPixmap pixmap(m_imageReader.fileName());
             m_imageLabel->setPixmap(pixmap.transformed(m_transform));
             zoomTo(currentSize.width() / qreal(pixmap.size().width()),
@@ -245,7 +256,7 @@ void ImageArea::rotateRight()
 void ImageArea::showEvent(QShowEvent *event)
 {
     QScrollArea::showEvent(event);
-    setImage(m_selectedImageMetadata);
+    loadImage();
 }
 
 void ImageArea::wheelEvent(QWheelEvent *event)

@@ -17,6 +17,7 @@
 #include "common.hh"
 #include "mainwindow.hh"
 #include "metadata.hh"
+#include "thumbnaildelegate.hh"
 
 static QStringList findFiles(QString dir, bool recursive)
 {
@@ -111,40 +112,6 @@ static Metadata import(const QString& filePath)
         return metadata;
     }
 
-    QSqlQuery query;
-    query.prepare("SELECT id FROM Image WHERE file_path == ?");
-    query.addBindValue(filePath);
-    if (!query.exec()) {
-        qWarning() << "failed to query the database for an image:"
-                   << query.lastError().databaseText();
-        metadata.clear();
-        return metadata;
-    }
-
-    if (!query.next()) {
-        query.prepare("INSERT INTO Image "
-                      "VALUES(NULL, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)");
-        query.addBindValue(filePath);
-        query.addBindValue(metadata.value("fileSize"));
-        query.addBindValue(metadata.value("modificationTime"));
-        QSize imageSize = metadata.value("imageSize").toSize();
-        query.addBindValue(imageSize.width());
-        query.addBindValue(imageSize.height());
-        query.addBindValue(metadata.value("timestamp"));
-        query.addBindValue(metadata.value("orientation"));
-        query.addBindValue(metadata.value("thumbnailFilePath"));
-        QSize thumbnailSize = metadata.value("thumbnailImageSize").toSize();
-        query.addBindValue(thumbnailSize.width());
-        query.addBindValue(thumbnailSize.height());
-
-        if (!query.exec()) {
-            qWarning() << "failed to store image info:"
-                       << query.lastError().databaseText();
-            metadata.clear();
-            return metadata;
-        }
-    }
-
     return metadata;
 }
 
@@ -154,14 +121,62 @@ MainWindow::MainWindow(QWidget *const parent)
     ,m_metadataDockWidget(new QDockWidget("&Metadata", this))
     ,m_metadataWidget(new MetadataWidget(m_metadataDockWidget))
     ,m_imageDockWidget(new QDockWidget("&Image", this))
-    ,m_imageWidget(new ImageWidget(m_imageDockWidget))
-    ,m_thumbnailWidget(new ThumbnailWidget(this))
+    ,m_imageArea(new ImageArea(m_imageDockWidget))
+    ,m_thumbnailView(new ThumbnailView(this))
+    ,m_thumbnailModel(new QSqlTableModel(this))
     ,m_openDirAction(new QAction("&Open directory...", this))
     ,m_quitAction(new QAction("&Quit", this))
     ,m_aboutAction(new QAction("&About", this))
     ,m_openCount()
     ,m_cancelImportButton(new QPushButton("Cancel import", this))
+    ,m_sortActionGroup(new QActionGroup(this))
+    ,m_sortAscTimeOrderAction(new QAction(QIcon(":/icons/sort_asc_date.png"),
+                                          "&Ascending time order",
+                                          m_sortActionGroup))
+    ,m_sortDescTimeOrderAction(new QAction(QIcon(":/icons/sort_desc_date.png"),
+                                           "&Descending time order",
+                                           m_sortActionGroup))
+    ,m_editAction(new QAction("Edit", this))
+    ,m_tagAction(new QAction("Add tag", this))
+    ,m_tagModel(new QSqlQueryModel(this))
 {
+    updateTags();
+
+    setContextMenuPolicy(Qt::ActionsContextMenu);
+    m_sortAscTimeOrderAction->setShortcut(
+        QKeySequence(Qt::Key_Less, Qt::Key_T));
+    m_sortDescTimeOrderAction->setShortcut(
+        QKeySequence(Qt::Key_Greater, Qt::Key_T));
+    m_editAction->setShortcut(QKeySequence(Qt::Key_E));
+
+    m_sortAscTimeOrderAction->setCheckable(true);
+    m_sortDescTimeOrderAction->setCheckable(true);
+
+    addAction(m_sortAscTimeOrderAction);
+    addAction(m_sortDescTimeOrderAction);
+    QAction *separator = new QAction(this);
+    separator->setSeparator(true);
+    addAction(separator);
+    addAction(m_editAction);
+    addAction(m_tagAction);
+
+    QToolBar* toolBar = addToolBar("Hep");
+    foreach (QAction* action, m_imageArea->actions())
+        toolBar->addAction(action);
+    toolBar->addAction(m_editAction);
+    toolBar->addAction(m_tagAction);
+    toolBar->addAction(m_sortAscTimeOrderAction);
+    toolBar->addAction(m_sortDescTimeOrderAction);
+
+    connect(m_sortAscTimeOrderAction, SIGNAL(triggered(bool)),
+            SLOT(sortAscTimeOrder()));
+    connect(m_sortDescTimeOrderAction, SIGNAL(triggered(bool)),
+            SLOT(sortDescTimeOrder()));
+    connect(m_editAction, SIGNAL(triggered(bool)),
+            SLOT(editSelectedThumbnails()));
+    connect(m_tagAction, SIGNAL(triggered(bool)),
+            SLOT(tagSelectedThumbnails()));
+
     m_cancelImportButton->hide();
 
     m_imageDockWidget->toggleViewAction()->setShortcut(
@@ -171,12 +186,26 @@ MainWindow::MainWindow(QWidget *const parent)
     m_openDirAction->setShortcut(QKeySequence(Qt::Key_O));
     m_quitAction->setShortcut(QKeySequence(Qt::Key_Q));
 
-    setCentralWidget(m_thumbnailWidget);
+    m_thumbnailModel->setTable("Image");
+    m_thumbnailModel->setEditStrategy(QSqlTableModel::OnManualSubmit);
+    m_thumbnailModel->select();
+    m_thumbnailView->setObjectName("ThumbnailView");
+    m_thumbnailView->setItemDelegate(new ThumbnailDelegate(this));
+    m_thumbnailView->setViewMode(QListView::IconMode);
+    m_thumbnailView->setMovement(QListView::Static);
+    m_thumbnailView->setSelectionMode(QListView::ExtendedSelection);
+    m_thumbnailView->setEditTriggers(QAbstractItemView::NoEditTriggers);
+    m_thumbnailView->setResizeMode(QListView::Adjust);
+    m_thumbnailView->setIconSize(QSize(80, 80));
+    m_thumbnailView->setUniformItemSizes(true);
+    m_thumbnailView->setModel(m_thumbnailModel);
+    m_thumbnailView->setModelColumn(8);
+    setCentralWidget(m_thumbnailView);
 
     m_metadataDockWidget->setWidget(m_metadataWidget);
     addDockWidget(Qt::BottomDockWidgetArea, m_metadataDockWidget);
 
-    m_imageDockWidget->setWidget(m_imageWidget);
+    m_imageDockWidget->setWidget(m_imageArea);
     addDockWidget(Qt::LeftDockWidgetArea, m_imageDockWidget);
 
     setStatusBar(new QStatusBar());
@@ -209,18 +238,21 @@ MainWindow::MainWindow(QWidget *const parent)
             SLOT(openDir()));
     connect(m_quitAction, SIGNAL(triggered(bool)),
             SLOT(close()));
-    m_metadataWidget->connect(m_thumbnailWidget,
-                          SIGNAL(currentThumbnailChanged(Metadata)),
-                          SLOT(setMetadata(Metadata)));
-    m_imageWidget->connect(m_thumbnailWidget,
-                           SIGNAL(currentThumbnailChanged(Metadata)),
-                           SLOT(setImage(Metadata)));
-    m_imageDockWidget->connect(m_thumbnailWidget,
-                               SIGNAL(currentThumbnailActivated(Metadata)),
+    m_metadataWidget->connect(m_thumbnailView,
+                              SIGNAL(currentThumbnailChanged(const QModelIndex&, const QModelIndex&)),
+                              SLOT(setMetadata(const QModelIndex&)));
+    m_imageArea->connect(m_thumbnailView,
+                         SIGNAL(currentThumbnailChanged(const QModelIndex&, const QModelIndex&)),
+                         SLOT(setImage(const QModelIndex&)));
+    m_imageDockWidget->connect(m_thumbnailView,
+                               SIGNAL(activated(const QModelIndex&)),
                                SLOT(show()));
     connect(m_aboutAction, SIGNAL(triggered(bool)), SLOT(about()));
     connect(m_cancelImportButton, SIGNAL(clicked()),
             SLOT(cancelImport()));
+
+    triggerSortAscTimeOrder();
+    m_thumbnailView->setCurrentIndex(m_thumbnailModel->index(0, 8));
 }
 
 void MainWindow::cancelImport()
@@ -306,13 +338,28 @@ void MainWindow::openPaths(const QStringList& paths, bool recursive)
 
 void MainWindow::importReadyAt(const int i)
 {
-    if (m_importer->resultAt(i).isEmpty()) {
+    Metadata metadata = m_importer->resultAt(i);
+    if (metadata.isEmpty())
         return;
-    }
 
-    if (m_thumbnailWidget->addThumbnail(m_importer->resultAt(i))) {
+    QString filePath = metadata.value("filePath").toString();
+
+    QSqlRecord record(m_thumbnailModel->record());
+    record.setValue(1, metadata.value("filePath"));
+    record.setValue(2, metadata.value("fileSize"));
+    record.setValue(3, metadata.value("modificationTime"));
+    QSize imageSize = metadata.value("imageSize").toSize();
+    record.setValue(4, imageSize.width());
+    record.setValue(5, imageSize.height());
+    record.setValue(6, metadata.value("timestamp"));
+    record.setValue(7, metadata.value("orientation"));
+    record.setValue(8, metadata.value("thumbnailFilePath"));
+    QSize thumbnailSize = metadata.value("thumbnailImageSize").toSize();
+    record.setValue(9, thumbnailSize.width());
+    record.setValue(10, thumbnailSize.height());
+    m_thumbnailModel->insertRecord(-1, record);
+    if (m_thumbnailModel->submitAll())
         m_openCount.fetchAndAddOrdered(1);
-    }
 }
 
 void MainWindow::importFinished()
@@ -322,8 +369,8 @@ void MainWindow::importFinished()
     statusBar()->removeWidget(m_cancelImportButton);
     statusBar()->showMessage(msg);
     m_openDirAction->setEnabled(true);
-    m_thumbnailWidget->triggerSortAscTimeOrder();
-    m_thumbnailWidget->setCurrentIndex(0);
+    triggerSortAscTimeOrder();
+    m_thumbnailView->setCurrentIndex(m_thumbnailModel->index(0, 8));
 }
 
 void MainWindow::closeEvent(QCloseEvent *event)
@@ -336,4 +383,77 @@ void MainWindow::closeEvent(QCloseEvent *event)
                       m_metadataDockWidget->isVisible());
 
     event->accept();
+}
+
+void MainWindow::tagSelectedThumbnails()
+{
+    QStringList tags;
+    for (int i = 0; i < m_tagModel->rowCount(); ++i) {
+        tags << m_tagModel->record(i).value(0).toString();
+    }
+    QString tag = QInputDialog::getItem(this, "Add tag to selected images",
+                                        "Tag", tags);
+
+    QItemSelectionModel *selectionModel = m_thumbnailView->selectionModel();
+    QModelIndexList selectedIndexes = selectionModel->selectedIndexes();
+
+    QSqlDatabase db = QSqlDatabase::database();
+    db.transaction();
+
+    foreach (QModelIndex index, selectedIndexes) {
+        QString filePath = index.sibling(index.row(), 1).data().toString();
+        QSqlQuery query;
+        if (!query.prepare("INSERT INTO Tagging(file_path, tag) VALUES(?, ?)"))
+            continue;
+
+        query.addBindValue(filePath);
+        query.addBindValue(tag);
+
+        query.exec();
+    }
+
+    db.commit();
+    updateTags();
+}
+
+void MainWindow::updateTags()
+{
+    QSqlQuery query;
+    query.exec("SELECT DISTINCT(tag) FROM Tagging ORDER BY tag;");
+    m_tagModel->setQuery(query);
+}
+
+void MainWindow::sortAscTimeOrder()
+{
+    m_thumbnailModel->sort(6, Qt::AscendingOrder);
+}
+
+void MainWindow::sortDescTimeOrder()
+{
+    m_thumbnailModel->sort(6, Qt::DescendingOrder);
+}
+
+void MainWindow::triggerSortAscTimeOrder()
+{
+    m_sortAscTimeOrderAction->trigger();
+}
+
+void MainWindow::triggerSortDescTimeOrder()
+{
+    m_sortDescTimeOrderAction->trigger();
+}
+
+void MainWindow::editSelectedThumbnails()
+{
+    QModelIndex currentIndex = m_thumbnailView->currentIndex();
+    QItemSelectionModel *selectionModel = m_thumbnailView->selectionModel();
+    QModelIndexList selectedIndexes = selectionModel->selectedIndexes();
+    QStringList filePaths;
+
+    foreach (QModelIndex index, selectedIndexes) {
+        QString filePath = index.sibling(index.row(), 1).data().toString();
+        filePaths.append(filePath);
+    }
+
+    QProcess::startDetached("gimp", filePaths);
 }
