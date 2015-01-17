@@ -210,25 +210,13 @@ MainWindow::MainWindow(QWidget *const parent)
 
     setStatusBar(new QStatusBar());
 
-    setMenuBar(new QMenuBar());
-
-    QMenu *fileMenu = menuBar()->addMenu("&File");
-    fileMenu->addAction(m_openDirAction);
-    fileMenu->addAction(m_quitAction);
-    fileMenu->addSeparator();
-
-    QMenu *windowsMenu = menuBar()->addMenu("&Windows");
-    windowsMenu->addAction(m_imageDockWidget->toggleViewAction());
-    windowsMenu->addAction(m_metadataDockWidget->toggleViewAction());
+    setupMenus();
 
     QSettings settings;
     m_imageDockWidget->setVisible(
         settings.value("imageDockWidget/visible", true).toBool());
     m_metadataDockWidget->setVisible(
         settings.value("metadataDockWidget/visible", true).toBool());
-
-    QMenu *helpMenu = menuBar()->addMenu("&Help");
-    helpMenu->addAction(m_aboutAction);
 
     connect(m_importer, SIGNAL(finished()),
             SLOT(importFinished()));
@@ -456,4 +444,21 @@ void MainWindow::editSelectedImages()
     }
 
     QProcess::startDetached("gimp", filePaths);
+}
+
+void MainWindow::setupMenus()
+{
+    setMenuBar(new QMenuBar());
+
+    QMenu *fileMenu = menuBar()->addMenu("&File");
+    fileMenu->addAction(m_openDirAction);
+    fileMenu->addAction(m_quitAction);
+    fileMenu->addSeparator();
+
+    QMenu *windowsMenu = menuBar()->addMenu("&Windows");
+    windowsMenu->addAction(m_imageDockWidget->toggleViewAction());
+    windowsMenu->addAction(m_metadataDockWidget->toggleViewAction());
+
+    QMenu *helpMenu = menuBar()->addMenu("&Help");
+    helpMenu->addAction(m_aboutAction);
 }
