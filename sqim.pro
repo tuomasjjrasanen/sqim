@@ -14,7 +14,7 @@ SOURCES +=\
     main.cc \
     mainwindow.cc \
     metadatawidget.cc \
-    imagearea.cc \
+    imageview.cc \
     metadata.cc \
     common.cc \
     imageitemdelegate.cc
@@ -23,7 +23,7 @@ HEADERS  += \
     imagelistview.hh \
     mainwindow.hh \
     metadatawidget.hh \
-    imagearea.hh \
+    imageview.hh \
     metadata.hh \
     common.hh \
     imageitemdelegate.hh

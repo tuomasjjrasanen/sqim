@@ -17,9 +17,9 @@
 #include <QPixmapCache>
 #include <QScrollBar>
 
-#include "imagearea.hh"
+#include "imageview.hh"
 
-ImageArea::ImageArea(QWidget *parent)
+ImageView::ImageView(QWidget *parent)
     :QScrollArea(parent)
     ,m_imageLabel(new QLabel(this))
     ,m_rotateLeftAction(new QAction(QIcon(":/icons/rotate_left.png"),
@@ -75,11 +75,11 @@ ImageArea::ImageArea(QWidget *parent)
     m_rotateRightAction->setEnabled(false);
 }
 
-ImageArea::~ImageArea()
+ImageView::~ImageView()
 {
 }
 
-void ImageArea::setImage(const QModelIndex& current)
+void ImageView::setImage(const QModelIndex& current)
 {
     QString filePath = current.sibling(current.row(), 1).data().toString();
     int orientation = current.sibling(current.row(), 7).data().toInt();
@@ -91,7 +91,7 @@ void ImageArea::setImage(const QModelIndex& current)
     loadImage();
 }
 
-void ImageArea::loadImage()
+void ImageView::loadImage()
 {
     if (!isVisible())
         return;
@@ -129,41 +129,41 @@ void ImageArea::loadImage()
     m_zoomTo100Action->setEnabled(m_imageLabel->pixmap());
 }
 
-const QPoint ImageArea::viewportCenter() const {
+const QPoint ImageView::viewportCenter() const {
     return QPoint(viewport()->width() / 2, viewport()->height() / 2);
 }
 
-void ImageArea::zoomIn()
+void ImageView::zoomIn()
 {
     zoomIn(viewportCenter());
 }
 
-void ImageArea::zoomOut()
+void ImageView::zoomOut()
 {
     zoomOut(viewportCenter());
 }
 
-void ImageArea::zoomIn(const QPoint &focalPoint)
+void ImageView::zoomIn(const QPoint &focalPoint)
 {
     zoomBy(1.25, focalPoint);
 }
 
-void ImageArea::zoomOut(const QPoint &focalPoint)
+void ImageView::zoomOut(const QPoint &focalPoint)
 {
     zoomBy(0.8, focalPoint);
 }
 
-void ImageArea::zoomBy(const qreal zoomFactor)
+void ImageView::zoomBy(const qreal zoomFactor)
 {
     zoomTo(m_zoomLevel * zoomFactor);
 }
 
-void ImageArea::zoomBy(const qreal zoomFactor, const QPoint &focalPoint)
+void ImageView::zoomBy(const qreal zoomFactor, const QPoint &focalPoint)
 {
     zoomTo(m_zoomLevel * zoomFactor, focalPoint);
 }
 
-void ImageArea::adjustScrollBars(const QPoint &focalPoint)
+void ImageView::adjustScrollBars(const QPoint &focalPoint)
 {
     const QSizeF viewportSizeF(viewport()->size());
     const QPointF focalPointF(focalPoint);
@@ -177,7 +177,7 @@ void ImageArea::adjustScrollBars(const QPoint &focalPoint)
                                       * verticalScrollBar()->maximum()));
 }
 
-void ImageArea::zoomToFit()
+void ImageView::zoomToFit()
 {
     if (!m_imageLabel->pixmap()) {
         // Image has not been set yet.
@@ -190,17 +190,17 @@ void ImageArea::zoomToFit()
     zoomTo(qMin(1.0, qMin(b.width() / a.width(), b.height() / a.height())));
 }
 
-void ImageArea::zoomTo100()
+void ImageView::zoomTo100()
 {
     zoomTo(1.0);
 }
 
-void ImageArea::zoomTo(const qreal zoomLevel)
+void ImageView::zoomTo(const qreal zoomLevel)
 {
     zoomTo(zoomLevel, viewportCenter());
 }
 
-void ImageArea::zoomTo(const qreal zoomLevel, const QPoint &focalPoint)
+void ImageView::zoomTo(const qreal zoomLevel, const QPoint &focalPoint)
 {
     if (!m_imageLabel->pixmap()) {
         // Image has not been set yet.
@@ -230,7 +230,7 @@ void ImageArea::zoomTo(const qreal zoomLevel, const QPoint &focalPoint)
     adjustScrollBars(focalPoint);
 }
 
-void ImageArea::rotate(qreal degrees)
+void ImageView::rotate(qreal degrees)
 {
     if (!m_imageLabel->pixmap()) {
         // Image has not been set yet.
@@ -243,23 +243,23 @@ void ImageArea::rotate(qreal degrees)
     zoomTo(m_zoomLevel * 1.0);
 }
 
-void ImageArea::rotateLeft()
+void ImageView::rotateLeft()
 {
     rotate(-90);
 }
 
-void ImageArea::rotateRight()
+void ImageView::rotateRight()
 {
     rotate(90);
 }
 
-void ImageArea::showEvent(QShowEvent *event)
+void ImageView::showEvent(QShowEvent *event)
 {
     QScrollArea::showEvent(event);
     loadImage();
 }
 
-void ImageArea::wheelEvent(QWheelEvent *event)
+void ImageView::wheelEvent(QWheelEvent *event)
 {
     if (event->modifiers() & Qt::ControlModifier
         && event->orientation() == Qt::Vertical
@@ -275,7 +275,7 @@ void ImageArea::wheelEvent(QWheelEvent *event)
     QScrollArea::wheelEvent(event);
 }
 
-QSize ImageArea::sizeHint() const
+QSize ImageView::sizeHint() const
 {
     return QSize(640, 480);
 }

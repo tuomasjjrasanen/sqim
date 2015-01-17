@@ -20,7 +20,7 @@
 #include <QtSql>
 #include <QtGui>
 
-#include "imagearea.hh"
+#include "imageview.hh"
 #include "metadatawidget.hh"
 #include "imagelistview.hh"
 
@@ -60,7 +60,7 @@ private:
     QDockWidget *m_metadataDockWidget;
     MetadataWidget *m_metadataWidget;
     QDockWidget *m_imageDockWidget;
-    ImageArea *m_imageArea;
+    ImageView *m_imageView;
     ImageListView *m_imageListView;
     QSqlTableModel *m_imageModel;
 

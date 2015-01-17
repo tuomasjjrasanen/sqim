@@ -14,20 +14,20 @@
 // You should have received a copy of the GNU General Public License
 // along with this program. If not, see <http://www.gnu.org/licenses/>.
 
-#ifndef IMAGEAREA_HH
-#define IMAGEAREA_HH
+#ifndef IMAGEVIEW_HH
+#define IMAGEVIEW_HH
 
 #include <QtGui>
 
 #include "metadata.hh"
 
-class ImageArea : public QScrollArea
+class ImageView : public QScrollArea
 {
     Q_OBJECT
 
 public:
-    explicit ImageArea(QWidget *parent = 0);
-    ~ImageArea();
+    explicit ImageView(QWidget *parent = 0);
+    ~ImageView();
 
     virtual QSize sizeHint() const;
 
@@ -76,4 +76,4 @@ private:
     QTransform m_transform;
 };
 
-#endif // IMAGEAREA_HH
+#endif // IMAGEVIEW_HH

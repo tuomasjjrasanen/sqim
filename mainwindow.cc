@@ -121,7 +121,7 @@ MainWindow::MainWindow(QWidget *const parent)
     ,m_metadataDockWidget(new QDockWidget("&Metadata", this))
     ,m_metadataWidget(new MetadataWidget(m_metadataDockWidget))
     ,m_imageDockWidget(new QDockWidget("&Image", this))
-    ,m_imageArea(new ImageArea(m_imageDockWidget))
+    ,m_imageView(new ImageView(m_imageDockWidget))
     ,m_imageListView(new ImageListView(this))
     ,m_imageModel(new QSqlTableModel(this))
     ,m_openDirAction(new QAction("&Open directory...", this))
@@ -161,7 +161,7 @@ MainWindow::MainWindow(QWidget *const parent)
     addAction(m_tagAction);
 
     QToolBar* toolBar = addToolBar("Hep");
-    foreach (QAction* action, m_imageArea->actions())
+    foreach (QAction* action, m_imageView->actions())
         toolBar->addAction(action);
     toolBar->addAction(m_editAction);
     toolBar->addAction(m_tagAction);
@@ -205,7 +205,7 @@ MainWindow::MainWindow(QWidget *const parent)
     m_metadataDockWidget->setWidget(m_metadataWidget);
     addDockWidget(Qt::BottomDockWidgetArea, m_metadataDockWidget);
 
-    m_imageDockWidget->setWidget(m_imageArea);
+    m_imageDockWidget->setWidget(m_imageView);
     addDockWidget(Qt::LeftDockWidgetArea, m_imageDockWidget);
 
     setStatusBar(new QStatusBar());
@@ -241,7 +241,7 @@ MainWindow::MainWindow(QWidget *const parent)
     m_metadataWidget->connect(m_imageListView,
                               SIGNAL(currentImageChanged(const QModelIndex&, const QModelIndex&)),
                               SLOT(setMetadata(const QModelIndex&)));
-    m_imageArea->connect(m_imageListView,
+    m_imageView->connect(m_imageListView,
                          SIGNAL(currentImageChanged(const QModelIndex&, const QModelIndex&)),
                          SLOT(setImage(const QModelIndex&)));
     m_imageDockWidget->connect(m_imageListView,
