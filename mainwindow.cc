@@ -193,8 +193,7 @@ MainWindow::MainWindow(QWidget *const parent)
 
     loadSettings();
 
-    triggerSortAscTimeOrder();
-    m_imageListView->setCurrentIndex(m_imageModel->index(0, 8));
+    resetImageListView();
 }
 
 void MainWindow::cancelImport()
@@ -311,8 +310,7 @@ void MainWindow::importFinished()
     statusBar()->removeWidget(m_cancelImportButton);
     statusBar()->showMessage(msg);
     m_openDirAction->setEnabled(true);
-    triggerSortAscTimeOrder();
-    m_imageListView->setCurrentIndex(m_imageModel->index(0, 8));
+    resetImageListView();
 }
 
 void MainWindow::closeEvent(QCloseEvent *event)
@@ -488,4 +486,10 @@ void MainWindow::setupShortcuts()
     m_openDirAction->setShortcut(QKeySequence(Qt::Key_O));
     m_quitAction->setShortcut(QKeySequence(Qt::Key_Q));
 
+}
+
+void MainWindow::resetImageListView()
+{
+    triggerSortAscTimeOrder();
+    m_imageListView->setCurrentIndex(m_imageModel->index(0, 8));
 }
