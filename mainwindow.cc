@@ -155,13 +155,7 @@ MainWindow::MainWindow(QWidget *const parent)
     addAction(m_editAction);
     addAction(m_tagAction);
 
-    QToolBar* toolBar = addToolBar("Hep");
-    foreach (QAction* action, m_imageView->actions())
-        toolBar->addAction(action);
-    toolBar->addAction(m_editAction);
-    toolBar->addAction(m_tagAction);
-    toolBar->addAction(m_sortAscTimeOrderAction);
-    toolBar->addAction(m_sortDescTimeOrderAction);
+    setupToolBars();
 
     connectSignals();
 
@@ -486,6 +480,17 @@ void MainWindow::setupShortcuts()
     m_openDirAction->setShortcut(QKeySequence(Qt::Key_O));
     m_quitAction->setShortcut(QKeySequence(Qt::Key_Q));
 
+}
+
+void MainWindow::setupToolBars()
+{
+    QToolBar* toolBar = addToolBar("Hep");
+    foreach (QAction* action, m_imageView->actions())
+        toolBar->addAction(action);
+    toolBar->addAction(m_editAction);
+    toolBar->addAction(m_tagAction);
+    toolBar->addAction(m_sortAscTimeOrderAction);
+    toolBar->addAction(m_sortDescTimeOrderAction);
 }
 
 void MainWindow::resetImageListView()
