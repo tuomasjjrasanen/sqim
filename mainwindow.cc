@@ -118,10 +118,10 @@ static Metadata import(const QString& filePath)
 MainWindow::MainWindow(QWidget *const parent)
     :QMainWindow(parent)
     ,m_importer(new QFutureWatcher<Metadata>(this))
-    ,m_metadataDockWidget(new QDockWidget("&Metadata", this))
-    ,m_metadataWidget(new MetadataWidget(m_metadataDockWidget))
-    ,m_imageDockWidget(new QDockWidget("&Image", this))
-    ,m_imageView(new ImageView(m_imageDockWidget))
+    ,m_metadataDockWidget(new QDockWidget(this))
+    ,m_metadataWidget(new MetadataWidget(this))
+    ,m_imageDockWidget(new QDockWidget(this))
+    ,m_imageView(new ImageView(this))
     ,m_imageListView(new ImageListView(this))
     ,m_imageModel(new QSqlTableModel(this))
     ,m_openCount()
@@ -385,6 +385,9 @@ void MainWindow::connectSignals()
 }
 void MainWindow::setupDockWidgets()
 {
+    m_metadataDockWidget->setWindowTitle("&Metadata");
+    m_imageDockWidget->setWindowTitle("&Image");
+
     m_metadataDockWidget->setWidget(m_metadataWidget);
     addDockWidget(Qt::BottomDockWidgetArea, m_metadataDockWidget);
 
