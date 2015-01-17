@@ -125,7 +125,7 @@ MainWindow::MainWindow(QWidget *const parent)
     ,m_imageListView(new ImageListView(this))
     ,m_imageModel(new QSqlTableModel(this))
     ,m_openCount()
-    ,m_cancelImportButton(new QPushButton("Cancel import", this))
+    ,m_cancelImportButton(new QPushButton(this))
     ,m_tagModel(new QSqlQueryModel(this))
 
     ,m_aboutAction(new QAction(this))
@@ -150,7 +150,7 @@ MainWindow::MainWindow(QWidget *const parent)
 
     connectSignals();
 
-    resetWidgets();
+    resetImageListView();
 }
 
 void MainWindow::cancelImport()
@@ -499,12 +499,6 @@ void MainWindow::setupActions()
         QKeySequence(Qt::Key_Greater, Qt::Key_T));
 }
 
-void MainWindow::resetWidgets()
-{
-    m_cancelImportButton->hide();
-    resetImageListView();
-}
-
 void MainWindow::resetImageListView()
 {
     triggerSortAscDate();
@@ -513,5 +507,8 @@ void MainWindow::resetImageListView()
 
 void MainWindow::setupStatusBar()
 {
+    m_cancelImportButton->setText("Cancel import");
+    m_cancelImportButton->hide();
+
     setStatusBar(new QStatusBar());
 }

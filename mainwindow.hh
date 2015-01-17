@@ -66,7 +66,6 @@ private:
     void setupStatusBar();
     void setupToolBars();
 
-    void resetWidgets();
     void resetImageListView();
 
     QFutureWatcher<Metadata> *m_importer;
