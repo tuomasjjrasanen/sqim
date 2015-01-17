@@ -124,20 +124,16 @@ MainWindow::MainWindow(QWidget *const parent)
     ,m_imageView(new ImageView(m_imageDockWidget))
     ,m_imageListView(new ImageListView(this))
     ,m_imageModel(new QSqlTableModel(this))
-    ,m_openDirAction(new QAction("&Open directory...", this))
-    ,m_quitAction(new QAction("&Quit", this))
-    ,m_aboutAction(new QAction("&About", this))
+    ,m_openDirAction(new QAction(this))
+    ,m_quitAction(new QAction(this))
+    ,m_aboutAction(new QAction(this))
     ,m_openCount()
     ,m_cancelImportButton(new QPushButton("Cancel import", this))
     ,m_sortActionGroup(new QActionGroup(this))
-    ,m_sortAscTimeOrderAction(new QAction(QIcon(":/icons/sort_asc_date.png"),
-                                          "&Ascending time order",
-                                          m_sortActionGroup))
-    ,m_sortDescTimeOrderAction(new QAction(QIcon(":/icons/sort_desc_date.png"),
-                                           "&Descending time order",
-                                           m_sortActionGroup))
-    ,m_editAction(new QAction("Edit", this))
-    ,m_tagAction(new QAction("Add tag", this))
+    ,m_sortAscTimeOrderAction(new QAction(this))
+    ,m_sortDescTimeOrderAction(new QAction(this))
+    ,m_editAction(new QAction(this))
+    ,m_tagAction(new QAction(this))
     ,m_tagModel(new QSqlQueryModel(this))
 {
     setupActions();
@@ -463,14 +459,25 @@ void MainWindow::setupCentralWidget()
 
 void MainWindow::setupActions()
 {
+    m_aboutAction->setText("&About");
+    m_editAction->setText("Edit");
+    m_openDirAction->setText("&Open directory...");
+    m_quitAction->setText("&Quit");
+    m_sortAscTimeOrderAction->setText("&Ascending time order");
+    m_sortDescTimeOrderAction->setText("&Descending time order");
+    m_tagAction->setText("Add tag");
+
+    m_sortAscTimeOrderAction->setIcon(QIcon(":/icons/sort_asc_date.png"));
+    m_sortDescTimeOrderAction->setIcon(QIcon(":/icons/sort_desc_date.png"));
+
     m_sortAscTimeOrderAction->setCheckable(true);
     m_sortDescTimeOrderAction->setCheckable(true);
 
+    m_sortActionGroup->addAction(m_sortAscTimeOrderAction);
+    m_sortActionGroup->addAction(m_sortDescTimeOrderAction);
+
     addAction(m_sortAscTimeOrderAction);
     addAction(m_sortDescTimeOrderAction);
-    QAction *separator = new QAction(this);
-    separator->setSeparator(true);
-    addAction(separator);
     addAction(m_editAction);
     addAction(m_tagAction);
 
