@@ -140,24 +140,17 @@ MainWindow::MainWindow(QWidget *const parent)
     ,m_tagAction(new QAction("Add tag", this))
     ,m_tagModel(new QSqlQueryModel(this))
 {
-    loadTags();
-
     setupActions();
     setupToolBars();
-
-    connectSignals();
-
-    setupShortcuts();
-
     setupCentralWidget();
-
     setupDockWidgets();
-
     setupStatusBar();
-
     setupMenus();
 
+    loadTags();
     loadSettings();
+
+    connectSignals();
 
     resetWidgets();
 }
@@ -438,22 +431,6 @@ void MainWindow::saveSettings()
 
 }
 
-void MainWindow::setupShortcuts()
-{
-    m_sortAscTimeOrderAction->setShortcut(
-        QKeySequence(Qt::Key_Less, Qt::Key_T));
-    m_sortDescTimeOrderAction->setShortcut(
-        QKeySequence(Qt::Key_Greater, Qt::Key_T));
-    m_editAction->setShortcut(QKeySequence(Qt::Key_E));
-    m_imageDockWidget->toggleViewAction()->setShortcut(
-        QKeySequence(Qt::Key_I));
-    m_metadataDockWidget->toggleViewAction()->setShortcut(
-        QKeySequence(Qt::Key_M));
-    m_openDirAction->setShortcut(QKeySequence(Qt::Key_O));
-    m_quitAction->setShortcut(QKeySequence(Qt::Key_Q));
-
-}
-
 void MainWindow::setupToolBars()
 {
     QToolBar* toolBar = addToolBar("Hep");
@@ -496,6 +473,18 @@ void MainWindow::setupActions()
     addAction(separator);
     addAction(m_editAction);
     addAction(m_tagAction);
+
+    m_sortAscTimeOrderAction->setShortcut(
+        QKeySequence(Qt::Key_Less, Qt::Key_T));
+    m_sortDescTimeOrderAction->setShortcut(
+        QKeySequence(Qt::Key_Greater, Qt::Key_T));
+    m_editAction->setShortcut(QKeySequence(Qt::Key_E));
+    m_imageDockWidget->toggleViewAction()->setShortcut(
+        QKeySequence(Qt::Key_I));
+    m_metadataDockWidget->toggleViewAction()->setShortcut(
+        QKeySequence(Qt::Key_M));
+    m_openDirAction->setShortcut(QKeySequence(Qt::Key_O));
+    m_quitAction->setShortcut(QKeySequence(Qt::Key_Q));
 }
 
 void MainWindow::resetWidgets()

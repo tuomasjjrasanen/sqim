@@ -63,7 +63,6 @@ private:
     void setupCentralWidget();
     void setupDockWidgets();
     void setupMenus();
-    void setupShortcuts();
     void setupStatusBar();
     void setupToolBars();
 
