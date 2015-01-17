@@ -147,8 +147,6 @@ MainWindow::MainWindow(QWidget *const parent)
 
     connectSignals();
 
-    m_cancelImportButton->hide();
-
     setupShortcuts();
 
     setupCentralWidget();
@@ -161,7 +159,7 @@ MainWindow::MainWindow(QWidget *const parent)
 
     loadSettings();
 
-    resetImageListView();
+    resetWidgets();
 }
 
 void MainWindow::cancelImport()
@@ -498,6 +496,12 @@ void MainWindow::setupActions()
     addAction(separator);
     addAction(m_editAction);
     addAction(m_tagAction);
+}
+
+void MainWindow::resetWidgets()
+{
+    m_cancelImportButton->hide();
+    resetImageListView();
 }
 
 void MainWindow::resetImageListView()
