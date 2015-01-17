@@ -56,6 +56,7 @@ private slots:
     void cancelImport();
 
 private:
+    void setupDockWidgets();
     void setupMenus();
 
     QFutureWatcher<Metadata> *m_importer;

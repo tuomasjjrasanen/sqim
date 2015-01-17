@@ -202,11 +202,7 @@ MainWindow::MainWindow(QWidget *const parent)
     m_imageListView->setModelColumn(8);
     setCentralWidget(m_imageListView);
 
-    m_metadataDockWidget->setWidget(m_metadataWidget);
-    addDockWidget(Qt::BottomDockWidgetArea, m_metadataDockWidget);
-
-    m_imageDockWidget->setWidget(m_imageView);
-    addDockWidget(Qt::LeftDockWidgetArea, m_imageDockWidget);
+    setupDockWidgets();
 
     setStatusBar(new QStatusBar());
 
@@ -444,6 +440,15 @@ void MainWindow::editSelectedImages()
     }
 
     QProcess::startDetached("gimp", filePaths);
+}
+
+void MainWindow::setupDockWidgets()
+{
+    m_metadataDockWidget->setWidget(m_metadataWidget);
+    addDockWidget(Qt::BottomDockWidgetArea, m_metadataDockWidget);
+
+    m_imageDockWidget->setWidget(m_imageView);
+    addDockWidget(Qt::LeftDockWidgetArea, m_imageDockWidget);
 }
 
 void MainWindow::setupMenus()
