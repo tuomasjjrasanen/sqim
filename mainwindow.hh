@@ -77,20 +77,21 @@ private:
     ImageListView *m_imageListView;
     QSqlTableModel *m_imageModel;
 
-    QAction *m_openDirAction;
-    QAction *m_quitAction;
-    QAction *m_aboutAction;
 
     QAtomicInt m_openCount;
 
     QPushButton *m_cancelImportButton;
+    QSqlQueryModel* m_tagModel;
 
-    QActionGroup* m_sortActionGroup;
+    QAction* m_aboutAction;
+    QAction* m_editAction;
+    QAction* m_openDirAction;
+    QAction* m_quitAction;
     QAction* m_sortAscTimeOrderAction;
     QAction* m_sortDescTimeOrderAction;
-    QAction* m_editAction;
     QAction* m_tagAction;
-    QSqlQueryModel* m_tagModel;
+    QActionGroup* m_sortActionGroup;
+
 };
 
 #endif // MAINWINDOW_HH

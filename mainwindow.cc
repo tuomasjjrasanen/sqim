@@ -124,17 +124,19 @@ MainWindow::MainWindow(QWidget *const parent)
     ,m_imageView(new ImageView(m_imageDockWidget))
     ,m_imageListView(new ImageListView(this))
     ,m_imageModel(new QSqlTableModel(this))
-    ,m_openDirAction(new QAction(this))
-    ,m_quitAction(new QAction(this))
-    ,m_aboutAction(new QAction(this))
     ,m_openCount()
     ,m_cancelImportButton(new QPushButton("Cancel import", this))
-    ,m_sortActionGroup(new QActionGroup(this))
+    ,m_tagModel(new QSqlQueryModel(this))
+
+    ,m_aboutAction(new QAction(this))
+    ,m_editAction(new QAction(this))
+    ,m_openDirAction(new QAction(this))
+    ,m_quitAction(new QAction(this))
     ,m_sortAscTimeOrderAction(new QAction(this))
     ,m_sortDescTimeOrderAction(new QAction(this))
-    ,m_editAction(new QAction(this))
     ,m_tagAction(new QAction(this))
-    ,m_tagModel(new QSqlQueryModel(this))
+
+    ,m_sortActionGroup(new QActionGroup(this))
 {
     setupActions();
     setupToolBars();
