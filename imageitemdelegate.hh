@@ -14,29 +14,21 @@
 // You should have received a copy of the GNU General Public License
 // along with this program. If not, see <http://www.gnu.org/licenses/>.
 
-#ifndef THUMBNAILVIEW_HH
-#define THUMBNAILVIEW_HH
+#ifndef IMAGEITEMDELEGATE_HH
+#define IMAGEITEMDELEGATE_HH
 
 #include <QtGui>
 
-#include "metadata.hh"
-
-class ThumbnailView : public QListView
+class ImageItemDelegate : public QStyledItemDelegate
 {
     Q_OBJECT
-    
+
 public:
-    explicit ThumbnailView(QWidget* parent = 0);
-    ~ThumbnailView();
+    explicit ImageItemDelegate(QObject *parent = 0);
 
-signals:
-    void currentThumbnailChanged(const QModelIndex& current,
-                                 const QModelIndex& previous);
-
-protected:
-    virtual void currentChanged(const QModelIndex& current,
-                                const QModelIndex& previous);
-
+    void paint(QPainter *painter, const QStyleOptionViewItem &option,
+               const QModelIndex &index) const;
+    QSize sizeHint(const QStyleOptionViewItem& option, const QModelIndex& index) const;
 };
 
-#endif // THUMBNAILVIEW_HH
+#endif // IMAGEITEMDELEGATE_HH

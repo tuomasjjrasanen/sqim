@@ -14,20 +14,29 @@
 // You should have received a copy of the GNU General Public License
 // along with this program. If not, see <http://www.gnu.org/licenses/>.
 
-#include "thumbnailview.hh"
+#ifndef IMAGELISTVIEW_HH
+#define IMAGELISTVIEW_HH
 
-ThumbnailView::ThumbnailView(QWidget* parent)
-    :QListView(parent)
-{
-}
+#include <QtGui>
 
-ThumbnailView::~ThumbnailView()
-{
-}
+#include "metadata.hh"
 
-void ThumbnailView::currentChanged(const QModelIndex& current,
-                                   const QModelIndex& previous)
+class ImageListView : public QListView
 {
-    QListView::currentChanged(current, previous);
-    emit currentThumbnailChanged(current, previous);
-}
+    Q_OBJECT
+    
+public:
+    explicit ImageListView(QWidget* parent = 0);
+    ~ImageListView();
+
+signals:
+    void currentImageChanged(const QModelIndex& current,
+                             const QModelIndex& previous);
+
+protected:
+    virtual void currentChanged(const QModelIndex& current,
+                                const QModelIndex& previous);
+
+};
+
+#endif // IMAGELISTVIEW_HH

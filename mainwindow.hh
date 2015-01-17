@@ -22,7 +22,7 @@
 
 #include "imagearea.hh"
 #include "metadatawidget.hh"
-#include "thumbnailview.hh"
+#include "imagelistview.hh"
 
 class MainWindow : public QMainWindow
 {
@@ -41,8 +41,8 @@ public:
 public slots:
     void sortAscTimeOrder();
     void sortDescTimeOrder();
-    void editSelectedThumbnails();
-    void tagSelectedThumbnails();
+    void editSelectedImages();
+    void tagSelectedImages();
     void updateTags();
 
 protected:
@@ -61,8 +61,8 @@ private:
     MetadataWidget *m_metadataWidget;
     QDockWidget *m_imageDockWidget;
     ImageArea *m_imageArea;
-    ThumbnailView *m_thumbnailView;
-    QSqlTableModel *m_thumbnailModel;
+    ImageListView *m_imageListView;
+    QSqlTableModel *m_imageModel;
 
     QAction *m_openDirAction;
     QAction *m_quitAction;

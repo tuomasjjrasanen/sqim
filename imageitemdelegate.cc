@@ -17,14 +17,14 @@
 #include <QPainter>
 #include <QPixmap>
 
-#include "thumbnaildelegate.hh"
+#include "imageitemdelegate.hh"
 
-ThumbnailDelegate::ThumbnailDelegate(QObject *parent)
+ImageItemDelegate::ImageItemDelegate(QObject *parent)
     : QStyledItemDelegate(parent)
 {
 }
 
-void ThumbnailDelegate::paint(QPainter *painter,
+void ImageItemDelegate::paint(QPainter *painter,
                               const QStyleOptionViewItem &option,
                               const QModelIndex &index) const
 {
@@ -52,7 +52,7 @@ void ThumbnailDelegate::paint(QPainter *painter,
     painter->restore();
 }
 
-QSize ThumbnailDelegate::sizeHint(const QStyleOptionViewItem& option,
+QSize ImageItemDelegate::sizeHint(const QStyleOptionViewItem& option,
                                   const QModelIndex& index) const
 {
     // Only the thumbnail column is rendered here.

@@ -10,23 +10,23 @@ VERSION = 0.1.0
 QMAKE_STRIP =
 
 SOURCES +=\
-    thumbnailview.cc \
+    imagelistview.cc \
     main.cc \
     mainwindow.cc \
     metadatawidget.cc \
     imagearea.cc \
     metadata.cc \
     common.cc \
-    thumbnaildelegate.cc
+    imageitemdelegate.cc
 
 HEADERS  += \
-    thumbnailview.hh \
+    imagelistview.hh \
     mainwindow.hh \
     metadatawidget.hh \
     imagearea.hh \
     metadata.hh \
     common.hh \
-    thumbnaildelegate.hh
+    imageitemdelegate.hh
 
 FORMS    +=
 

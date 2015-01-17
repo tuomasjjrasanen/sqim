@@ -17,7 +17,7 @@
 #include "common.hh"
 #include "mainwindow.hh"
 #include "metadata.hh"
-#include "thumbnaildelegate.hh"
+#include "imageitemdelegate.hh"
 
 static QStringList findFiles(QString dir, bool recursive)
 {
@@ -122,8 +122,8 @@ MainWindow::MainWindow(QWidget *const parent)
     ,m_metadataWidget(new MetadataWidget(m_metadataDockWidget))
     ,m_imageDockWidget(new QDockWidget("&Image", this))
     ,m_imageArea(new ImageArea(m_imageDockWidget))
-    ,m_thumbnailView(new ThumbnailView(this))
-    ,m_thumbnailModel(new QSqlTableModel(this))
+    ,m_imageListView(new ImageListView(this))
+    ,m_imageModel(new QSqlTableModel(this))
     ,m_openDirAction(new QAction("&Open directory...", this))
     ,m_quitAction(new QAction("&Quit", this))
     ,m_aboutAction(new QAction("&About", this))
@@ -173,9 +173,9 @@ MainWindow::MainWindow(QWidget *const parent)
     connect(m_sortDescTimeOrderAction, SIGNAL(triggered(bool)),
             SLOT(sortDescTimeOrder()));
     connect(m_editAction, SIGNAL(triggered(bool)),
-            SLOT(editSelectedThumbnails()));
+            SLOT(editSelectedImages()));
     connect(m_tagAction, SIGNAL(triggered(bool)),
-            SLOT(tagSelectedThumbnails()));
+            SLOT(tagSelectedImages()));
 
     m_cancelImportButton->hide();
 
@@ -186,21 +186,21 @@ MainWindow::MainWindow(QWidget *const parent)
     m_openDirAction->setShortcut(QKeySequence(Qt::Key_O));
     m_quitAction->setShortcut(QKeySequence(Qt::Key_Q));
 
-    m_thumbnailModel->setTable("Image");
-    m_thumbnailModel->setEditStrategy(QSqlTableModel::OnManualSubmit);
-    m_thumbnailModel->select();
-    m_thumbnailView->setObjectName("ThumbnailView");
-    m_thumbnailView->setItemDelegate(new ThumbnailDelegate(this));
-    m_thumbnailView->setViewMode(QListView::IconMode);
-    m_thumbnailView->setMovement(QListView::Static);
-    m_thumbnailView->setSelectionMode(QListView::ExtendedSelection);
-    m_thumbnailView->setEditTriggers(QAbstractItemView::NoEditTriggers);
-    m_thumbnailView->setResizeMode(QListView::Adjust);
-    m_thumbnailView->setIconSize(QSize(80, 80));
-    m_thumbnailView->setUniformItemSizes(true);
-    m_thumbnailView->setModel(m_thumbnailModel);
-    m_thumbnailView->setModelColumn(8);
-    setCentralWidget(m_thumbnailView);
+    m_imageModel->setTable("Image");
+    m_imageModel->setEditStrategy(QSqlTableModel::OnManualSubmit);
+    m_imageModel->select();
+    m_imageListView->setObjectName("ImageListView");
+    m_imageListView->setItemDelegate(new ImageItemDelegate(this));
+    m_imageListView->setViewMode(QListView::IconMode);
+    m_imageListView->setMovement(QListView::Static);
+    m_imageListView->setSelectionMode(QListView::ExtendedSelection);
+    m_imageListView->setEditTriggers(QAbstractItemView::NoEditTriggers);
+    m_imageListView->setResizeMode(QListView::Adjust);
+    m_imageListView->setIconSize(QSize(80, 80));
+    m_imageListView->setUniformItemSizes(true);
+    m_imageListView->setModel(m_imageModel);
+    m_imageListView->setModelColumn(8);
+    setCentralWidget(m_imageListView);
 
     m_metadataDockWidget->setWidget(m_metadataWidget);
     addDockWidget(Qt::BottomDockWidgetArea, m_metadataDockWidget);
@@ -238,13 +238,13 @@ MainWindow::MainWindow(QWidget *const parent)
             SLOT(openDir()));
     connect(m_quitAction, SIGNAL(triggered(bool)),
             SLOT(close()));
-    m_metadataWidget->connect(m_thumbnailView,
-                              SIGNAL(currentThumbnailChanged(const QModelIndex&, const QModelIndex&)),
+    m_metadataWidget->connect(m_imageListView,
+                              SIGNAL(currentImageChanged(const QModelIndex&, const QModelIndex&)),
                               SLOT(setMetadata(const QModelIndex&)));
-    m_imageArea->connect(m_thumbnailView,
-                         SIGNAL(currentThumbnailChanged(const QModelIndex&, const QModelIndex&)),
+    m_imageArea->connect(m_imageListView,
+                         SIGNAL(currentImageChanged(const QModelIndex&, const QModelIndex&)),
                          SLOT(setImage(const QModelIndex&)));
-    m_imageDockWidget->connect(m_thumbnailView,
+    m_imageDockWidget->connect(m_imageListView,
                                SIGNAL(activated(const QModelIndex&)),
                                SLOT(show()));
     connect(m_aboutAction, SIGNAL(triggered(bool)), SLOT(about()));
@@ -252,7 +252,7 @@ MainWindow::MainWindow(QWidget *const parent)
             SLOT(cancelImport()));
 
     triggerSortAscTimeOrder();
-    m_thumbnailView->setCurrentIndex(m_thumbnailModel->index(0, 8));
+    m_imageListView->setCurrentIndex(m_imageModel->index(0, 8));
 }
 
 void MainWindow::cancelImport()
@@ -344,7 +344,7 @@ void MainWindow::importReadyAt(const int i)
 
     QString filePath = metadata.value("filePath").toString();
 
-    QSqlRecord record(m_thumbnailModel->record());
+    QSqlRecord record(m_imageModel->record());
     record.setValue(1, metadata.value("filePath"));
     record.setValue(2, metadata.value("fileSize"));
     record.setValue(3, metadata.value("modificationTime"));
@@ -357,8 +357,8 @@ void MainWindow::importReadyAt(const int i)
     QSize thumbnailSize = metadata.value("thumbnailImageSize").toSize();
     record.setValue(9, thumbnailSize.width());
     record.setValue(10, thumbnailSize.height());
-    m_thumbnailModel->insertRecord(-1, record);
-    if (m_thumbnailModel->submitAll())
+    m_imageModel->insertRecord(-1, record);
+    if (m_imageModel->submitAll())
         m_openCount.fetchAndAddOrdered(1);
 }
 
@@ -370,7 +370,7 @@ void MainWindow::importFinished()
     statusBar()->showMessage(msg);
     m_openDirAction->setEnabled(true);
     triggerSortAscTimeOrder();
-    m_thumbnailView->setCurrentIndex(m_thumbnailModel->index(0, 8));
+    m_imageListView->setCurrentIndex(m_imageModel->index(0, 8));
 }
 
 void MainWindow::closeEvent(QCloseEvent *event)
@@ -385,7 +385,7 @@ void MainWindow::closeEvent(QCloseEvent *event)
     event->accept();
 }
 
-void MainWindow::tagSelectedThumbnails()
+void MainWindow::tagSelectedImages()
 {
     QStringList tags;
     for (int i = 0; i < m_tagModel->rowCount(); ++i) {
@@ -394,7 +394,7 @@ void MainWindow::tagSelectedThumbnails()
     QString tag = QInputDialog::getItem(this, "Add tag to selected images",
                                         "Tag", tags);
 
-    QItemSelectionModel *selectionModel = m_thumbnailView->selectionModel();
+    QItemSelectionModel *selectionModel = m_imageListView->selectionModel();
     QModelIndexList selectedIndexes = selectionModel->selectedIndexes();
 
     QSqlDatabase db = QSqlDatabase::database();
@@ -425,12 +425,12 @@ void MainWindow::updateTags()
 
 void MainWindow::sortAscTimeOrder()
 {
-    m_thumbnailModel->sort(6, Qt::AscendingOrder);
+    m_imageModel->sort(6, Qt::AscendingOrder);
 }
 
 void MainWindow::sortDescTimeOrder()
 {
-    m_thumbnailModel->sort(6, Qt::DescendingOrder);
+    m_imageModel->sort(6, Qt::DescendingOrder);
 }
 
 void MainWindow::triggerSortAscTimeOrder()
@@ -443,10 +443,10 @@ void MainWindow::triggerSortDescTimeOrder()
     m_sortDescTimeOrderAction->trigger();
 }
 
-void MainWindow::editSelectedThumbnails()
+void MainWindow::editSelectedImages()
 {
-    QModelIndex currentIndex = m_thumbnailView->currentIndex();
-    QItemSelectionModel *selectionModel = m_thumbnailView->selectionModel();
+    QModelIndex currentIndex = m_imageListView->currentIndex();
+    QItemSelectionModel *selectionModel = m_imageListView->selectionModel();
     QModelIndexList selectedIndexes = selectionModel->selectedIndexes();
     QStringList filePaths;
 
