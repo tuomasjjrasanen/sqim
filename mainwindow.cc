@@ -484,11 +484,6 @@ void MainWindow::setupActions()
     m_sortActionGroup->addAction(m_sortAscDateAction);
     m_sortActionGroup->addAction(m_sortDescDateAction);
 
-    addAction(m_sortAscDateAction);
-    addAction(m_sortDescDateAction);
-    addAction(m_editAction);
-    addAction(m_tagAction);
-
     m_editAction->setShortcut(
         QKeySequence(Qt::Key_E));
     m_imageDockWidget->toggleViewAction()->setShortcut(
@@ -503,6 +498,14 @@ void MainWindow::setupActions()
         QKeySequence(Qt::Key_Less, Qt::Key_T));
     m_sortDescDateAction->setShortcut(
         QKeySequence(Qt::Key_Greater, Qt::Key_T));
+
+    addAction(m_aboutAction);
+    addAction(m_editAction);
+    addAction(m_openDirAction);
+    addAction(m_quitAction);
+    addAction(m_sortAscDateAction);
+    addAction(m_sortDescDateAction);
+    addAction(m_tagAction);
 }
 
 void MainWindow::resetImageListView()
