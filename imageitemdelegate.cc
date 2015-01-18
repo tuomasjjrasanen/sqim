@@ -19,8 +19,9 @@
 
 #include "imageitemdelegate.hh"
 
-ImageItemDelegate::ImageItemDelegate(QObject *parent)
+ImageItemDelegate::ImageItemDelegate(QAbstractItemView* view, QObject *parent)
     : QStyledItemDelegate(parent)
+    ,m_view(view)
 {
 }
 
@@ -38,18 +39,23 @@ void ImageItemDelegate::paint(QPainter *painter,
 
     painter->drawPixmap(rect, QPixmap(index.data().toString()));
 
-    // Draw rects to create more distinctive visualization for item
-    // selection and current item.
-    painter->save();
-    if (option.state.testFlag(QStyle::State_Selected)) {
+    // Draw rects to create more distinctive visualization for item selection
+    // and current item.
+    if (index == m_view->currentIndex()) {
+        painter->save();
         QPen pen(painter->pen());
-        pen.setColor(Qt::white);
-        if (option.state.testFlag(QStyle::State_HasFocus))
-            pen.setColor(Qt::yellow);
+        pen.setColor(Qt::yellow);
         painter->setPen(pen);
         painter->drawRect(rect);
+        painter->restore();
+    } else if (option.state.testFlag(QStyle::State_Selected)) {
+        painter->save();
+        QPen pen(painter->pen());
+        pen.setColor(Qt::white);
+        painter->setPen(pen);
+        painter->drawRect(rect);
+        painter->restore();
     }
-    painter->restore();
 }
 
 QSize ImageItemDelegate::sizeHint(const QStyleOptionViewItem& option,
