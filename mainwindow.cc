@@ -437,7 +437,7 @@ void MainWindow::saveSettings()
 
 void MainWindow::setupToolBars()
 {
-    QToolBar* toolBar = addToolBar("Hep");
+    QToolBar* toolBar = addToolBar("Tool bar");
     foreach (QAction* action, m_imageView->actions())
         toolBar->addAction(action);
     toolBar->addAction(m_editAction);
