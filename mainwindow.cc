@@ -451,6 +451,7 @@ void MainWindow::setupCentralWidget()
     m_imageModel->setTable("Image");
     m_imageModel->setEditStrategy(QSqlTableModel::OnManualSubmit);
     m_imageModel->select();
+    m_imageListView->setSpacing(10);
     m_imageListView->setObjectName("ImageListView");
     m_imageListView->setItemDelegate(new ImageItemDelegate(this));
     m_imageListView->setViewMode(QListView::IconMode);
