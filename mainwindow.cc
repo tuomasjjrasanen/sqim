@@ -387,6 +387,10 @@ void MainWindow::connectSignals()
         m_imageListView,
         SIGNAL(currentImageChanged(const QModelIndex&, const QModelIndex&)),
         SLOT(setImage(const QModelIndex&)));
+    m_singleViewModeAction->connect(
+        m_imageListView,
+        SIGNAL(activated(const QModelIndex&)),
+        SLOT(trigger()));
     connect(m_aboutAction, SIGNAL(triggered(bool)), SLOT(about()));
     connect(m_cancelImportButton, SIGNAL(clicked()),
             SLOT(cancelImport()));
