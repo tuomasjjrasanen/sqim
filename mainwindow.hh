@@ -98,6 +98,8 @@ private:
     QAction* m_listViewModeAction;
     QActionGroup* m_sortActionGroup;
     QActionGroup* m_viewModeActionGroup;
+
+    QToolBar* m_toolBar;
 };
 
 #endif // MAINWINDOW_HH

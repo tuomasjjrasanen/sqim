@@ -149,6 +149,8 @@ MainWindow::MainWindow(QWidget *const parent)
     ,m_sortActionGroup(new QActionGroup(this))
     ,m_viewModeActionGroup(new QActionGroup(this))
 
+    ,m_toolBar(new QToolBar(this))
+
 {
     setupActions();
     setupToolBars();
@@ -438,6 +440,7 @@ void MainWindow::setupMenus()
 
     QMenu *viewMenu = menuBar()->addMenu("&View");
     viewMenu->addAction(m_metadataDockWidget->toggleViewAction());
+    viewMenu->addAction(m_toolBar->toggleViewAction());
 
     QMenu *helpMenu = menuBar()->addMenu("&Help");
     helpMenu->addAction(m_aboutAction);
@@ -466,9 +469,10 @@ void MainWindow::saveSettings()
 
 void MainWindow::setupToolBars()
 {
-    QToolBar* toolBar = addToolBar("Tool bar");
+    m_toolBar->setWindowTitle("Tool bar");
+    addToolBar(m_toolBar);
     foreach (QAction* action, actions())
-        toolBar->addAction(action);
+        m_toolBar->addAction(action);
 }
 
 void MainWindow::setupCentralWidget()
