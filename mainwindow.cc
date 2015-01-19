@@ -436,8 +436,8 @@ void MainWindow::setupMenus()
     fileMenu->addAction(m_quitAction);
     fileMenu->addSeparator();
 
-    QMenu *windowsMenu = menuBar()->addMenu("&Windows");
-    windowsMenu->addAction(m_metadataDockWidget->toggleViewAction());
+    QMenu *viewMenu = menuBar()->addMenu("&View");
+    viewMenu->addAction(m_metadataDockWidget->toggleViewAction());
 
     QMenu *helpMenu = menuBar()->addMenu("&Help");
     helpMenu->addAction(m_aboutAction);
