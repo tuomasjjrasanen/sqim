@@ -278,7 +278,7 @@ void MainWindow::importFinished()
     QSqlDatabase::database().commit();
     QString msg = QString("Imported %1 images").arg(m_importCount);
     statusBar()->removeWidget(m_cancelImportButton);
-    statusBar()->showMessage(msg);
+    statusBar()->showMessage(msg, 5000);
     m_importDirAction->setEnabled(true);
     triggerSortAscDate();
     m_imageListView->setCurrentIndex(m_imageModel->index(0, 8));
