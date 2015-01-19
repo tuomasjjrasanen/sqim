@@ -228,8 +228,7 @@ void MainWindow::importFiles(const QStringList& filePaths)
     m_importer->setFuture(QtConcurrent::mapped(filePaths, import));
     statusBar()->addPermanentWidget(m_cancelImportButton);
     m_cancelImportButton->show();
-    statusBar()->showMessage(
-        QString("Importing %1 images...").arg(filePaths.size()));
+    statusBar()->showMessage(QString("Importing images..."));
 }
 
 void MainWindow::importPaths(const QStringList& paths, bool recursive)
