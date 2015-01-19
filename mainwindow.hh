@@ -81,6 +81,9 @@ private:
     QSqlQueryModel* m_tagModel;
     QSqlTableModel* m_imageModel;
 
+    QActionGroup* m_sortActionGroup;
+    QActionGroup* m_viewModeActionGroup;
+
     QAction* m_aboutAction;
     QAction* m_editAction;
     QAction* m_importDirAction;
@@ -96,8 +99,6 @@ private:
     QAction* m_zoomTo100Action;
     QAction* m_singleViewModeAction;
     QAction* m_listViewModeAction;
-    QActionGroup* m_sortActionGroup;
-    QActionGroup* m_viewModeActionGroup;
 
     QToolBar* m_toolBar;
 };

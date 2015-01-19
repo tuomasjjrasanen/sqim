@@ -130,12 +130,15 @@ MainWindow::MainWindow(QWidget *const parent)
     ,m_tagModel(new QSqlQueryModel(this))
     ,m_imageModel(new QSqlTableModel(this))
 
+    ,m_sortActionGroup(new QActionGroup(this))
+    ,m_viewModeActionGroup(new QActionGroup(this))
+
     ,m_aboutAction(new QAction(this))
     ,m_editAction(new QAction(this))
     ,m_importDirAction(new QAction(this))
     ,m_quitAction(new QAction(this))
-    ,m_sortAscDateAction(new QAction(this))
-    ,m_sortDescDateAction(new QAction(this))
+    ,m_sortAscDateAction(new QAction(m_sortActionGroup))
+    ,m_sortDescDateAction(new QAction(m_sortActionGroup))
     ,m_tagAction(new QAction(this))
     ,m_rotateLeftAction(new QAction(this))
     ,m_rotateRightAction(new QAction(this))
@@ -143,11 +146,8 @@ MainWindow::MainWindow(QWidget *const parent)
     ,m_zoomOutAction(new QAction(this))
     ,m_zoomToFitAction(new QAction(this))
     ,m_zoomTo100Action(new QAction(this))
-    ,m_singleViewModeAction(new QAction(this))
-    ,m_listViewModeAction(new QAction(this))
-
-    ,m_sortActionGroup(new QActionGroup(this))
-    ,m_viewModeActionGroup(new QActionGroup(this))
+    ,m_singleViewModeAction(new QAction(m_viewModeActionGroup))
+    ,m_listViewModeAction(new QAction(m_viewModeActionGroup))
 
     ,m_toolBar(new QToolBar(this))
 
@@ -471,8 +471,18 @@ void MainWindow::setupToolBars()
 {
     m_toolBar->setWindowTitle("Tool bar");
     addToolBar(m_toolBar);
-    foreach (QAction* action, actions())
-        m_toolBar->addAction(action);
+    m_toolBar->addAction(m_editAction);
+    m_toolBar->addAction(m_sortAscDateAction);
+    m_toolBar->addAction(m_sortDescDateAction);
+    m_toolBar->addAction(m_tagAction);
+    m_toolBar->addAction(m_zoomInAction);
+    m_toolBar->addAction(m_zoomOutAction);
+    m_toolBar->addAction(m_zoomToFitAction);
+    m_toolBar->addAction(m_zoomTo100Action);
+    m_toolBar->addAction(m_rotateLeftAction);
+    m_toolBar->addAction(m_rotateRightAction);
+    m_toolBar->addAction(m_singleViewModeAction);
+    m_toolBar->addAction(m_listViewModeAction);
 }
 
 void MainWindow::setupCentralWidget()
@@ -537,14 +547,8 @@ void MainWindow::setupActions()
     m_sortAscDateAction->setCheckable(true);
     m_sortDescDateAction->setCheckable(true);
 
-    m_sortActionGroup->addAction(m_sortAscDateAction);
-    m_sortActionGroup->addAction(m_sortDescDateAction);
-
     m_singleViewModeAction->setCheckable(true);
     m_listViewModeAction->setCheckable(true);
-
-    m_viewModeActionGroup->addAction(m_singleViewModeAction);
-    m_viewModeActionGroup->addAction(m_listViewModeAction);
 
     m_editAction->setShortcut(
         QKeySequence(Qt::Key_E));
@@ -568,19 +572,6 @@ void MainWindow::setupActions()
         QKeySequence(Qt::Key_Minus));
     m_zoomToFitAction->setShortcut(
         QKeySequence(Qt::Key_Equal));
-
-    addAction(m_editAction);
-    addAction(m_sortAscDateAction);
-    addAction(m_sortDescDateAction);
-    addAction(m_tagAction);
-    addAction(m_zoomInAction);
-    addAction(m_zoomOutAction);
-    addAction(m_zoomToFitAction);
-    addAction(m_zoomTo100Action);
-    addAction(m_rotateLeftAction);
-    addAction(m_rotateRightAction);
-    addAction(m_singleViewModeAction);
-    addAction(m_listViewModeAction);
 }
 
 void MainWindow::setupStatusBar()
