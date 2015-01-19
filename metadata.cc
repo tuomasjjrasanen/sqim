@@ -24,7 +24,8 @@ static bool fillWithFileInfo(const QString& filePath, Metadata& metadata)
     QFileInfo fileInfo(filePath);
 
     metadata.insert("filePath", QVariant(filePath));
-    metadata.insert("modificationTime", QVariant(fileInfo.lastModified().toUTC()));
+    metadata.insert("modificationTime",
+                    QVariant(fileInfo.lastModified().toUTC()));
     metadata.insert("fileSize", QVariant(fileInfo.size()));
 
     return true;

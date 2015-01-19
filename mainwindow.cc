@@ -228,7 +228,8 @@ void MainWindow::openFiles(const QStringList& filePaths)
     m_importer->setFuture(QtConcurrent::mapped(filePaths, import));
     statusBar()->addPermanentWidget(m_cancelImportButton);
     m_cancelImportButton->show();
-    statusBar()->showMessage(QString("Importing %1 images...").arg(filePaths.size()));
+    statusBar()->showMessage(
+        QString("Importing %1 images...").arg(filePaths.size()));
 }
 
 void MainWindow::openPaths(const QStringList& paths, bool recursive)
@@ -384,12 +385,14 @@ void MainWindow::connectSignals()
             SLOT(openDir()));
     connect(m_quitAction, SIGNAL(triggered(bool)),
             SLOT(close()));
-    m_metadataWidget->connect(m_imageListView,
-                              SIGNAL(currentImageChanged(const QModelIndex&, const QModelIndex&)),
-                              SLOT(setMetadata(const QModelIndex&)));
-    m_imageView->connect(m_imageListView,
-                         SIGNAL(currentImageChanged(const QModelIndex&, const QModelIndex&)),
-                         SLOT(setImage(const QModelIndex&)));
+    m_metadataWidget->connect(
+        m_imageListView,
+        SIGNAL(currentImageChanged(const QModelIndex&, const QModelIndex&)),
+        SLOT(setMetadata(const QModelIndex&)));
+    m_imageView->connect(
+        m_imageListView,
+        SIGNAL(currentImageChanged(const QModelIndex&, const QModelIndex&)),
+        SLOT(setImage(const QModelIndex&)));
     connect(m_aboutAction, SIGNAL(triggered(bool)), SLOT(about()));
     connect(m_cancelImportButton, SIGNAL(clicked()),
             SLOT(cancelImport()));
@@ -471,7 +474,8 @@ void MainWindow::setupCentralWidget()
     m_imageModel->select();
     m_imageListView->setSpacing(10);
     m_imageListView->setObjectName("ImageListView");
-    m_imageListView->setItemDelegate(new ImageItemDelegate(m_imageListView, this));
+    m_imageListView->setItemDelegate(new ImageItemDelegate(m_imageListView,
+                                                           this));
     m_imageListView->setViewMode(QListView::IconMode);
     m_imageListView->setMovement(QListView::Static);
     m_imageListView->setSelectionMode(QListView::ExtendedSelection);
