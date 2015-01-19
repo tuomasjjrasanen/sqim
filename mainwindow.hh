@@ -34,8 +34,6 @@ public:
     void importDir(QString dir, bool recursive);
     void importFiles(const QStringList& filePaths);
     void importPaths(const QStringList& paths, bool recursive);
-    void triggerSortAscDate();
-    void triggerSortDescDate();
     ~MainWindow();
 
 public slots:

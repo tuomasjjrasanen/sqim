@@ -164,7 +164,7 @@ MainWindow::MainWindow(QWidget *const parent)
 
     connectSignals();
 
-    triggerSortAscDate();
+    m_sortAscDateAction->trigger();
     m_imageListView->setCurrentIndex(m_imageModel->index(0, 8));
 }
 
@@ -282,7 +282,7 @@ void MainWindow::importFinished()
     statusBar()->removeWidget(m_cancelImportButton);
     statusBar()->showMessage(msg, 5000);
     m_importDirAction->setEnabled(true);
-    triggerSortAscDate();
+    m_sortAscDateAction->trigger();
     m_imageListView->setCurrentIndex(m_imageModel->index(0, 8));
 }
 
@@ -339,16 +339,6 @@ void MainWindow::sortAscDate()
 void MainWindow::sortDescDate()
 {
     m_imageModel->sort(6, Qt::DescendingOrder);
-}
-
-void MainWindow::triggerSortAscDate()
-{
-    m_sortAscDateAction->trigger();
-}
-
-void MainWindow::triggerSortDescDate()
-{
-    m_sortDescDateAction->trigger();
 }
 
 void MainWindow::editSelectedImages()
