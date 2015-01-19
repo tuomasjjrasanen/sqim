@@ -434,6 +434,8 @@ void MainWindow::setupMenus()
     QMenu *viewMenu = menuBar()->addMenu("&View");
     viewMenu->addAction(m_metadataDockWidget->toggleViewAction());
     viewMenu->addAction(m_toolBar->toggleViewAction());
+    viewMenu->addAction(m_singleViewModeAction);
+    viewMenu->addAction(m_listViewModeAction);
 
     QMenu *helpMenu = menuBar()->addMenu("&Help");
     helpMenu->addAction(m_aboutAction);
