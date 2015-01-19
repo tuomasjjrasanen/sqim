@@ -117,7 +117,7 @@ static Metadata import(const QString& filePath)
 
 MainWindow::MainWindow(QWidget *const parent)
     :QMainWindow(parent)
-    ,m_openCount()
+    ,m_importCount()
     ,m_importer(new QFutureWatcher<Metadata>(this))
     ,m_cancelImportButton(new QPushButton(this))
 
@@ -132,7 +132,7 @@ MainWindow::MainWindow(QWidget *const parent)
 
     ,m_aboutAction(new QAction(this))
     ,m_editAction(new QAction(this))
-    ,m_openDirAction(new QAction(this))
+    ,m_importDirAction(new QAction(this))
     ,m_quitAction(new QAction(this))
     ,m_sortAscDateAction(new QAction(this))
     ,m_sortDescDateAction(new QAction(this))
@@ -197,33 +197,33 @@ void MainWindow::about()
     QMessageBox::about(this, "About SQIM", aboutText);
 }
 
-void MainWindow::openDir(QString dir, bool recursive)
+void MainWindow::importDir(QString dir, bool recursive)
 {
     if (dir.isEmpty())
         return;
 
     const QStringList filePaths(findFiles(dir, recursive));
-    openFiles(filePaths);
+    importFiles(filePaths);
 }
 
-void MainWindow::openDir(QString dir)
+void MainWindow::importDir(QString dir)
 {
-    openDir(dir, true);
+    importDir(dir, true);
 }
 
-void MainWindow::openDir()
+void MainWindow::importDir()
 {
     const QString dir(
         QFileDialog::getExistingDirectory(
-            this, "Open images from a directory and its subdirectories"));
+            this, "Import images from a directory and its subdirectories"));
 
-    openDir(dir);
+    importDir(dir);
 }
 
-void MainWindow::openFiles(const QStringList& filePaths)
+void MainWindow::importFiles(const QStringList& filePaths)
 {
-    m_openDirAction->setEnabled(false);
-    m_openCount = 0;
+    m_importDirAction->setEnabled(false);
+    m_importCount = 0;
     QSqlDatabase::database().transaction();
     m_importer->setFuture(QtConcurrent::mapped(filePaths, import));
     statusBar()->addPermanentWidget(m_cancelImportButton);
@@ -232,7 +232,7 @@ void MainWindow::openFiles(const QStringList& filePaths)
         QString("Importing %1 images...").arg(filePaths.size()));
 }
 
-void MainWindow::openPaths(const QStringList& paths, bool recursive)
+void MainWindow::importPaths(const QStringList& paths, bool recursive)
 {
     QStringList filePaths;
 
@@ -245,7 +245,7 @@ void MainWindow::openPaths(const QStringList& paths, bool recursive)
         }
     }
     if (!filePaths.isEmpty())
-        openFiles(filePaths);
+        importFiles(filePaths);
 }
 
 void MainWindow::importReadyAt(const int i)
@@ -271,16 +271,16 @@ void MainWindow::importReadyAt(const int i)
     record.setValue(10, thumbnailSize.height());
     m_imageModel->insertRecord(-1, record);
     if (m_imageModel->submitAll())
-        m_openCount.fetchAndAddOrdered(1);
+        m_importCount.fetchAndAddOrdered(1);
 }
 
 void MainWindow::importFinished()
 {
     QSqlDatabase::database().commit();
-    QString msg = QString("Opened %1 images").arg(m_openCount);
+    QString msg = QString("Imported %1 images").arg(m_importCount);
     statusBar()->removeWidget(m_cancelImportButton);
     statusBar()->showMessage(msg);
-    m_openDirAction->setEnabled(true);
+    m_importDirAction->setEnabled(true);
     triggerSortAscDate();
     m_imageListView->setCurrentIndex(m_imageModel->index(0, 8));
 }
@@ -381,8 +381,8 @@ void MainWindow::connectSignals()
             SLOT(importFinished()));
     connect(m_importer, SIGNAL(resultReadyAt(int)),
             SLOT(importReadyAt(int)));
-    connect(m_openDirAction, SIGNAL(triggered(bool)),
-            SLOT(openDir()));
+    connect(m_importDirAction, SIGNAL(triggered(bool)),
+            SLOT(importDir()));
     connect(m_quitAction, SIGNAL(triggered(bool)),
             SLOT(close()));
     m_metadataWidget->connect(
@@ -433,7 +433,7 @@ void MainWindow::setupMenus()
     setMenuBar(new QMenuBar());
 
     QMenu *fileMenu = menuBar()->addMenu("&File");
-    fileMenu->addAction(m_openDirAction);
+    fileMenu->addAction(m_importDirAction);
     fileMenu->addAction(m_quitAction);
     fileMenu->addSeparator();
 
@@ -503,7 +503,7 @@ void MainWindow::setupActions()
 {
     m_aboutAction->setText("&About");
     m_editAction->setText("Edit");
-    m_openDirAction->setText("&Open directory...");
+    m_importDirAction->setText("&Import from directory...");
     m_quitAction->setText("&Quit");
     m_sortAscDateAction->setText("&Ascending time order");
     m_sortDescDateAction->setText("&Descending time order");
@@ -542,7 +542,7 @@ void MainWindow::setupActions()
         QKeySequence(Qt::Key_E));
     m_metadataDockWidget->toggleViewAction()->setShortcut(
         QKeySequence(Qt::Key_M));
-    m_openDirAction->setShortcut(
+    m_importDirAction->setShortcut(
         QKeySequence(Qt::Key_O));
     m_quitAction->setShortcut(
         QKeySequence(Qt::Key_Q));

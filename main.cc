@@ -179,8 +179,8 @@ int main(int argc, char *argv[])
     prepareDatabase();
 
     MainWindow mainWindow;
-    mainWindow.openPaths(options["paths"].toStringList(),
-                         options["recursive"].toBool());
+    mainWindow.importPaths(options["paths"].toStringList(),
+                           options["recursive"].toBool());
     mainWindow.show();
 
     return app.exec();

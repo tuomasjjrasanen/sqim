@@ -30,10 +30,10 @@ class MainWindow : public QMainWindow
     
 public:
     explicit MainWindow(QWidget *parent = 0);
-    void openDir(QString dir);
-    void openDir(QString dir, bool recursive);
-    void openFiles(const QStringList& filePaths);
-    void openPaths(const QStringList& paths, bool recursive);
+    void importDir(QString dir);
+    void importDir(QString dir, bool recursive);
+    void importFiles(const QStringList& filePaths);
+    void importPaths(const QStringList& paths, bool recursive);
     void triggerSortAscDate();
     void triggerSortDescDate();
     ~MainWindow();
@@ -49,7 +49,7 @@ protected:
     virtual void closeEvent(QCloseEvent *event);
 
 private slots:
-    void openDir();
+    void importDir();
     void importReadyAt(int i);
     void importFinished();
     void about();
@@ -67,7 +67,7 @@ private:
     void setupStatusBar();
     void setupToolBars();
 
-    QAtomicInt m_openCount;
+    QAtomicInt m_importCount;
     QFutureWatcher<Metadata>* m_importer;
     QPushButton* m_cancelImportButton;
 
@@ -83,7 +83,7 @@ private:
 
     QAction* m_aboutAction;
     QAction* m_editAction;
-    QAction* m_openDirAction;
+    QAction* m_importDirAction;
     QAction* m_quitAction;
     QAction* m_sortAscDateAction;
     QAction* m_sortDescDateAction;
