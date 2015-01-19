@@ -14,12 +14,6 @@
 // You should have received a copy of the GNU General Public License
 // along with this program. If not, see <http://www.gnu.org/licenses/>.
 
-#include <QDateTime>
-#include <QDebug>
-#include <QMutexLocker>
-#include <QVariant>
-#include <QSize>
-
 #include <exiv2/exiv2.hpp>
 
 #include "common.hh"
