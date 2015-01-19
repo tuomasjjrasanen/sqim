@@ -448,6 +448,10 @@ void MainWindow::loadSettings()
     QSettings settings;
     m_metadataDockWidget->setVisible(
         settings.value("metadataDockWidget/visible", true).toBool());
+
+    uint area = settings.value("metadataDockWidget/area",
+                               Qt::BottomDockWidgetArea).toUInt();
+    addDockWidget(static_cast<Qt::DockWidgetArea>(area), m_metadataDockWidget);
 }
 
 void MainWindow::saveSettings()
@@ -456,7 +460,8 @@ void MainWindow::saveSettings()
 
     settings.setValue("metadataDockWidget/visible",
                       m_metadataDockWidget->isVisible());
-
+    settings.setValue("metadataDockWidget/area",
+                      static_cast<uint>(dockWidgetArea(m_metadataDockWidget)));
 }
 
 void MainWindow::setupToolBars()
