@@ -537,6 +537,8 @@ void MainWindow::setupActions()
     m_zoomOutAction->setIcon(QIcon(":/icons/zoom_out.png"));
     m_zoomToFitAction->setIcon(QIcon(":/icons/zoom_to_fit.png"));
     m_zoomTo100Action->setIcon(QIcon(":/icons/zoom_to_100.png"));
+    m_singleViewModeAction->setIcon(QIcon(":/icons/single_view.png"));
+    m_listViewModeAction->setIcon(QIcon(":/icons/list_view.png"));
 
     m_sortAscDateAction->setCheckable(true);
     m_sortDescDateAction->setCheckable(true);

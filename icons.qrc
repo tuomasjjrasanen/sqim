@@ -11,5 +11,7 @@
      <file>icons/sort_asc_time.png</file>
      <file>icons/sort_desc_time.png</file>
      <file>icons/run_external.png</file>
+     <file>icons/single_view.png</file>
+     <file>icons/list_view.png</file>
  </qresource>
  </RCC>

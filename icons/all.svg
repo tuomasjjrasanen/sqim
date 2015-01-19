@@ -322,9 +322,9 @@
      borderopacity="1.0"
      inkscape:pageopacity="0.0"
      inkscape:pageshadow="2"
-     inkscape:zoom="0.5"
-     inkscape:cx="334.65843"
-     inkscape:cy="270.01363"
+     inkscape:zoom="2.8284271"
+     inkscape:cx="13.900335"
+     inkscape:cy="-5.8134072"
      inkscape:document-units="px"
      inkscape:current-layer="layer1"
      showgrid="false"
@@ -346,7 +346,9 @@
      fit-margin-left="0.02"
      fit-margin-right="0.01"
      fit-margin-bottom="0"
-     inkscape:snap-global="false">
+     inkscape:snap-global="false"
+     showguides="true"
+     inkscape:guide-bbox="true">
     <inkscape:grid
        type="xygrid"
        id="grid7015"
@@ -354,8 +356,12 @@
        visible="true"
        enabled="true"
        snapvisiblegridlinesonly="true"
-       originx="-188.19875px"
-       originy="-557.14342px" />
+       originx="373.3325px"
+       originy="-977.64342px" />
+    <sodipodi:guide
+       orientation="0,1"
+       position="219.3125,61.812498"
+       id="guide4181" />
   </sodipodi:namedview>
   <metadata
      id="metadata7">
@@ -373,7 +379,7 @@
      inkscape:label="Layer 1"
      inkscape:groupmode="layer"
      id="layer1"
-     transform="translate(-188.19875,-431.20875)">
+     transform="translate(373.3325,-10.70875)">
     <g
        id="g6835"
        transform="matrix(1.0035382,0,0,1.0035382,-1.2807731,-0.75853418)">
@@ -401,7 +407,7 @@
            transform="translate(8.5493157,-10.601151)">
           <path
              transform="matrix(0.32478256,0,0,0.32478256,324.20249,140.9012)"
-             d="m 211.42858,139.50504 a 58.57143,58.57143 0 1 1 -117.142863,0 58.57143,58.57143 0 1 1 117.142863,0 z"
+             d="m 211.42858,139.50504 c 0,32.3481 -26.22333,58.57143 -58.57143,58.57143 -32.34811,0 -58.571433,-26.22333 -58.571433,-58.57143 0,-32.34811 26.223323,-58.571435 58.571433,-58.571435 32.3481,0 58.57143,26.223325 58.57143,58.571435 z"
              sodipodi:ry="58.57143"
              sodipodi:rx="58.57143"
              sodipodi:cy="139.50504"
@@ -509,7 +515,7 @@
          style="fill:#000000;stroke:#000000;stroke-width:2.98942327;stroke-linecap:round;stroke-linejoin:miter;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none;stroke-dashoffset:0" />
       <path
          transform="matrix(0.34992102,0,0,0.34992102,246.13383,291.43029)"
-         d="m 211.42858,139.50504 a 58.57143,58.57143 0 1 1 -117.142863,0 58.57143,58.57143 0 1 1 117.142863,0 z"
+         d="m 211.42858,139.50504 c 0,32.3481 -26.22333,58.57143 -58.57143,58.57143 -32.34811,0 -58.571433,-26.22333 -58.571433,-58.57143 0,-32.34811 26.223323,-58.571435 58.571433,-58.571435 32.3481,0 58.57143,26.223325 58.57143,58.571435 z"
          sodipodi:ry="58.57143"
          sodipodi:rx="58.57143"
          sodipodi:cy="139.50504"
@@ -740,7 +746,7 @@
          style="fill:#000000;stroke:#000000;stroke-width:3.00000048;stroke-linecap:round;stroke-linejoin:miter;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none;stroke-dashoffset:0" />
       <path
          transform="matrix(0.35115913,0,0,0.35115913,352.25462,248.60702)"
-         d="m 211.42858,139.50504 a 58.57143,58.57143 0 1 1 -117.142863,0 58.57143,58.57143 0 1 1 117.142863,0 z"
+         d="m 211.42858,139.50504 c 0,32.3481 -26.22333,58.57143 -58.57143,58.57143 -32.34811,0 -58.571433,-26.22333 -58.571433,-58.57143 0,-32.34811 26.223323,-58.571435 58.571433,-58.571435 32.3481,0 58.57143,26.223325 58.57143,58.571435 z"
          sodipodi:ry="58.57143"
          sodipodi:rx="58.57143"
          sodipodi:cy="139.50504"
@@ -790,7 +796,7 @@
          style="fill:#000000;stroke:#000000;stroke-width:3.00000048;stroke-linecap:round;stroke-linejoin:miter;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none;stroke-dashoffset:0" />
       <path
          transform="matrix(0.35115913,0,0,0.35115913,408.54407,338.9047)"
-         d="m 211.42858,139.50504 a 58.57143,58.57143 0 1 1 -117.142863,0 58.57143,58.57143 0 1 1 117.142863,0 z"
+         d="m 211.42858,139.50504 c 0,32.3481 -26.22333,58.57143 -58.57143,58.57143 -32.34811,0 -58.571433,-26.22333 -58.571433,-58.57143 0,-32.34811 26.223323,-58.571435 58.571433,-58.571435 32.3481,0 58.57143,26.223325 58.57143,58.571435 z"
          sodipodi:ry="58.57143"
          sodipodi:rx="58.57143"
          sodipodi:cy="139.50504"
@@ -830,5 +836,151 @@
        d="m 209.39649,471.67657 c -0.16629,0.1663 -0.16629,0.43404 0,0.60033 l 2.06358,2.06358 c -0.56149,0.88442 -0.93991,1.86022 -1.16311,2.85149 l -2.96406,0 c -0.23516,0 -0.43146,0.19632 -0.43146,0.43148 l 0.0188,3.09538 c 0,0.23515 0.19633,0.43146 0.43149,0.43146 l 2.92652,0 c 0.22394,1.00639 0.60957,1.97392 1.18187,2.87026 l -2.06358,2.06358 c -0.16627,0.1663 -0.16627,0.43402 0,0.60031 l 2.17615,2.17614 c 0.16627,0.16628 0.43401,0.16628 0.60031,0 l 2.08234,-2.08234 c 0.88975,0.56414 1.85407,0.97869 2.85149,1.20062 l 0,2.92655 c 0,0.23516 0.19631,0.43146 0.43149,0.43146 l 3.0766,0 c 0.23516,0 0.43147,-0.1963 0.43147,-0.43146 l 0,-2.92655 c 0.99744,-0.22193 1.96175,-0.63647 2.8515,-1.20062 l 2.08233,2.08234 c 0.1663,0.16628 0.43404,0.16628 0.60033,0 l 2.1949,-2.1949 c 0.16628,-0.16628 0.16628,-0.43403 0,-0.60032 l -2.08235,-2.08234 c 0.56275,-0.88862 0.96025,-1.83683 1.18187,-2.83273 l 2.92653,0 c 0.23516,0 0.43146,-0.19631 0.43146,-0.43146 l 0.0188,-3.09538 c 0,-0.23516 -0.19632,-0.43148 -0.43149,-0.43148 l -2.96406,0 c -0.22319,-0.99127 -0.60161,-1.96707 -1.16309,-2.85149 l 2.08234,-2.08234 c 0.16629,-0.16629 0.16629,-0.43402 0,-0.60032 l -2.17614,-2.17613 c -0.16629,-0.16628 -0.43403,-0.16628 -0.60032,0 l -2.08235,2.08234 c -0.88944,-0.56772 -1.85334,-0.93837 -2.85149,-1.16312 l 0,-2.96405 c 0,-0.23517 -0.1963,-0.43146 -0.43147,-0.43146 l -3.11413,0 c -0.23516,0 -0.43146,0.19629 -0.43146,0.43146 l 0,2.96405 c -0.98983,0.22288 -1.94942,0.58419 -2.83275,1.14434 l -2.06356,-2.06356 c -0.16629,-0.16628 -0.43403,-0.16628 -0.60033,0 l -2.1949,2.19488 z m 6.39711,4.22098 c 1.80841,-1.80842 4.7575,-1.80842 6.56592,0 1.80843,1.80842 1.80843,4.75751 0,6.56593 -1.80842,1.80842 -4.73875,1.78967 -6.54717,-0.0188 -1.80843,-1.80842 -1.82718,-4.73876 -0.0188,-6.54718 z"
        id="path4106-0"
        inkscape:connector-curvature="0" />
+    <rect
+       style="fill:none;stroke:#000000;stroke-width:4.32361889;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none;stroke-dashoffset:0"
+       id="rect3102"
+       width="59.67638"
+       height="59.67638"
+       x="311.46307"
+       y="12.880576"
+       rx="0.5"
+       ry="0.49999994"
+       transform="scale(-1,1)"
+       inkscape:export-filename="/home/tuomasjjrasanen/devel/sqim/icons/single_view.png"
+       inkscape:export-xdpi="90"
+       inkscape:export-ydpi="90" />
+    <rect
+       style="fill:#000000;stroke:none"
+       id="rect3102-9"
+       width="40"
+       height="40.000004"
+       x="321.30127"
+       y="22.718763"
+       rx="0.49999997"
+       ry="0.49999991"
+       transform="scale(-1,1)"
+       inkscape:export-filename="/home/tuomasjjrasanen/devel/sqim/icons/single_view.png"
+       inkscape:export-xdpi="90"
+       inkscape:export-ydpi="90" />
+    <rect
+       style="fill:none;stroke:#000000;stroke-width:3.99999952;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none;stroke-dashoffset:0"
+       id="rect3102-7"
+       width="60"
+       height="60"
+       x="-295.61374"
+       y="62.000008"
+       rx="0.49999994"
+       ry="0.49999991"
+       inkscape:export-filename="/home/tuomasjjrasanen/devel/sqim/icons/list_view.png"
+       inkscape:export-xdpi="90"
+       inkscape:export-ydpi="90" />
+    <rect
+       style="fill:#000000;stroke:none"
+       id="rect3102-9-4"
+       width="11.111111"
+       height="11.111113"
+       x="-287.83597"
+       y="103.11111"
+       rx="0.49999997"
+       ry="0.49999991"
+       inkscape:export-filename="/home/tuomasjjrasanen/devel/sqim/icons/list_view.png"
+       inkscape:export-xdpi="90"
+       inkscape:export-ydpi="90" />
+    <rect
+       style="fill:#000000;stroke:none"
+       id="rect3102-9-4-9"
+       width="11.111111"
+       height="11.111113"
+       x="-271.16928"
+       y="103.11111"
+       rx="0.49999997"
+       ry="0.49999991"
+       inkscape:export-filename="/home/tuomasjjrasanen/devel/sqim/icons/list_view.png"
+       inkscape:export-xdpi="90"
+       inkscape:export-ydpi="90" />
+    <rect
+       style="fill:#000000;stroke:none"
+       id="rect3102-9-4-9-6"
+       width="11.111111"
+       height="11.111113"
+       x="-254.50262"
+       y="103.11111"
+       rx="0.49999997"
+       ry="0.49999991"
+       inkscape:export-filename="/home/tuomasjjrasanen/devel/sqim/icons/list_view.png"
+       inkscape:export-xdpi="90"
+       inkscape:export-ydpi="90" />
+    <rect
+       style="fill:#000000;stroke:none"
+       id="rect3102-9-4-8"
+       width="11.111111"
+       height="11.111113"
+       x="-287.83597"
+       y="86.444443"
+       rx="0.49999997"
+       ry="0.49999991"
+       inkscape:export-filename="/home/tuomasjjrasanen/devel/sqim/icons/list_view.png"
+       inkscape:export-xdpi="90"
+       inkscape:export-ydpi="90" />
+    <rect
+       style="fill:#000000;stroke:none"
+       id="rect3102-9-4-9-5"
+       width="11.111111"
+       height="11.111113"
+       x="-271.16928"
+       y="86.444443"
+       rx="0.49999997"
+       ry="0.49999991"
+       inkscape:export-filename="/home/tuomasjjrasanen/devel/sqim/icons/list_view.png"
+       inkscape:export-xdpi="90"
+       inkscape:export-ydpi="90" />
+    <rect
+       style="fill:#000000;stroke:none"
+       id="rect3102-9-4-9-6-1"
+       width="11.111111"
+       height="11.111113"
+       x="-254.50262"
+       y="86.444443"
+       rx="0.49999997"
+       ry="0.49999991"
+       inkscape:export-filename="/home/tuomasjjrasanen/devel/sqim/icons/list_view.png"
+       inkscape:export-xdpi="90"
+       inkscape:export-ydpi="90" />
+    <rect
+       style="fill:#000000;stroke:none"
+       id="rect3102-9-4-8-4"
+       width="11.111111"
+       height="11.111113"
+       x="-287.83597"
+       y="69.777779"
+       rx="0.49999997"
+       ry="0.49999991"
+       inkscape:export-filename="/home/tuomasjjrasanen/devel/sqim/icons/list_view.png"
+       inkscape:export-xdpi="90"
+       inkscape:export-ydpi="90" />
+    <rect
+       style="fill:#000000;stroke:none"
+       id="rect3102-9-4-9-5-1"
+       width="11.111111"
+       height="11.111113"
+       x="-271.16928"
+       y="69.777779"
+       rx="0.49999997"
+       ry="0.49999991"
+       inkscape:export-filename="/home/tuomasjjrasanen/devel/sqim/icons/list_view.png"
+       inkscape:export-xdpi="90"
+       inkscape:export-ydpi="90" />
+    <rect
+       style="fill:#000000;stroke:none"
+       id="rect3102-9-4-9-6-1-6"
+       width="11.111111"
+       height="11.111113"
+       x="-254.50262"
+       y="69.777779"
+       rx="0.49999997"
+       ry="0.49999991"
+       inkscape:export-filename="/home/tuomasjjrasanen/devel/sqim/icons/list_view.png"
+       inkscape:export-xdpi="90"
+       inkscape:export-ydpi="90" />
   </g>
 </svg>
