@@ -22,57 +22,12 @@
 ImageView::ImageView(QWidget *parent)
     :QScrollArea(parent)
     ,m_imageLabel(new QLabel(this))
-    ,m_rotateLeftAction(new QAction(QIcon(":/icons/rotate_left.png"),
-                                    "Rotate left", this))
-    ,m_rotateRightAction(new QAction(QIcon(":/icons/rotate_right.png"),
-                                     "Rotate right", this))
-    ,m_zoomInAction(new QAction(QIcon(":/icons/zoom_in.png"),
-                                "&Zoom in", this))
-    ,m_zoomOutAction(new QAction(QIcon(":/icons/zoom_out.png"),
-                                 "&Zoom out", this))
-    ,m_zoomToFitAction(new QAction(QIcon(":/icons/zoom_to_fit.png"),
-                                   "&Zoom to fit", this))
-    ,m_zoomTo100Action(new QAction(QIcon(":/icons/zoom_to_100.png"),
-                                    "&Zoom to 100%", this))
     ,m_transform()
 {
     m_imageLabel->setScaledContents(true);
     setWidget(m_imageLabel);
-    setContextMenuPolicy(Qt::ActionsContextMenu);
 
     setAlignment(Qt::AlignHCenter | Qt::AlignVCenter);
-
-    m_rotateLeftAction->setShortcut(QKeySequence(Qt::Key_R, Qt::Key_Left));
-    m_rotateRightAction->setShortcut(QKeySequence(Qt::Key_R, Qt::Key_Right));
-    m_zoomInAction->setShortcut(QKeySequence(Qt::Key_Plus));
-    m_zoomOutAction->setShortcut(QKeySequence(Qt::Key_Minus));
-    m_zoomToFitAction->setShortcut(QKeySequence(Qt::Key_Equal));
-
-    addAction(m_zoomInAction);
-    addAction(m_zoomOutAction);
-    addAction(m_zoomToFitAction);
-    addAction(m_zoomTo100Action);
-    QAction *separator = new QAction(this);
-    separator->setSeparator(true);
-    addAction(separator);
-    addAction(m_rotateLeftAction);
-    addAction(m_rotateRightAction);
-
-    connect(m_zoomInAction, SIGNAL(triggered(bool)), SLOT(zoomIn()));
-    connect(m_zoomOutAction, SIGNAL(triggered(bool)), SLOT(zoomOut()));
-    connect(m_zoomToFitAction, SIGNAL(triggered(bool)), SLOT(zoomToFit()));
-    connect(m_zoomTo100Action, SIGNAL(triggered(bool)), SLOT(zoomTo100()));
-    connect(m_rotateLeftAction, SIGNAL(triggered(bool)), SLOT(rotateLeft()));
-    connect(m_rotateRightAction, SIGNAL(triggered(bool)), SLOT(rotateRight()));
-
-    // Image operations are disabled by default, because image has not
-    // been set yet.
-    m_zoomInAction->setEnabled(false);
-    m_zoomOutAction->setEnabled(false);
-    m_zoomToFitAction->setEnabled(false);
-    m_zoomTo100Action->setEnabled(false);
-    m_rotateLeftAction->setEnabled(false);
-    m_rotateRightAction->setEnabled(false);
 }
 
 ImageView::~ImageView()
@@ -118,15 +73,6 @@ void ImageView::loadImage()
     m_isImageLoaded = true;
 
     zoomToFit();
-
-    // Actions are enabled only if an image is exists. Actions are not
-    // meaningful without an image.
-    m_rotateLeftAction->setEnabled(m_imageLabel->pixmap());
-    m_rotateRightAction->setEnabled(m_imageLabel->pixmap());
-    m_zoomInAction->setEnabled(m_imageLabel->pixmap());
-    m_zoomOutAction->setEnabled(m_imageLabel->pixmap());
-    m_zoomToFitAction->setEnabled(m_imageLabel->pixmap());
-    m_zoomTo100Action->setEnabled(m_imageLabel->pixmap());
 }
 
 const QPoint ImageView::viewportCenter() const {

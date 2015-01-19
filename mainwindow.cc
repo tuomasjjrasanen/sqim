@@ -125,7 +125,6 @@ MainWindow::MainWindow(QWidget *const parent)
     ,m_imageView(new ImageView(this))
     ,m_metadataWidget(new MetadataWidget(this))
 
-    ,m_imageDockWidget(new QDockWidget(this))
     ,m_metadataDockWidget(new QDockWidget(this))
 
     ,m_tagModel(new QSqlQueryModel(this))
@@ -138,8 +137,18 @@ MainWindow::MainWindow(QWidget *const parent)
     ,m_sortAscDateAction(new QAction(this))
     ,m_sortDescDateAction(new QAction(this))
     ,m_tagAction(new QAction(this))
+    ,m_rotateLeftAction(new QAction(this))
+    ,m_rotateRightAction(new QAction(this))
+    ,m_zoomInAction(new QAction(this))
+    ,m_zoomOutAction(new QAction(this))
+    ,m_zoomToFitAction(new QAction(this))
+    ,m_zoomTo100Action(new QAction(this))
+    ,m_singleViewModeAction(new QAction(this))
+    ,m_listViewModeAction(new QAction(this))
 
     ,m_sortActionGroup(new QActionGroup(this))
+    ,m_viewModeActionGroup(new QActionGroup(this))
+
 {
     setupActions();
     setupToolBars();
@@ -153,7 +162,8 @@ MainWindow::MainWindow(QWidget *const parent)
 
     connectSignals();
 
-    resetImageListView();
+    triggerSortAscDate();
+    m_imageListView->setCurrentIndex(m_imageModel->index(0, 8));
 }
 
 void MainWindow::cancelImport()
@@ -270,7 +280,8 @@ void MainWindow::importFinished()
     statusBar()->removeWidget(m_cancelImportButton);
     statusBar()->showMessage(msg);
     m_openDirAction->setEnabled(true);
-    resetImageListView();
+    triggerSortAscDate();
+    m_imageListView->setCurrentIndex(m_imageModel->index(0, 8));
 }
 
 void MainWindow::closeEvent(QCloseEvent *event)
@@ -379,23 +390,39 @@ void MainWindow::connectSignals()
     m_imageView->connect(m_imageListView,
                          SIGNAL(currentImageChanged(const QModelIndex&, const QModelIndex&)),
                          SLOT(setImage(const QModelIndex&)));
-    m_imageDockWidget->connect(m_imageListView,
-                               SIGNAL(activated(const QModelIndex&)),
-                               SLOT(show()));
     connect(m_aboutAction, SIGNAL(triggered(bool)), SLOT(about()));
     connect(m_cancelImportButton, SIGNAL(clicked()),
             SLOT(cancelImport()));
+
+    m_imageView->connect(m_zoomInAction, SIGNAL(triggered(bool)),
+                         SLOT(zoomIn()));
+    m_imageView->connect(m_zoomOutAction, SIGNAL(triggered(bool)),
+                         SLOT(zoomOut()));
+    m_imageView->connect(m_zoomToFitAction, SIGNAL(triggered(bool)),
+                         SLOT(zoomToFit()));
+    m_imageView->connect(m_zoomTo100Action, SIGNAL(triggered(bool)),
+                         SLOT(zoomTo100()));
+    m_imageView->connect(m_rotateLeftAction, SIGNAL(triggered(bool)),
+                         SLOT(rotateLeft()));
+    m_imageView->connect(m_rotateRightAction, SIGNAL(triggered(bool)),
+                         SLOT(rotateRight()));
+
+    m_imageListView->connect(m_singleViewModeAction, SIGNAL(triggered(bool)),
+                             SLOT(hide()));
+    m_imageView->connect(m_singleViewModeAction, SIGNAL(triggered(bool)),
+                         SLOT(show()));
+
+    m_imageListView->connect(m_listViewModeAction, SIGNAL(triggered(bool)),
+                             SLOT(show()));
+    m_imageView->connect(m_listViewModeAction, SIGNAL(triggered(bool)),
+                         SLOT(hide()));
 }
 void MainWindow::setupDockWidgets()
 {
     m_metadataDockWidget->setWindowTitle("&Metadata");
-    m_imageDockWidget->setWindowTitle("&Image");
 
     m_metadataDockWidget->setWidget(m_metadataWidget);
     addDockWidget(Qt::BottomDockWidgetArea, m_metadataDockWidget);
-
-    m_imageDockWidget->setWidget(m_imageView);
-    addDockWidget(Qt::LeftDockWidgetArea, m_imageDockWidget);
 }
 
 void MainWindow::setupMenus()
@@ -408,7 +435,6 @@ void MainWindow::setupMenus()
     fileMenu->addSeparator();
 
     QMenu *windowsMenu = menuBar()->addMenu("&Windows");
-    windowsMenu->addAction(m_imageDockWidget->toggleViewAction());
     windowsMenu->addAction(m_metadataDockWidget->toggleViewAction());
 
     QMenu *helpMenu = menuBar()->addMenu("&Help");
@@ -418,8 +444,6 @@ void MainWindow::setupMenus()
 void MainWindow::loadSettings()
 {
     QSettings settings;
-    m_imageDockWidget->setVisible(
-        settings.value("imageDockWidget/visible", true).toBool());
     m_metadataDockWidget->setVisible(
         settings.value("metadataDockWidget/visible", true).toBool());
 }
@@ -428,8 +452,6 @@ void MainWindow::saveSettings()
 {
     QSettings settings;
 
-    settings.setValue("imageDockWidget/visible",
-                      m_imageDockWidget->isVisible());
     settings.setValue("metadataDockWidget/visible",
                       m_metadataDockWidget->isVisible());
 
@@ -438,12 +460,8 @@ void MainWindow::saveSettings()
 void MainWindow::setupToolBars()
 {
     QToolBar* toolBar = addToolBar("Tool bar");
-    foreach (QAction* action, m_imageView->actions())
+    foreach (QAction* action, actions())
         toolBar->addAction(action);
-    toolBar->addAction(m_editAction);
-    toolBar->addAction(m_tagAction);
-    toolBar->addAction(m_sortAscDateAction);
-    toolBar->addAction(m_sortDescDateAction);
 }
 
 void MainWindow::setupCentralWidget()
@@ -453,7 +471,7 @@ void MainWindow::setupCentralWidget()
     m_imageModel->select();
     m_imageListView->setSpacing(10);
     m_imageListView->setObjectName("ImageListView");
-    m_imageListView->setItemDelegate(new ImageItemDelegate(this));
+    m_imageListView->setItemDelegate(new ImageItemDelegate(m_imageListView, this));
     m_imageListView->setViewMode(QListView::IconMode);
     m_imageListView->setMovement(QListView::Static);
     m_imageListView->setSelectionMode(QListView::ExtendedSelection);
@@ -463,7 +481,18 @@ void MainWindow::setupCentralWidget()
     m_imageListView->setUniformItemSizes(true);
     m_imageListView->setModel(m_imageModel);
     m_imageListView->setModelColumn(8);
-    setCentralWidget(m_imageListView);
+
+    QLayout* layout = new QVBoxLayout();
+    layout->addWidget(m_imageView);
+    layout->addWidget(m_imageListView);
+    QWidget* widget = new QWidget(this);
+    widget->setLayout(layout);
+
+    m_imageView->hide();
+    m_imageListView->show();
+    m_listViewModeAction->setChecked(true);
+
+    setCentralWidget(widget);
 }
 
 void MainWindow::setupActions()
@@ -475,9 +504,23 @@ void MainWindow::setupActions()
     m_sortAscDateAction->setText("&Ascending time order");
     m_sortDescDateAction->setText("&Descending time order");
     m_tagAction->setText("Add tag");
+    m_rotateLeftAction->setText("Rotate left");
+    m_rotateRightAction->setText("Rotate right");
+    m_zoomInAction->setText("&Zoom in");
+    m_zoomOutAction->setText("&Zoom out");
+    m_zoomToFitAction->setText("&Zoom to fit");
+    m_zoomTo100Action->setText("&Zoom to 100%");
+    m_singleViewModeAction->setText("Single view");
+    m_listViewModeAction->setText("List view");
 
     m_sortAscDateAction->setIcon(QIcon(":/icons/sort_asc_date.png"));
     m_sortDescDateAction->setIcon(QIcon(":/icons/sort_desc_date.png"));
+    m_rotateLeftAction->setIcon(QIcon(":/icons/rotate_left.png"));
+    m_rotateRightAction->setIcon(QIcon(":/icons/rotate_right.png"));
+    m_zoomInAction->setIcon(QIcon(":/icons/zoom_in.png"));
+    m_zoomOutAction->setIcon(QIcon(":/icons/zoom_out.png"));
+    m_zoomToFitAction->setIcon(QIcon(":/icons/zoom_to_fit.png"));
+    m_zoomTo100Action->setIcon(QIcon(":/icons/zoom_to_100.png"));
 
     m_sortAscDateAction->setCheckable(true);
     m_sortDescDateAction->setCheckable(true);
@@ -485,10 +528,14 @@ void MainWindow::setupActions()
     m_sortActionGroup->addAction(m_sortAscDateAction);
     m_sortActionGroup->addAction(m_sortDescDateAction);
 
+    m_singleViewModeAction->setCheckable(true);
+    m_listViewModeAction->setCheckable(true);
+
+    m_viewModeActionGroup->addAction(m_singleViewModeAction);
+    m_viewModeActionGroup->addAction(m_listViewModeAction);
+
     m_editAction->setShortcut(
         QKeySequence(Qt::Key_E));
-    m_imageDockWidget->toggleViewAction()->setShortcut(
-        QKeySequence(Qt::Key_I));
     m_metadataDockWidget->toggleViewAction()->setShortcut(
         QKeySequence(Qt::Key_M));
     m_openDirAction->setShortcut(
@@ -499,20 +546,29 @@ void MainWindow::setupActions()
         QKeySequence(Qt::Key_Less, Qt::Key_T));
     m_sortDescDateAction->setShortcut(
         QKeySequence(Qt::Key_Greater, Qt::Key_T));
+    m_rotateLeftAction->setShortcut(
+        QKeySequence(Qt::Key_R, Qt::Key_Left));
+    m_rotateRightAction->setShortcut(
+        QKeySequence(Qt::Key_R, Qt::Key_Right));
+    m_zoomInAction->setShortcut(
+        QKeySequence(Qt::Key_Plus));
+    m_zoomOutAction->setShortcut(
+        QKeySequence(Qt::Key_Minus));
+    m_zoomToFitAction->setShortcut(
+        QKeySequence(Qt::Key_Equal));
 
-    addAction(m_aboutAction);
     addAction(m_editAction);
-    addAction(m_openDirAction);
-    addAction(m_quitAction);
     addAction(m_sortAscDateAction);
     addAction(m_sortDescDateAction);
     addAction(m_tagAction);
-}
-
-void MainWindow::resetImageListView()
-{
-    triggerSortAscDate();
-    m_imageListView->setCurrentIndex(m_imageModel->index(0, 8));
+    addAction(m_zoomInAction);
+    addAction(m_zoomOutAction);
+    addAction(m_zoomToFitAction);
+    addAction(m_zoomTo100Action);
+    addAction(m_rotateLeftAction);
+    addAction(m_rotateRightAction);
+    addAction(m_singleViewModeAction);
+    addAction(m_listViewModeAction);
 }
 
 void MainWindow::setupStatusBar()
@@ -521,4 +577,11 @@ void MainWindow::setupStatusBar()
     m_cancelImportButton->hide();
 
     setStatusBar(new QStatusBar());
+}
+
+void MainWindow::switchToSingleView(const QModelIndex& current)
+{
+    m_imageListView->hide();
+    m_imageView->setImage(current);
+    m_imageView->show();
 }

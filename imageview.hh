@@ -59,13 +59,6 @@ private:
     QLabel *m_imageLabel;
     qreal m_zoomLevel;
 
-    QAction *m_rotateLeftAction;
-    QAction *m_rotateRightAction;
-    QAction *m_zoomInAction;
-    QAction *m_zoomOutAction;
-    QAction *m_zoomToFitAction;
-    QAction *m_zoomTo100Action;
-
     bool m_isImageLoaded;
     QString m_imageFilePath;
     int m_imageOrientation;

@@ -54,6 +54,7 @@ private slots:
     void importFinished();
     void about();
     void cancelImport();
+    void switchToSingleView(const QModelIndex& current);
 
 private:
     void connectSignals();
@@ -65,8 +66,6 @@ private:
     void setupMenus();
     void setupStatusBar();
     void setupToolBars();
-
-    void resetImageListView();
 
     QAtomicInt m_openCount;
     QFutureWatcher<Metadata>* m_importer;
@@ -89,8 +88,16 @@ private:
     QAction* m_sortAscDateAction;
     QAction* m_sortDescDateAction;
     QAction* m_tagAction;
+    QAction* m_rotateLeftAction;
+    QAction* m_rotateRightAction;
+    QAction* m_zoomInAction;
+    QAction* m_zoomOutAction;
+    QAction* m_zoomToFitAction;
+    QAction* m_zoomTo100Action;
+    QAction* m_singleViewModeAction;
+    QAction* m_listViewModeAction;
     QActionGroup* m_sortActionGroup;
-
+    QActionGroup* m_viewModeActionGroup;
 };
 
 #endif // MAINWINDOW_HH
