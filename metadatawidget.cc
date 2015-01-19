@@ -67,6 +67,16 @@ void MetadataWidget::updateTags()
 
 void MetadataWidget::setMetadata(const QModelIndex& index)
 {
+    if (!index.isValid()) {
+        m_filePathLabel->clear();
+        m_timestampLabel->clear();
+        m_modificationTimeLabel->clear();
+        m_fileSizeLabel->clear();
+        m_imageSizeLabel->clear();
+        updateTags();
+        return;
+    }
+
     m_filePathLabel->setText(
         index.sibling(index.row(), 1).data().toString());
     m_timestampLabel->setText(
