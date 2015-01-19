@@ -353,7 +353,10 @@ void MainWindow::editSelectedImages()
         filePaths.append(filePath);
     }
 
-    QProcess::startDetached("gimp", filePaths);
+    if (QProcess::startDetached("gimp", filePaths))
+        statusBar()->showMessage("Started an external editor...", 5000);
+    else
+        statusBar()->showMessage("Failed to start an external editor...", 5000);
 }
 
 
