@@ -18,7 +18,7 @@
 #include "metadatawidget.hh"
 
 MetadataWidget::MetadataWidget(QWidget *parent)
-    :QWidget(parent)
+    :QScrollArea(parent)
     ,m_filePathLabel(new QLabel(this))
     ,m_timestampLabel(new QLabel(this))
     ,m_modificationTimeLabel(new QLabel(this))
@@ -40,14 +40,17 @@ MetadataWidget::MetadataWidget(QWidget *parent)
     connect(m_tagView, SIGNAL(clicked(const QModelIndex&)),
             SLOT(removeTag(const QModelIndex&)));
 
-    QFormLayout *layout = new QFormLayout(this);
+    QWidget* widget = new QWidget(this);
+    QFormLayout *layout = new QFormLayout(widget);
     layout->addRow("File path", m_filePathLabel);
     layout->addRow("Shot timestamp", m_timestampLabel);
     layout->addRow("Modification timestamp", m_modificationTimeLabel);
     layout->addRow("File size", m_fileSizeLabel);
     layout->addRow("Pixel dimensions", m_imageSizeLabel);
     layout->addRow("Tags", m_tagView);
-    setLayout(layout);
+    widget->setLayout(layout);
+    setWidget(widget);
+    setWidgetResizable(true);
 }
 
 MetadataWidget::~MetadataWidget()

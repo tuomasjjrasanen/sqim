@@ -22,7 +22,7 @@
 
 #include "metadata.hh"
 
-class MetadataWidget : public QWidget
+class MetadataWidget : public QScrollArea
 {
     Q_OBJECT
 
