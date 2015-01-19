@@ -423,7 +423,7 @@ void MainWindow::connectSignals()
 }
 void MainWindow::setupDockWidgets()
 {
-    m_metadataDockWidget->setWindowTitle("&Metadata");
+    m_metadataDockWidget->setWindowTitle("Image details");
 
     m_metadataDockWidget->setWidget(m_metadataWidget);
     addDockWidget(Qt::BottomDockWidgetArea, m_metadataDockWidget);

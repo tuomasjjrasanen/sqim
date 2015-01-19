@@ -43,10 +43,10 @@ MetadataWidget::MetadataWidget(QWidget *parent)
     QWidget* widget = new QWidget(this);
     QFormLayout *layout = new QFormLayout(widget);
     layout->addRow("File path", m_filePathLabel);
-    layout->addRow("Shot timestamp", m_timestampLabel);
-    layout->addRow("Modification timestamp", m_modificationTimeLabel);
+    layout->addRow("Shot time", m_timestampLabel);
+    layout->addRow("Last modification time", m_modificationTimeLabel);
     layout->addRow("File size", m_fileSizeLabel);
-    layout->addRow("Pixel dimensions", m_imageSizeLabel);
+    layout->addRow("Dimensions", m_imageSizeLabel);
     layout->addRow("Tags", m_tagView);
     widget->setLayout(layout);
     setWidget(widget);
