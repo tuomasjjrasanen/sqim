@@ -528,6 +528,7 @@ void MainWindow::setupActions()
     m_singleViewModeAction->setText("Single view");
     m_listViewModeAction->setText("List view");
 
+    m_editAction->setIcon(QIcon(":/icons/run_external.png"));
     m_sortAscDateAction->setIcon(QIcon(":/icons/sort_asc_date.png"));
     m_sortDescDateAction->setIcon(QIcon(":/icons/sort_desc_date.png"));
     m_rotateLeftAction->setIcon(QIcon(":/icons/rotate_left.png"));

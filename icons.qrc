@@ -10,5 +10,6 @@
      <file>icons/sort_desc_date.png</file>
      <file>icons/sort_asc_time.png</file>
      <file>icons/sort_desc_time.png</file>
+     <file>icons/run_external.png</file>
  </qresource>
  </RCC>
