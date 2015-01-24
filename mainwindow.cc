@@ -408,15 +408,11 @@ void MainWindow::connectSignals()
     m_imageView->connect(m_rotateRightAction, SIGNAL(triggered(bool)),
                          SLOT(rotateRight()));
 
-    m_imageListView->connect(m_singleViewModeAction, SIGNAL(triggered(bool)),
-                             SLOT(hide()));
-    m_imageView->connect(m_singleViewModeAction, SIGNAL(triggered(bool)),
-                         SLOT(show()));
+    connect(m_singleViewModeAction, SIGNAL(triggered(bool)),
+            SLOT(singleViewMode()));
 
-    m_imageListView->connect(m_listViewModeAction, SIGNAL(triggered(bool)),
-                             SLOT(show()));
-    m_imageView->connect(m_listViewModeAction, SIGNAL(triggered(bool)),
-                         SLOT(hide()));
+    connect(m_listViewModeAction, SIGNAL(triggered(bool)),
+            SLOT(listViewMode()));
 }
 void MainWindow::setupDockWidgets()
 {
@@ -588,9 +584,18 @@ void MainWindow::setupStatusBar()
     setStatusBar(new QStatusBar());
 }
 
-void MainWindow::switchToSingleView(const QModelIndex& current)
+void MainWindow::singleViewMode()
 {
+    m_imageListView->clearFocus();
     m_imageListView->hide();
-    m_imageView->setImage(current);
     m_imageView->show();
+    m_imageView->setFocus(Qt::OtherFocusReason);
+}
+
+void MainWindow::listViewMode()
+{
+    m_imageView->clearFocus();
+    m_imageView->hide();
+    m_imageListView->show();
+    m_imageListView->setFocus(Qt::OtherFocusReason);
 }

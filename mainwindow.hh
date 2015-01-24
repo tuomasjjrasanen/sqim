@@ -52,7 +52,8 @@ private slots:
     void importFinished();
     void about();
     void cancelImport();
-    void switchToSingleView(const QModelIndex& current);
+    void singleViewMode();
+    void listViewMode();
 
 private:
     void connectSignals();
