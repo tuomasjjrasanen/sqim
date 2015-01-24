@@ -574,6 +574,10 @@ void MainWindow::setupActions()
         QKeySequence(Qt::Key_Minus));
     m_zoomToFitAction->setShortcut(
         QKeySequence(Qt::Key_Equal));
+    m_singleViewModeAction->setShortcut(
+        QKeySequence(Qt::Key_F9));
+    m_listViewModeAction->setShortcut(
+        QKeySequence(Qt::Key_F10));
 }
 
 void MainWindow::setupStatusBar()
