@@ -69,6 +69,7 @@ private:
     QAtomicInt m_importCount;
     QFutureWatcher<Metadata>* m_importer;
     QPushButton* m_cancelImportButton;
+    QProgressBar* m_importProgressBar;
 
     ImageListView* m_imageListView;
     ImageView* m_imageView;

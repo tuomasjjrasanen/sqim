@@ -120,6 +120,7 @@ MainWindow::MainWindow(QWidget *const parent)
     ,m_importCount()
     ,m_importer(new QFutureWatcher<Metadata>(this))
     ,m_cancelImportButton(new QPushButton(this))
+    ,m_importProgressBar(new QProgressBar(this))
 
     ,m_imageListView(new ImageListView(this))
     ,m_imageView(new ImageView(this))
@@ -170,6 +171,7 @@ MainWindow::MainWindow(QWidget *const parent)
 
 void MainWindow::cancelImport()
 {
+    statusBar()->removeWidget(m_importProgressBar);
     statusBar()->removeWidget(m_cancelImportButton);
     statusBar()->showMessage("Canceling import...");
     m_importer->cancel();
@@ -228,6 +230,10 @@ void MainWindow::importFiles(const QStringList& filePaths)
     m_importCount = 0;
     QSqlDatabase::database().transaction();
     m_importer->setFuture(QtConcurrent::mapped(filePaths, import));
+    m_importProgressBar->reset();
+    m_importProgressBar->setRange(0, filePaths.size());
+    statusBar()->addPermanentWidget(m_importProgressBar);
+    m_importProgressBar->show();
     statusBar()->addPermanentWidget(m_cancelImportButton);
     m_cancelImportButton->show();
     statusBar()->showMessage(QString("Importing images..."));
@@ -251,6 +257,7 @@ void MainWindow::importPaths(const QStringList& paths, bool recursive)
 
 void MainWindow::importReadyAt(const int i)
 {
+    m_importProgressBar->setValue(m_importProgressBar->value() + 1);
     Metadata metadata = m_importer->resultAt(i);
     if (metadata.isEmpty())
         return;
@@ -279,6 +286,7 @@ void MainWindow::importFinished()
 {
     QSqlDatabase::database().commit();
     QString msg = QString("Imported %1 images").arg(m_importCount);
+    statusBar()->removeWidget(m_importProgressBar);
     statusBar()->removeWidget(m_cancelImportButton);
     statusBar()->showMessage(msg, 5000);
     m_importDirAction->setEnabled(true);
@@ -576,6 +584,7 @@ void MainWindow::setupStatusBar()
 {
     m_cancelImportButton->setText("Cancel import");
     m_cancelImportButton->hide();
+    m_importProgressBar->hide();
 
     setStatusBar(new QStatusBar());
 }
