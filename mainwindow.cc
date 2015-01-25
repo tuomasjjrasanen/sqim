@@ -549,31 +549,27 @@ void MainWindow::setupActions()
     m_listViewModeAction->setCheckable(true);
 
     m_editAction->setShortcut(
-        QKeySequence(Qt::Key_E));
+        QKeySequence("Ctrl+Enter"));
     m_metadataDockWidget->toggleViewAction()->setShortcut(
-        QKeySequence(Qt::Key_M));
+        QKeySequence("Ctrl+M"));
     m_importDirAction->setShortcut(
-        QKeySequence(Qt::Key_O));
+        QKeySequence("Ctrl+O"));
     m_quitAction->setShortcut(
-        QKeySequence(Qt::Key_Q));
-    m_sortAscDateAction->setShortcut(
-        QKeySequence(Qt::Key_Less, Qt::Key_T));
-    m_sortDescDateAction->setShortcut(
-        QKeySequence(Qt::Key_Greater, Qt::Key_T));
+        QKeySequence("Ctrl+Q"));
     m_rotateLeftAction->setShortcut(
-        QKeySequence(Qt::Key_R, Qt::Key_Left));
+        QKeySequence("Ctrl+<"));
     m_rotateRightAction->setShortcut(
-        QKeySequence(Qt::Key_R, Qt::Key_Right));
+        QKeySequence("Ctrl+>"));
     m_zoomInAction->setShortcut(
-        QKeySequence(Qt::Key_Plus));
+        QKeySequence("Ctrl++"));
     m_zoomOutAction->setShortcut(
-        QKeySequence(Qt::Key_Minus));
+        QKeySequence("Ctrl+-"));
     m_zoomToFitAction->setShortcut(
-        QKeySequence(Qt::Key_Equal));
+        QKeySequence("Ctrl+="));
     m_singleViewModeAction->setShortcut(
-        QKeySequence(Qt::Key_F9));
+        QKeySequence("F9"));
     m_listViewModeAction->setShortcut(
-        QKeySequence(Qt::Key_F10));
+        QKeySequence("F10"));
 }
 
 void MainWindow::setupStatusBar()
